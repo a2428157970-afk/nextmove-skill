@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nextmove-skill"
+description = "Provider-neutral AI Career Intelligence Skill Framework."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [
+    { name = "NextMove" },
+]
+dependencies = []
+dynamic = ["version"]
+
+[tool.setuptools.packages.find]
+include = ["skill*"]
+
+[tool.setuptools.dynamic]
+version = { attr = "skill.__version__.__version__" }

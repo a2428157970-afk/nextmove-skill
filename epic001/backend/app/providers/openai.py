@@ -1,0 +1,1 @@
+"""Reserved OpenAI provider adapter."""

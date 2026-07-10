@@ -1,0 +1,1 @@
+"""Reserved Gemini provider adapter."""

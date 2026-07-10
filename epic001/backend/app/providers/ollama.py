@@ -1,0 +1,1 @@
+"""Reserved Ollama provider adapter."""
