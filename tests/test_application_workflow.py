@@ -175,6 +175,26 @@ class ApplicationWorkflowTests(unittest.TestCase):
         self.assertIs(response.result.job_match, job_match)
         self.assertIs(response.result.career_advice, career_advice)
 
+    def test_workflow_normalizes_none_job_description_for_match_job(self):
+        skill = Mock()
+        skill.run.side_effect = [
+            SkillResponse(True, "analyze_resume", result=ResumeAnalysisResult()),
+            SkillResponse(True, "improve_resume", result=ResumeImprovementResult()),
+            SkillResponse(True, "match_job", result=JobMatchResult()),
+            SkillResponse(True, "career_advice", result=CareerAdviceResult()),
+        ]
+
+        CareerAnalysisWorkflow(skill).run("resume", None)
+
+        self.assertEqual(
+            [call.args[0] for call in skill.run.call_args_list],
+            ["analyze_resume", "improve_resume", "match_job", "career_advice"],
+        )
+        self.assertEqual(
+            skill.run.call_args_list[2].args[1],
+            {"resume": "resume", "job_description": ""},
+        )
+
     def test_workflow_returns_first_failure_with_original_error(self):
         error = SkillError(code="INVALID_INPUT", message="bad resume")
         skill = Mock()

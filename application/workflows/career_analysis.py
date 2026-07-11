@@ -29,7 +29,10 @@ class CareerAnalysisWorkflow:
 
         match_response = self.skill.run(
             "match_job",
-            {"resume": resume, "job_description": job_description},
+            {
+                "resume": resume,
+                "job_description": "" if job_description is None else job_description,
+            },
         )
         failure = self._failure_response(match_response, "match_job")
         if failure is not None:
