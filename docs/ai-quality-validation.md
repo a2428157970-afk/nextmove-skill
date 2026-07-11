@@ -7,6 +7,14 @@ Resume AI Enhancement. It verifies deterministic safety and regression rules;
 it does not claim to measure real-model semantic quality. Human review remains
 the final authority for semantic quality.
 
+## Resume Prompt and Output Contract
+
+`resume-improvement.v1` requires an exact JSON object with `contract_version`,
+`summary`, `rewritten_content`, `improvement_points`, `keyword_suggestions`,
+and `factual_warnings`. The parser rejects non-JSON text, code fences, wrong
+versions, missing or mistyped fields, empty summary and rewritten content, and
+debug output. Invalid responses degrade to `AI provider response error`.
+
 ## Offline Samples and Metrics
 
 Eight fully synthetic cases under `tests/fixtures/ai_quality/` cover new

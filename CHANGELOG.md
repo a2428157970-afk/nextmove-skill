@@ -1,5 +1,12 @@
 # NextMove Changelog
 
+## Epic-015 - AI Enhancement Prompt & Output Contract Refinement
+
+- Added the versioned `resume-improvement.v1` prompt and validated internal
+  JSON output contract for resume enhancement.
+- Invalid provider text now degrades to the existing structured provider
+  response error without exposing parser details.
+
 ## Epic-014 - AI Enhancement Quality Validation
 
 - Added eight fully synthetic offline quality fixtures, deterministic quality

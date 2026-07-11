@@ -15,6 +15,14 @@ from skill.ai import (
 from skill.improvement.schemas import ResumeImprovementResult
 
 
+class StructuredDemoProvider(MockProviderAdapter):
+    """Return a deterministic response that satisfies the resume v1 contract."""
+
+    def generate(self, prompt: str, context: dict) -> str:
+        del prompt, context
+        return json.dumps({"contract_version":"resume-improvement.v1","summary":"Use the supplied resume facts.","rewritten_content":"Add a focused professional summary.","improvement_points":["Keep claims factual."],"keyword_suggestions":[],"factual_warnings":[]})
+
+
 class DemoCredentialProvider(CredentialProvider):
     """Provide an opaque in-memory value without reading configuration."""
 
@@ -48,7 +56,7 @@ def main() -> None:
     """Print JSON-only results without a network call or environment access."""
     settings = AIProviderSettings(provider_name="mock", model_name="offline-demo")
     improvement = build_rule_based_improvement()
-    mock_provider = MockProviderAdapter(settings)
+    mock_provider = StructuredDemoProvider(settings)
 
     ai_result = ResumeAIEnhancer(mock_provider).enhance(improvement)
     application_adapter = ApplicationRuntimeAdapter(

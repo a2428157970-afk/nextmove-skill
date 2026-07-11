@@ -1,6 +1,7 @@
 """Quality-focused regression matrix for Core and optional AI boundaries."""
 
 from copy import deepcopy
+import json
 import unittest
 
 from skill.ai import (
@@ -14,8 +15,8 @@ from skill.improvement.schemas import ResumeImprovementResult
 
 
 class ControlledProvider(AIProvider):
-    def __init__(self, response: str | Exception | None = "safe output", health: object = True):
-        self.response = response
+    def __init__(self, response: str | Exception | None = None, health: object = True):
+        self.response = response if response is not None else json.dumps({"contract_version":"resume-improvement.v1","summary":"Safe output","rewritten_content":"Use supplied facts.","improvement_points":[],"keyword_suggestions":[],"factual_warnings":[]})
         self.health = health
         self.calls = 0
 
@@ -50,7 +51,7 @@ class AIQualityRegressionTests(unittest.TestCase):
 
     def test_provider_failure_matrix_returns_structured_results_without_exception_details(self):
         scenarios = (
-            None,
+            "",
             ProviderTimeoutError(),
             ProviderUnavailableError(),
             ProviderResponseError(),

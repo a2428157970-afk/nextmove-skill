@@ -1,5 +1,6 @@
 """Workflow tests for resume improvement AI enhancement."""
 
+import json
 import unittest
 
 from skill.ai import AIProvider, ResumeAIEnhancer
@@ -16,7 +17,7 @@ class CapturingProvider(AIProvider):
     def generate(self, prompt: str, context: dict) -> str:
         self.prompt = prompt
         self.context = context
-        return "Expanded improvement guidance"
+        return json.dumps({"contract_version":"resume-improvement.v1","summary":"Expanded improvement guidance","rewritten_content":"Use the supplied improvement guidance.","improvement_points":["Keep facts accurate."],"keyword_suggestions":[],"factual_warnings":[]})
 
 
 class ResumeAIEnhancerTests(unittest.TestCase):
@@ -31,7 +32,7 @@ class ResumeAIEnhancerTests(unittest.TestCase):
         result = ResumeAIEnhancer(provider).enhance(improvement)
 
         self.assertTrue(result.success)
-        self.assertEqual(result.enhanced_content, "Expanded improvement guidance")
+        self.assertEqual(json.loads(result.enhanced_content)["summary"], "Expanded improvement guidance")
         self.assertIn("resume improvement", provider.prompt.lower())
         self.assertEqual(provider.context["issues"], improvement.issues)
         self.assertEqual(provider.context["suggestions"], improvement.suggestions)

@@ -36,11 +36,14 @@ def _response_for(case: AIQualityCase, scenario: str) -> str | Exception:
         return ""
     if scenario == "provider-error":
         return ProviderUnavailableError()
+    if scenario == "invalid-json":
+        return "not json"
+    if scenario == "wrong-version":
+        return '{"contract_version":"wrong"}'
+    if scenario == "fenced-json":
+        return "```json\n{}\n```"
 
-    safe_output = (
-        f"{' '.join(case.original_facts)} "
-        f"Focus on {case.expected_directions[0]} while keeping every claim factual."
-    )
+    safe_output = json.dumps({"contract_version":"resume-improvement.v1","summary":f"Focus on {case.expected_directions[0]}.","rewritten_content":f"{' '.join(case.original_facts)} Keep every claim factual.","improvement_points":[case.expected_directions[0]],"keyword_suggestions":list(case.keywords),"factual_warnings":[]})
     if scenario == "fabricated":
         return f"{safe_output} {case.prohibited_content[0]}."
     return safe_output
@@ -108,7 +111,7 @@ def main() -> int:
     parser.add_argument("--format", choices=("markdown", "json"), default="markdown")
     parser.add_argument(
         "--scenario",
-        choices=("pass", "fabricated", "empty", "provider-error"),
+        choices=("pass", "fabricated", "empty", "provider-error", "invalid-json", "wrong-version", "fenced-json"),
         default="pass",
     )
     args = parser.parse_args()
