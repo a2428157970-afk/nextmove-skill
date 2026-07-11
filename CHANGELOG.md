@@ -1,5 +1,9 @@
 # NextMove Changelog
 
+## Epic-016 - Real Provider Quality Pilot
+
+- Added opt-in, content-safe pilot review records for external real-provider validation.
+
 ## Epic-015 - AI Enhancement Prompt & Output Contract Refinement
 
 - Added the versioned `resume-improvement.v1` prompt and validated internal

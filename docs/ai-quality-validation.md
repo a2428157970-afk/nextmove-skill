@@ -66,3 +66,13 @@ resumes, headers, credentials, or raw provider output.
 
 Live observation is not a default CI gate and is used only to observe real
 provider output; it does not replace offline contract checks or human review.
+
+## Experimental Live Pilot
+
+Epic-016 adds an opt-in pilot record for up to five synthetic cases. It runs
+only with `RUN_LIVE_AI_TEST=true` and the external transport factory. Each real
+output must pass the same v1 parser and validator before metrics are recorded.
+Records contain only case ID, contract version, provider/model names, success,
+latency, output length, validator result, and human-review status/notes. They
+never retain a resume, prompt, credential, header, or provider response. The
+pilot is experimental and human review remains the final quality decision.

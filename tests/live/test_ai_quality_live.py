@@ -23,7 +23,7 @@ class LiveAIQualityTests(unittest.TestCase):
             self.skipTest("External validator does not expose evaluate_quality.")
 
         measurements = quality_validator()
-        allowed = {"case_id", "success", "latency", "output_length", "passed_checks", "failed_checks"}
+        allowed = {"case_id", "contract_version", "success", "latency", "output_length", "passed_checks", "failed_checks"}
         self.assertTrue(all(set(item).issubset(allowed) for item in measurements))
 
 

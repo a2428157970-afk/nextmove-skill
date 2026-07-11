@@ -8,9 +8,8 @@ content-safe optional live observation.
 
 ## Recommended Next Step
 
-Plan Epic-016: Real Provider Quality Pilot with opt-in live evaluation, human
-review, output comparison, latency recording, and no retained real resumes or
-raw responses.
+Epic-016 Real Provider Quality Pilot is in progress. Live validation requires
+explicit external transport assembly and human review.
 
 ## Notes
 
