@@ -1,10 +1,11 @@
 import ast
 import json
 import unittest
+from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import Mock
 
-from application.schemas import CareerAnalysisRequest
+from application.schemas import CareerAnalysisRequest, ExecutionMetadata
 from application.schemas.career import ApplicationResponse, CareerAnalysisReport
 from application.services.career_analysis import CareerAnalysisService
 from application.workflows.career_analysis import CareerAnalysisWorkflow
@@ -225,6 +226,107 @@ class ApplicationWorkflowTests(unittest.TestCase):
                     "details": {},
                 },
             },
+        )
+        json.dumps(serialized)
+
+    def test_application_response_serializes_completed_execution_metadata(self):
+        metadata = ExecutionMetadata(
+            execution_id="execution-123",
+            workflow_name="career-analysis",
+            status="completed",
+            started_at=datetime(2026, 7, 11, 10, 0, tzinfo=timezone.utc),
+            completed_at=datetime(2026, 7, 11, 10, 5, tzinfo=timezone.utc),
+        )
+        response = ApplicationResponse(
+            success=True,
+            result=CareerAnalysisReport(
+                resume_analysis=ResumeAnalysisResult(),
+                improvement=ResumeImprovementResult(),
+                job_match=JobMatchResult(),
+                career_advice=CareerAdviceResult(),
+            ),
+            metadata=metadata,
+        )
+
+        serialized = response.to_dict()
+
+        self.assertEqual(
+            serialized["metadata"],
+            {
+                "execution_id": "execution-123",
+                "workflow_name": "career-analysis",
+                "status": "completed",
+                "started_at": "2026-07-11T10:00:00+00:00",
+                "completed_at": "2026-07-11T10:05:00+00:00",
+                "failed_step": None,
+            },
+        )
+        self.assertEqual(
+            set(serialized["metadata"]),
+            {
+                "execution_id",
+                "workflow_name",
+                "status",
+                "started_at",
+                "completed_at",
+                "failed_step",
+            },
+        )
+        self.assertFalse(
+            {
+                "resume",
+                "job_description",
+                "prompt",
+                "credential",
+                "provider_response",
+                "trace",
+            }
+            & set(serialized["metadata"])
+        )
+        json.dumps(serialized)
+
+    def test_application_response_serializes_failed_execution_metadata(self):
+        metadata = ExecutionMetadata(
+            execution_id="execution-456",
+            workflow_name="career-analysis",
+            status="failed",
+            started_at=datetime(2026, 7, 11, 10, 0, tzinfo=timezone.utc),
+            completed_at=datetime(2026, 7, 11, 10, 2, tzinfo=timezone.utc),
+            failed_step="match_job",
+        )
+        response = ApplicationResponse(
+            success=False,
+            error_code="WORKFLOW_STEP_FAILED",
+            failed_step="match_job",
+            message="career analysis workflow failed",
+            error=SkillError(code="INVALID_INPUT", message="bad job"),
+            metadata=metadata,
+        )
+
+        serialized = response.to_dict()
+
+        self.assertEqual(serialized["metadata"], metadata.to_dict())
+        self.assertEqual(
+            set(serialized["metadata"]),
+            {
+                "execution_id",
+                "workflow_name",
+                "status",
+                "started_at",
+                "completed_at",
+                "failed_step",
+            },
+        )
+        self.assertFalse(
+            {
+                "resume",
+                "job_description",
+                "prompt",
+                "credential",
+                "provider_response",
+                "trace",
+            }
+            & set(serialized["metadata"])
         )
         json.dumps(serialized)
 
