@@ -1,5 +1,19 @@
 # NextMove Changelog
 
+## Unreleased
+
+## Epic-020.1 - Product Application Layer Boundary
+
+- Status: Completed
+- Added a standalone, application-owned career-analysis service, schemas, and
+  workflow that compose the stable public `NextMoveSkill.run()` API.
+- The workflow executes resume analysis, improvement, job matching, and career
+  advice in a fixed order, stops at the first unsuccessful Skill response, and
+  preserves the original structured `SkillError` in its application response.
+- Added deterministic coverage for the success path, first-step and matching
+  failures, JSON serialization, service delegation, and the one-way
+  Skill-to-application dependency boundary.
+
 ## 0.7.0
 
 - AI Enhancement Quality System, Prompt and Output Contracts, Quality Validation,
