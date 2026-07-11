@@ -1,5 +1,11 @@
 # NextMove Changelog
 
+## 0.7.0
+
+- AI Enhancement Quality System, Prompt and Output Contracts, Quality Validation,
+  Live Pilot Boundary, Human Review Workflow, Artifact Retention, Controlled Export,
+  and Release Hardening.
+
 ## Epic-016 - Real Provider Quality Pilot
 
 - Added opt-in, content-safe pilot review records for external real-provider validation.
