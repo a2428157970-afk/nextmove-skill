@@ -2,18 +2,27 @@
 
 ## Status
 
-Epic-014 AI Enhancement Quality Validation is complete on the released v0.6.0
-baseline. The repository now has deterministic offline quality gates and
-content-safe optional live observation.
+The released v0.7.0 baseline now includes the completed Epic-020.1 Product
+Application Layer Boundary. A standalone application service orchestrates the
+four public Skill capabilities into a structured, fail-fast career-analysis
+response while preserving the Skill Core boundary.
 
 ## Recommended Next Step
 
-Epic-016 Real Provider Quality Pilot is in progress. Live validation requires
-explicit external transport assembly and human review.
+Epic-020.2: Application Request Boundary Validation. Keep this Epic bounded to
+application-owned request validation and stable response-contract tests for
+`CareerAnalysisService`; do not add an HTTP endpoint, frontend integration,
+authentication, persistence, provider behavior, or new dependencies.
 
 ## Notes
 
 - Do not execute the next Epic until instructed.
+- Keep the Product Application Layer transport-neutral and dependent only on
+  public Skill contracts. It must call capabilities through
+  `NextMoveSkill.run()` and never be imported by `skill/`.
+- Preserve the fixed fail-fast workflow: `analyze_resume`, `improve_resume`,
+  `match_job`, then `career_advice`. On failure, retain the original
+  structured `SkillError` without exposing resume or job-description input.
 - Keep Skill Core independent from backend, frontend, HTTP logic, file upload
   handling, prompt text, and AI provider SDKs.
 - Preserve `AIProvider` as the only provider-facing contract and keep all
