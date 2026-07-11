@@ -19,6 +19,13 @@ from skill.schemas import (
 
 
 PUBLIC_SKILL_IMPORT_MODULES = ("skill", "skill.schemas", "skill.utils")
+PRIVATE_SKILL_ROOT_IMPORTS = {
+    "analysis",
+    "matching",
+    "career",
+    "improvement",
+    "resume",
+}
 
 
 def find_nonpublic_skill_imports(source_files: list[tuple[Path, str]]) -> list[str]:
@@ -27,6 +34,14 @@ def find_nonpublic_skill_imports(source_files: list[tuple[Path, str]]) -> list[s
     for source_file, source in source_files:
         source_lines = source.splitlines()
         for node in ast.walk(ast.parse(source, filename=str(source_file))):
+            if isinstance(node, ast.ImportFrom) and node.module == "skill":
+                line = source_lines[node.lineno - 1].strip()
+                for alias in node.names:
+                    if alias.name in PRIVATE_SKILL_ROOT_IMPORTS:
+                        forbidden_imports.append(
+                            f"{source_file.as_posix()}:{node.lineno}: {line}"
+                        )
+                continue
             if isinstance(node, ast.Import):
                 imported_modules = [alias.name for alias in node.names]
             elif isinstance(node, ast.ImportFrom) and node.module:
@@ -34,13 +49,13 @@ def find_nonpublic_skill_imports(source_files: list[tuple[Path, str]]) -> list[s
             else:
                 continue
 
+            line = source_lines[node.lineno - 1].strip()
             for module in imported_modules:
                 is_public_skill_import = module in PUBLIC_SKILL_IMPORT_MODULES or module.startswith(
                     ("skill.schemas.", "skill.utils.")
                 )
                 is_skill_import = module == "skill" or module.startswith("skill.")
                 if is_skill_import and not is_public_skill_import:
-                    line = source_lines[node.lineno - 1].strip()
                     forbidden_imports.append(
                         f"{source_file.as_posix()}:{node.lineno}: {line}"
                     )
@@ -130,6 +145,29 @@ class ApplicationWorkflowTests(unittest.TestCase):
         self.assertEqual(
             forbidden_imports,
             ["application/example.py:1: from skill.analysis import ResumeAnalyzer"],
+        )
+
+    def test_static_scan_rejects_root_import_implementation_module_aliases(self):
+        source_file = Path("application/example.py")
+        source = (
+            "from skill import analysis\n"
+            "from skill import matching\n"
+            "from skill import career\n"
+            "from skill import improvement\n"
+            "from skill import resume\n"
+        )
+
+        forbidden_imports = find_nonpublic_skill_imports([(source_file, source)])
+
+        self.assertEqual(
+            forbidden_imports,
+            [
+                "application/example.py:1: from skill import analysis",
+                "application/example.py:2: from skill import matching",
+                "application/example.py:3: from skill import career",
+                "application/example.py:4: from skill import improvement",
+                "application/example.py:5: from skill import resume",
+            ],
         )
 
     def test_application_imports_only_public_skill_interfaces(self):
