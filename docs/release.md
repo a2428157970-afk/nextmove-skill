@@ -49,4 +49,23 @@ Confirm that there is one version source:
 - `skill/metadata.py` imports that version rather than duplicating it.
 - `pyproject.toml` reads the version dynamically from `skill.__version__`.
 
-For v0.5.0, the expected public version is `0.5.0`.
+For v0.6.0, the expected public version is `0.6.0`.
+
+## 6. Optional AI Validation
+
+Run the deterministic offline demonstration:
+
+```bash
+python examples/ai_enhancement_demo.py
+```
+
+Confirm that it emits JSON containing a successful mock enhancement, a
+successful application-runtime result, and a structured unavailable result for
+the disabled feature. It must not read environment variables, use an API key,
+or access the network.
+
+Live tests remain opt-in and skip safely unless explicitly enabled:
+
+```bash
+python -m unittest discover -s tests/live -v
+```

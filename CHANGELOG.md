@@ -1,5 +1,148 @@
 # NextMove Changelog
 
+## 0.6.0
+
+### Added
+
+- Optional AI Enhancement Layer, `AIProvider` contract, provider registry and
+  factory, credential boundary, and `AIRuntime` assembly.
+- OpenAI-Compatible Provider Adapter, injected `HTTPTransport`, resume AI
+  enhancement, provider runtime policy, health checks, and `AIRequestContext`.
+- `ApplicationRuntimeAdapter`, feature flags, `AIExecutionMetadata`,
+  `UrllibHTTPTransport`, safe observability, application limits, safe rollback,
+  opt-in live validation, and an offline enhancement demonstration.
+
+### Security / Privacy
+
+- The Skill neither stores nor reads credentials; default tests do not access
+  the network.
+- Observability never records prompts, resumes, job descriptions, credentials,
+  or response bodies.
+- Provider failures return structured results and do not affect the rule-based
+  Skill Core.
+
+### Compatibility
+
+- Existing `NextMoveSkill` APIs remain compatible.
+- Skill Core and Agent Layer do not depend on `skill.ai`.
+- AI Enhancement is optional and can be disabled before any credential,
+  provider, or transport work occurs.
+
+## Epic-012 - Application Transport & Observability Validation
+
+- Status: Completed
+- Added reusable `UrllibHTTPTransport` using only Python standard library JSON
+  POST support and stable timeout, unavailable, and response error mapping.
+- Added safe `AIExecutionObserver`, conservative `AIApplicationLimits`, and an
+  application enhancement wrapper that rejects invalid calls before provider
+  generation without modifying input.
+- Preserved explicit feature rollback before credential, provider, or
+  transport access and added an externally assembled, default-skipped live
+  transport validation hook.
+- Added deterministic transport, observability, limits, rollback, and live
+  boundary tests without endpoints, credentials, SDKs, or new AI capability.
+
+## Epic-011 - Application Provider Runtime Integration MVP
+
+- Status: Completed
+- Added `ApplicationRuntimeAdapter` to compose application-owned settings,
+  credential source, provider factory, transport, and feature policy around
+  the unchanged `AIRuntime`.
+- Added `AIFeaturePolicy` with early disabled behavior that avoids credential
+  lookup, provider creation, and transport use while preserving structured AI
+  failure results.
+- Added metadata-only `AIExecutionMetadata` and documented application
+  ownership of secret storage, environment access, key rotation, and transport.
+- Added deterministic application runtime tests without a live provider,
+  network client, SDK, or new AI capability.
+
+## Epic-010 - Production Provider Operations MVP
+
+- Status: Completed
+- Added credential-free `ProviderRuntimePolicy` and transient,
+  metadata-only `AIRequestContext` contracts to the optional AI layer.
+- Added a backwards-compatible default `AIProvider.health_check()` and
+  policy-aware enhancement execution with disabled/unhealthy structured
+  fallback and opt-in additional retries.
+- Added a default-skipped `tests/live/` boundary controlled by
+  `RUN_LIVE_AI_TEST=true`; no live API call, credential loading, or new
+  provider was added.
+
+## Epic-009.6 - First Real Provider Integration
+
+- Status: Completed
+- Added an injected-transport `OpenAICompatibleProvider` that maps generic AI
+  requests to OpenAI-compatible Chat Completions payloads and parses responses.
+- Added the AI-layer `ResumeAIEnhancer` and `ResumeImprovementPrompt` to
+  optionally enhance `ResumeImprovementResult` without changing Skill Core.
+- Added deterministic tests for request mapping, response parsing, provider
+  error mapping, and the resume enhancement workflow; no live API calls run by
+  default.
+
+## Epic-009.5 - Provider Integration Readiness Review
+
+- Status: Completed
+- Added the Provider Integration Standard covering adapter responsibility,
+  credential ownership, SDK isolation, error mapping, tests, and first-provider
+  approval criteria.
+- Kept the Skill Core, Agent Layer, and all runtime contracts free of SDKs,
+  credentials, environment loading, and network calls.
+
+## Epic-009.4 - Credential & Runtime Boundary
+
+- Status: Completed
+- Added the abstract `CredentialProvider` and `ProviderFactory` boundaries for
+  externally supplied credentials and future adapter construction.
+- Added `AIRuntime` to assemble settings, credentials, factories, registry, and
+  `EnhancementService` without a real provider integration.
+- Added runtime tests for credential lookup, assembly, missing credentials, and
+  factory failures without SDKs, network access, environment loading, secrets,
+  or new dependencies.
+
+## Epic-009.3 - Provider Adapter Integration Readiness
+
+- Status: Completed
+- Added `BaseProviderAdapter`, `MockProviderAdapter`, and credential-free
+  `AIProviderSettings` for future adapter implementations.
+- Added stable unavailable, timeout, and response provider error contracts and
+  mapped them through `EnhancementService` to structured results.
+- Added adapter, settings, and error-conversion tests without an SDK, network
+  call, secret, environment loading, or new dependency.
+
+## Epic-009.2 - AI Provider Contract & Prompt Boundary
+
+- Status: Completed
+- Added the provider-neutral `AIProviderConfig` data boundary and an
+  externally managed `ProviderRegistry` for named provider instances.
+- Added the abstract `PromptTemplate` contract without production prompt text.
+- Extended `EnhancementService` to resolve a registered provider by name at
+  construction while preserving direct provider injection.
+- Added contract tests without introducing any provider SDK, network call,
+  credential handling, or new dependency.
+
+## Epic-009.1 - AI Enhancement Boundary MVP
+
+- Status: Completed
+- Added an optional, provider-neutral `skill.ai` boundary with an abstract
+  `AIProvider`, structured `AIEnhancementResult`, and injected
+  `EnhancementService`.
+- Kept the existing Skill Core, Agent runtime, backend, and frontend unchanged.
+- Added contract tests for provider subclasses, successful enhancements,
+  missing providers, provider exceptions, and public imports.
+- Added architecture documentation and a prompt-directory boundary note without
+  introducing an SDK, network call, credential, configuration system, or new
+  dependency.
+
+## Epic-008.5 - Post Release Validation
+
+- Status: Completed
+- Added a GitHub-facing Career Intelligence workflow output guide with a
+  fictional, structured JSON example.
+- Polished the README release entry point with release and test badges,
+  installation guidance, a minimal runnable workflow, and demo documentation.
+- Validated the public Skill install, workflow demo, unit tests, and Python
+  compilation after the v0.5.0 release.
+
 ## 0.5.0
 
 - Status: Release preparation complete
