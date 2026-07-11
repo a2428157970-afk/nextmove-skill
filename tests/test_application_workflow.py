@@ -27,6 +27,7 @@ PRIVATE_SKILL_ROOT_IMPORTS = {
     "improvement",
     "resume",
 }
+FORBIDDEN_APPLICATION_IMPORT_ROOTS = {"backend", "frontend", "fastapi"}
 
 
 def find_nonpublic_skill_imports(source_files: list[tuple[Path, str]]) -> list[str]:
@@ -57,6 +58,36 @@ def find_nonpublic_skill_imports(source_files: list[tuple[Path, str]]) -> list[s
                 )
                 is_skill_import = module == "skill" or module.startswith("skill.")
                 if is_skill_import and not is_public_skill_import:
+                    forbidden_imports.append(
+                        f"{source_file.as_posix()}:{node.lineno}: {line}"
+                    )
+
+    return forbidden_imports
+
+
+def find_forbidden_application_dependency_imports(
+    source_files: list[tuple[Path, str]],
+) -> list[str]:
+    forbidden_imports = []
+
+    for source_file, source in source_files:
+        source_lines = source.splitlines()
+        for node in ast.walk(ast.parse(source, filename=str(source_file))):
+            if isinstance(node, ast.Import):
+                imported_modules = [alias.name for alias in node.names]
+            elif isinstance(node, ast.ImportFrom) and node.module:
+                imported_modules = [node.module]
+            else:
+                continue
+
+            line = source_lines[node.lineno - 1].strip()
+            for module in imported_modules:
+                root = module.split(".", maxsplit=1)[0]
+                if (
+                    root in FORBIDDEN_APPLICATION_IMPORT_ROOTS
+                    or module == "skill.ai"
+                    or module.startswith("skill.ai.")
+                ):
                     forbidden_imports.append(
                         f"{source_file.as_posix()}:{node.lineno}: {line}"
                     )
@@ -186,6 +217,40 @@ class ApplicationWorkflowTests(unittest.TestCase):
         ]
 
         self.assertEqual(find_nonpublic_skill_imports(source_files), [])
+
+    def test_static_scan_rejects_forbidden_application_dependency_imports(self):
+        source_file = Path("application/example.py")
+        source = (
+            "import backend\n"
+            "from frontend.views import home\n"
+            "from fastapi import FastAPI\n"
+            "import skill.ai.client\n"
+            "from skill.ai.provider import Provider\n"
+        )
+
+        forbidden_imports = find_forbidden_application_dependency_imports(
+            [(source_file, source)]
+        )
+
+        self.assertEqual(
+            forbidden_imports,
+            [
+                "application/example.py:1: import backend",
+                "application/example.py:2: from frontend.views import home",
+                "application/example.py:3: from fastapi import FastAPI",
+                "application/example.py:4: import skill.ai.client",
+                "application/example.py:5: from skill.ai.provider import Provider",
+            ],
+        )
+
+    def test_application_dependency_direction_has_no_forbidden_imports(self):
+        application_root = Path(__file__).resolve().parents[1] / "application"
+        source_files = [
+            (source_file, source_file.read_text(encoding="utf-8"))
+            for source_file in application_root.rglob("*.py")
+        ]
+
+        self.assertEqual(find_forbidden_application_dependency_imports(source_files), [])
 
     def test_application_response_serializes_success_report(self):
         response = ApplicationResponse(

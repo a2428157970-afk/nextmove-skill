@@ -25,6 +25,22 @@ from skill.schemas import (
 UTC = timezone.utc
 STARTED_AT = datetime(2026, 7, 11, 10, 0, tzinfo=UTC)
 COMPLETED_AT = datetime(2026, 7, 11, 10, 5, tzinfo=UTC)
+EXECUTION_METADATA_FIELDS = {
+    "execution_id",
+    "workflow_name",
+    "status",
+    "started_at",
+    "completed_at",
+    "failed_step",
+}
+SENSITIVE_EXECUTION_FIELDS = {
+    "resume",
+    "job_description",
+    "prompt",
+    "credential",
+    "provider_response",
+    "trace",
+}
 
 
 class ExecutionMetadataTests(unittest.TestCase):
@@ -50,6 +66,8 @@ class ExecutionMetadataTests(unittest.TestCase):
             },
         )
         self.assertEqual(json.loads(json.dumps(payload)), payload)
+        self.assertEqual(set(payload), EXECUTION_METADATA_FIELDS)
+        self.assertFalse(SENSITIVE_EXECUTION_FIELDS & set(payload))
 
     def test_completed_metadata_serializes_completion_as_isoformat(self):
         metadata = ExecutionMetadata(
