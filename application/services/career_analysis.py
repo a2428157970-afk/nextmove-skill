@@ -1,10 +1,9 @@
 """Thin service entry point for end-to-end career analysis."""
 
-from typing import Any
-
-from application.schemas import ApplicationResponse
+from application.schemas import ApplicationResponse, CareerAnalysisRequest
 from application.workflows import CareerAnalysisWorkflow
 from skill import NextMoveSkill
+from skill.schemas import SkillError
 
 
 class CareerAnalysisService:
@@ -17,8 +16,21 @@ class CareerAnalysisService:
     ):
         self.workflow = workflow or CareerAnalysisWorkflow(skill or NextMoveSkill())
 
-    def analyze(
-        self, resume: Any, job_description: str | None = None
-    ) -> ApplicationResponse:
+    def analyze(self, request: CareerAnalysisRequest) -> ApplicationResponse:
         """Run career analysis through the configured workflow."""
-        return self.workflow.run(resume, job_description)
+        try:
+            request.validate()
+        except ValueError as error:
+            message = str(error)
+            return ApplicationResponse(
+                success=False,
+                error_code="APPLICATION_VALIDATION_ERROR",
+                failed_step="request_validation",
+                message=message,
+                error=SkillError(
+                    code="APPLICATION_VALIDATION_ERROR",
+                    message=message,
+                ),
+            )
+
+        return self.workflow.run(request.resume, request.normalized_job_description())

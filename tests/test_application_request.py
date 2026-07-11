@@ -47,10 +47,12 @@ class CareerAnalysisRequestTests(unittest.TestCase):
         ):
             request.validate()
 
-    def test_normalizes_only_none_job_description_to_empty_string(self):
+    def test_normalizes_none_job_description_to_empty_string(self):
         self.assertEqual(
             CareerAnalysisRequest(resume="resume").normalized_job_description(), ""
         )
+
+    def test_preserves_string_job_description_during_normalization(self):
         self.assertEqual(
             CareerAnalysisRequest(resume="resume", job_description="  ").normalized_job_description(),
             "  ",

@@ -39,7 +39,16 @@ class ApplicationResponse:
 
     def to_dict(self) -> dict[str, object]:
         """Return a JSON-serializable representation of this response."""
-        return to_dict(self)
+        if self.success:
+            return {"success": True, "result": to_dict(self.result)}
+
+        return {
+            "success": False,
+            "error_code": self.error_code,
+            "failed_step": self.failed_step,
+            "message": self.message,
+            "error": to_dict(self.error),
+        }
 
 
 __all__ = ["ApplicationResponse", "CareerAnalysisReport"]
