@@ -2,17 +2,18 @@
 
 ## Status
 
-The released v0.7.0 baseline now includes completed Epic-020.1 and Epic-020.2.
-The Application Layer validates `CareerAnalysisRequest` before delegation,
-normalizes an omitted job description to an empty string, and preserves the
-fixed four-step Skill workflow and one-way dependency boundary.
+The released v0.7.0 baseline now includes completed Epic-020.1, Epic-020.2,
+and Epic-020.3. The Application Layer validates `CareerAnalysisRequest` before
+delegation, normalizes an omitted job description to an empty string, preserves
+the fixed four-step Skill workflow and one-way dependency boundary, and owns
+immutable UTC ISO-8601 metadata for valid workflow success and failure results.
 
 ## Recommended Next Step
 
-Epic-020.3: define the next Application Layer contract concern only after
-scope approval. Keep it transport-neutral; do not add an HTTP endpoint,
-frontend integration, authentication, persistence, provider behavior, or new
-dependencies.
+Define only the next scoped Application Layer contract concern after scope
+approval. Keep it transport-neutral; do not add an HTTP endpoint, frontend
+integration, authentication, persistence, provider behavior, or new
+dependencies. Do not start implementation until instructed.
 
 ## Notes
 

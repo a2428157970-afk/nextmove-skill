@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## Epic-020.3 - Application Execution Metadata Contract
+
+- Status: Completed
+- Added application-owned immutable UTC ISO-8601 execution metadata for valid
+  workflow success and failure results.
+- Preserved the established application response contract and failure-step
+  information without adding transport, provider, or dependency concerns.
+
 ## Epic-020.2 - Application Request Boundary Validation
 
 - Status: Completed

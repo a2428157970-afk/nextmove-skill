@@ -9,17 +9,17 @@ NextMove is an AI Career Intelligence Platform and AI Career Intelligence Skill 
 Slogan: Know Your Value. Find Your Next Career Move.
 
 ## Current Stage
-Epic-020.2 Application Request Boundary Validation completed on the released v0.7.0
-baseline. The deterministic Skill Core, optional AI boundary, and a
+Epic-020.3 Application Execution Metadata Contract completed on the released
+v0.7.0 baseline. The deterministic Skill Core, optional AI boundary, and a
 transport-neutral application workflow remain independently owned.
 
 ## Current Sprint
-Application Request Boundary Validation completed.
+Application Execution Metadata Contract completed.
 
 ## Current Goal
-Prepare the next bounded, transport-neutral Application Layer contract Epic
-without changing the Skill Core or adding a transport, frontend, provider,
-persistence, or dependency.
+Await scope approval for the next bounded, transport-neutral Application Layer
+contract concern without changing the Skill Core or adding a transport,
+frontend, provider, persistence, or dependency.
 
 ## Tech Stack
 - Frontend: Next.js
@@ -36,4 +36,4 @@ persistence, or dependency.
 - No resume submission automation
 
 ## Next Task
-Epic-020.3: Application Layer Contract Evolution (scope to be approved).
+Next scoped Application Layer contract concern (scope approval required).
