@@ -1,3 +1,4 @@
+import ast
 import json
 import unittest
 from pathlib import Path
@@ -15,6 +16,36 @@ from skill.schemas import (
     SkillError,
     SkillResponse,
 )
+
+
+PUBLIC_SKILL_IMPORT_MODULES = ("skill", "skill.schemas", "skill.utils")
+
+
+def find_nonpublic_skill_imports(source_files: list[tuple[Path, str]]) -> list[str]:
+    forbidden_imports = []
+
+    for source_file, source in source_files:
+        source_lines = source.splitlines()
+        for node in ast.walk(ast.parse(source, filename=str(source_file))):
+            if isinstance(node, ast.Import):
+                imported_modules = [alias.name for alias in node.names]
+            elif isinstance(node, ast.ImportFrom) and node.module:
+                imported_modules = [node.module]
+            else:
+                continue
+
+            for module in imported_modules:
+                is_public_skill_import = module in PUBLIC_SKILL_IMPORT_MODULES or module.startswith(
+                    ("skill.schemas.", "skill.utils.")
+                )
+                is_skill_import = module == "skill" or module.startswith("skill.")
+                if is_skill_import and not is_public_skill_import:
+                    line = source_lines[node.lineno - 1].strip()
+                    forbidden_imports.append(
+                        f"{source_file.as_posix()}:{node.lineno}: {line}"
+                    )
+
+    return forbidden_imports
 
 
 class ApplicationWorkflowTests(unittest.TestCase):
@@ -89,6 +120,26 @@ class ApplicationWorkflowTests(unittest.TestCase):
                     forbidden_imports.append(f"{source_file}:{line_number}: {stripped}")
 
         self.assertEqual(forbidden_imports, [])
+
+    def test_static_scan_rejects_direct_skill_implementation_imports(self):
+        source_file = Path("application/example.py")
+        source = "from skill.analysis import ResumeAnalyzer\n"
+
+        forbidden_imports = find_nonpublic_skill_imports([(source_file, source)])
+
+        self.assertEqual(
+            forbidden_imports,
+            ["application/example.py:1: from skill.analysis import ResumeAnalyzer"],
+        )
+
+    def test_application_imports_only_public_skill_interfaces(self):
+        application_root = Path(__file__).resolve().parents[1] / "application"
+        source_files = [
+            (source_file, source_file.read_text(encoding="utf-8"))
+            for source_file in application_root.rglob("*.py")
+        ]
+
+        self.assertEqual(find_nonpublic_skill_imports(source_files), [])
 
     def test_application_response_serializes_success_report(self):
         response = ApplicationResponse(
