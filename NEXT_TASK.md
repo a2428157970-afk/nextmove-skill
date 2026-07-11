@@ -2,17 +2,17 @@
 
 ## Status
 
-The released v0.7.0 baseline now includes the completed Epic-020.1 Product
-Application Layer Boundary. A standalone application service orchestrates the
-four public Skill capabilities into a structured, fail-fast career-analysis
-response while preserving the Skill Core boundary.
+The released v0.7.0 baseline now includes completed Epic-020.1 and Epic-020.2.
+The Application Layer validates `CareerAnalysisRequest` before delegation,
+normalizes an omitted job description to an empty string, and preserves the
+fixed four-step Skill workflow and one-way dependency boundary.
 
 ## Recommended Next Step
 
-Epic-020.2: Application Request Boundary Validation. Keep this Epic bounded to
-application-owned request validation and stable response-contract tests for
-`CareerAnalysisService`; do not add an HTTP endpoint, frontend integration,
-authentication, persistence, provider behavior, or new dependencies.
+Epic-020.3: define the next Application Layer contract concern only after
+scope approval. Keep it transport-neutral; do not add an HTTP endpoint,
+frontend integration, authentication, persistence, provider behavior, or new
+dependencies.
 
 ## Notes
 
