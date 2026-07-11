@@ -1,0 +1,9 @@
+{
+  "case_id": "no-fabricated-metrics",
+  "improvement_result": {"issues": ["Achievement wording lacks evidence."], "suggestions": ["Use accurate responsibility statements instead of invented metrics."], "improved_sections": {"experience": ["Keep claims grounded in supplied facts."]}},
+  "original_facts": ["Updated knowledge base articles for support requests."],
+  "prohibited_content": ["improved satisfaction by 90%", "resolved 10,000 tickets"],
+  "expected_directions": ["accurate responsibility"],
+  "keywords": ["facts"],
+  "output_length": {"min": 30, "max": 320}
+}

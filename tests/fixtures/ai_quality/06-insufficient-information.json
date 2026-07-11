@@ -1,0 +1,9 @@
+{
+  "case_id": "insufficient-information",
+  "improvement_result": {"issues": ["Employment details are incomplete."], "suggestions": ["Add only verifiable responsibilities and dates."], "improved_sections": {"experience": ["Request missing facts before adding detail."]}},
+  "original_facts": ["Listed a retail assistant role without dates."],
+  "prohibited_content": ["worked there for five years", "trained 100 staff"],
+  "expected_directions": ["verifiable responsibilities"],
+  "keywords": ["dates"],
+  "output_length": {"min": 30, "max": 320}
+}

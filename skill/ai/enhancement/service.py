@@ -70,6 +70,9 @@ class EnhancementService:
             except Exception:
                 error = "AI provider unavailable"
             else:
+                if not isinstance(enhanced_content, str) or not enhanced_content.strip():
+                    error = "AI provider response error"
+                    continue
                 return AIEnhancementResult(
                     success=True,
                     enhanced_content=enhanced_content,

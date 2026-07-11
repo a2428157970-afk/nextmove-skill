@@ -1,0 +1,9 @@
+{
+  "case_id": "quantified-results",
+  "improvement_result": {"issues": ["Existing metric needs context."], "suggestions": ["Keep the stated metric and explain its scope."], "improved_sections": {"experience": ["Preserve the verified result."]}},
+  "original_facts": ["Reduced weekly report preparation from 6 hours to 3 hours."],
+  "prohibited_content": ["reduced preparation to zero", "generated $1M"],
+  "expected_directions": ["stated metric"],
+  "keywords": ["scope"],
+  "output_length": {"min": 30, "max": 320}
+}

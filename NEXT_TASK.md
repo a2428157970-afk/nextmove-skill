@@ -2,16 +2,15 @@
 
 ## Status
 
-Epic-013 v0.6.0 Release Preparation is complete. NextMove is ready as a
-v0.6.0 Release Candidate after deterministic AI enhancement and application
-runtime validation.
+Epic-014 AI Enhancement Quality Validation is complete on the released v0.6.0
+baseline. The repository now has deterministic offline quality gates and
+content-safe optional live observation.
 
 ## Recommended Next Step
 
-Plan Epic-014: AI Enhancement Quality Validation. Define fixed evaluation
-samples, compare rule-based and AI-enhanced output, measure output quality,
-regress provider failure behavior, record cost and latency, and validate
-different OpenAI-compatible endpoints.
+Plan Epic-015: AI Enhancement Prompt & Output Contract Refinement. Refine the
+existing prompt and output contract using the offline safety gates, without
+adding providers or expanding the runtime architecture.
 
 ## Notes
 

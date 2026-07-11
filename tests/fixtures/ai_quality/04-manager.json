@@ -1,0 +1,9 @@
+{
+  "case_id": "manager",
+  "improvement_result": {"issues": ["Leadership scope needs evidence."], "suggestions": ["Describe management responsibilities accurately."], "improved_sections": {"experience": ["State team support and decision scope factually."]}},
+  "original_facts": ["Mentored two new team members."],
+  "prohibited_content": ["led a team of 50", "delivered $5M revenue"],
+  "expected_directions": ["management responsibilities"],
+  "keywords": ["leadership"],
+  "output_length": {"min": 30, "max": 320}
+}

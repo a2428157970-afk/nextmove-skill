@@ -145,6 +145,28 @@ deterministic `MockProviderAdapter` and emits serializable JSON:
 python examples/ai_enhancement_demo.py
 ```
 
+Run the deterministic, offline quality contract evaluation:
+
+```bash
+python scripts/run_ai_quality_evaluation.py
+```
+
+It checks synthetic samples for fact preservation, actionable directions,
+fabrication, sensitive-content leakage, serialization, and Core immutability.
+See [AI quality validation](docs/ai-quality-validation.md) for scope and
+limitations.
+
+Run the deterministic, offline quality contract evaluation:
+
+```bash
+python scripts/run_ai_quality_evaluation.py
+```
+
+It checks synthetic samples for fact preservation, actionable directions,
+fabrication, sensitive-content leakage, serialization, and Core immutability.
+See [AI quality validation](docs/ai-quality-validation.md) for scope and
+limitations.
+
 ## 9. Examples
 
 - [Full career analysis](examples/full_career_analysis.py): analyze, improve,
@@ -165,6 +187,6 @@ workflow and architecture constraints.
 
 ## 11. Release
 
-NextMove Skill v0.6.0 is the current release candidate. Follow the
+NextMove Skill v0.6.0 is the current release. Follow the
 [release checklist](docs/release.md) to validate an install, import, demo, and
 test run from a fresh clone.

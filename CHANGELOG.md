@@ -1,5 +1,14 @@
 # NextMove Changelog
 
+## Epic-014 - AI Enhancement Quality Validation
+
+- Added eight fully synthetic offline quality fixtures, deterministic quality
+  checks, a content-safe JSON/Markdown runner, and an opt-in live observation
+  boundary.
+- Added Core-versus-AI immutability and provider failure regression coverage.
+- Empty provider content now maps to the existing structured response-error
+  result rather than a successful empty enhancement.
+
 ## 0.6.0
 
 ### Added

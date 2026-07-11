@@ -9,15 +9,15 @@ NextMove is an AI Career Intelligence Platform and AI Career Intelligence Skill 
 Slogan: Know Your Value. Find Your Next Career Move.
 
 ## Current Stage
-v0.6.0 Release Candidate. Epic-013 consolidates the optional AI Enhancement
-and Application Runtime work while retaining the deterministic Skill Core.
+Epic-014 AI Enhancement Quality Validation completed on the v0.6.0 release
+baseline. The deterministic Skill Core and optional AI boundary remain intact.
 
 ## Current Sprint
-Release preparation and acceptance validation for v0.6.0.
+Offline-first AI enhancement quality validation.
 
 ## Current Goal
-Publish the validated optional AI enhancement boundary without expanding the
-runtime architecture or changing the Skill Core.
+Validate AI enhancement safety, regression behavior, and Core immutability
+without expanding the runtime architecture or changing the Skill Core.
 
 ## Tech Stack
 - Frontend: Next.js
@@ -34,4 +34,4 @@ runtime architecture or changing the Skill Core.
 - No resume submission automation
 
 ## Next Task
-Epic-014: AI Enhancement Quality Validation.
+Epic-015: AI Enhancement Prompt & Output Contract Refinement.

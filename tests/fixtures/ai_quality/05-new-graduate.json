@@ -1,0 +1,9 @@
+{
+  "case_id": "new-graduate",
+  "improvement_result": {"issues": ["Project evidence is limited."], "suggestions": ["Add relevant coursework or project details."], "improved_sections": {"projects": ["Explain the problem and contribution."]}},
+  "original_facts": ["Completed a class project using SQL."],
+  "prohibited_content": ["worked at a Fortune 500 company", "saved 200 hours"],
+  "expected_directions": ["project details"],
+  "keywords": ["SQL"],
+  "output_length": {"min": 30, "max": 320}
+}

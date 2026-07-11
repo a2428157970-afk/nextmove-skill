@@ -1,0 +1,9 @@
+{
+  "case_id": "career-switcher",
+  "improvement_result": {"issues": ["Transferable skills need clearer framing."], "suggestions": ["Connect prior support work to target analyst tasks."], "improved_sections": {"summary": ["State the career transition and transferable strengths."]}},
+  "original_facts": ["Supported weekly customer reporting."],
+  "prohibited_content": ["managed a data team", "increased conversion by 40%"],
+  "expected_directions": ["transferable strengths"],
+  "keywords": ["analyst"],
+  "output_length": {"min": 30, "max": 320}
+}

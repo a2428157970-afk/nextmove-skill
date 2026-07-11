@@ -1,0 +1,9 @@
+{
+  "case_id": "product-operations",
+  "improvement_result": {"issues": ["Cross-functional scope is unclear."], "suggestions": ["Describe collaborators and operating cadence."], "improved_sections": {"experience": ["Make product operations responsibilities concrete."]}},
+  "original_facts": ["Coordinated a monthly release checklist."],
+  "prohibited_content": ["owned company strategy", "doubled retention"],
+  "expected_directions": ["collaborators"],
+  "keywords": ["operations"],
+  "output_length": {"min": 30, "max": 320}
+}

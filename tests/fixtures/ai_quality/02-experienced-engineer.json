@@ -1,0 +1,9 @@
+{
+  "case_id": "experienced-engineer",
+  "improvement_result": {"issues": ["Outcomes are not quantified."], "suggestions": ["Add measurable outcomes where truthful."], "improved_sections": {"experience": ["Clarify scale and impact without inventing metrics."]}},
+  "original_facts": ["Maintained Python services for internal users."],
+  "prohibited_content": ["served 10 million users", "reduced costs by 80%"],
+  "expected_directions": ["measurable outcomes"],
+  "keywords": ["Python"],
+  "output_length": {"min": 30, "max": 320}
+}
