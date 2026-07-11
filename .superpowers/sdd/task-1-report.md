@@ -78,3 +78,35 @@ The three skipped tests require explicit live-AI enablement.
 - `to_dict()` emits exactly the required six fields and converts timestamps with `isoformat()`.
 - `git diff --check` produced no whitespace errors. Git noted the repository's existing line-ending conversion behavior for `application/schemas/__init__.py`.
 - No concerns within the assigned scope.
+
+## Review follow-up: `completed_at` UTC coverage
+
+The review identified that the initial tests exercised naive and non-UTC timestamps only through `started_at`. Added test-first coverage for `completed_at` with a valid UTC `started_at` for both `completed` and `failed` lifecycles:
+
+- Naive `completed_at` is rejected.
+- Non-UTC `completed_at` is rejected.
+- The class directly proves its frozen, slot-based contract.
+
+No production validation change was required. The focused test command passed immediately after adding these tests, confirming that the existing `__post_init__` path already validates a non-`None` `completed_at` with the same aware-UTC rule used for `started_at`.
+
+Focused command and result:
+
+```powershell
+python -m unittest tests.test_application_execution -v
+```
+
+```text
+Ran 13 tests in 0.002s
+OK
+```
+
+Full regression command and result:
+
+```powershell
+python -m unittest discover -s tests -v
+```
+
+```text
+Ran 148 tests in 1.258s
+OK (skipped=3)
+```

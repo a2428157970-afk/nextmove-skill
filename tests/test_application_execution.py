@@ -1,6 +1,7 @@
 """Tests for application execution metadata."""
 
 import json
+from dataclasses import FrozenInstanceError
 from datetime import datetime, timedelta, timezone
 import unittest
 
@@ -82,6 +83,61 @@ class ExecutionMetadataTests(unittest.TestCase):
                 "started",
                 datetime(2026, 7, 11, 18, 0, tzinfo=timezone(timedelta(hours=8))),
             )
+
+    def test_rejects_naive_completed_at_for_completed_and_failed_lifecycles(self):
+        for status, failed_step in (("completed", None), ("failed", "job_match")):
+            with self.subTest(status=status):
+                with self.assertRaises(ValueError):
+                    ExecutionMetadata(
+                        "execution-123",
+                        "career-analysis",
+                        status,
+                        STARTED_AT,
+                        completed_at=datetime(2026, 7, 11, 10, 5),
+                        failed_step=failed_step,
+                    )
+
+    def test_rejects_non_utc_completed_at_for_completed_and_failed_lifecycles(
+        self,
+    ):
+        non_utc_completion = datetime(
+            2026,
+            7,
+            11,
+            18,
+            5,
+            tzinfo=timezone(timedelta(hours=8)),
+        )
+        for status, failed_step in (("completed", None), ("failed", "job_match")):
+            with self.subTest(status=status):
+                with self.assertRaises(ValueError):
+                    ExecutionMetadata(
+                        "execution-123",
+                        "career-analysis",
+                        status,
+                        STARTED_AT,
+                        completed_at=non_utc_completion,
+                        failed_step=failed_step,
+                    )
+
+    def test_metadata_is_frozen_and_slot_based(self):
+        metadata = ExecutionMetadata(
+            "execution-123", "career-analysis", "started", STARTED_AT
+        )
+
+        self.assertEqual(
+            set(ExecutionMetadata.__slots__),
+            {
+                "execution_id",
+                "workflow_name",
+                "status",
+                "started_at",
+                "completed_at",
+                "failed_step",
+            },
+        )
+        with self.assertRaises(FrozenInstanceError):
+            metadata.status = "completed"
 
     def test_started_rejects_completion_or_failed_step(self):
         with self.assertRaises(ValueError):
