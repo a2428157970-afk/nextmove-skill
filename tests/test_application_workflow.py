@@ -66,7 +66,7 @@ def find_nonpublic_skill_imports(source_files: list[tuple[Path, str]]) -> list[s
 
 class ApplicationWorkflowTests(unittest.TestCase):
     def test_service_delegates_valid_request_to_workflow(self):
-        expected_response = Mock(spec=ApplicationResponse)
+        expected_response = ApplicationResponse(success=True)
         workflow = Mock()
         workflow.run.return_value = expected_response
 
@@ -75,10 +75,11 @@ class ApplicationWorkflowTests(unittest.TestCase):
         )
 
         workflow.run.assert_called_once_with("resume", "job")
-        self.assertIs(response, expected_response)
+        self.assertTrue(response.success)
+        self.assertIsNone(response.result)
 
     def test_service_normalizes_missing_job_description_before_workflow(self):
-        expected_response = Mock(spec=ApplicationResponse)
+        expected_response = ApplicationResponse(success=True)
         workflow = Mock()
         workflow.run.return_value = expected_response
 
@@ -87,7 +88,8 @@ class ApplicationWorkflowTests(unittest.TestCase):
         )
 
         workflow.run.assert_called_once_with("resume", "")
-        self.assertIs(response, expected_response)
+        self.assertTrue(response.success)
+        self.assertIsNone(response.result)
 
     def test_service_returns_validation_error_without_calling_workflow(self):
         workflow = Mock()
@@ -104,7 +106,7 @@ class ApplicationWorkflowTests(unittest.TestCase):
         self.assertEqual(response.error.code, "APPLICATION_VALIDATION_ERROR")
         self.assertEqual(response.error.message, "resume must not be empty")
 
-    def test_service_passes_workflow_failure_response_through_unchanged(self):
+    def test_service_preserves_workflow_failure_response_fields(self):
         expected_response = ApplicationResponse(
             success=False,
             error_code="WORKFLOW_STEP_FAILED",
@@ -119,7 +121,12 @@ class ApplicationWorkflowTests(unittest.TestCase):
             CareerAnalysisRequest(resume="resume", job_description="job")
         )
 
-        self.assertIs(response, expected_response)
+        self.assertFalse(response.success)
+        self.assertEqual(response.error_code, expected_response.error_code)
+        self.assertEqual(response.failed_step, expected_response.failed_step)
+        self.assertEqual(response.message, expected_response.message)
+        self.assertIs(response.error, expected_response.error)
+        self.assertIsNone(response.result)
 
     def test_skill_does_not_import_application_layer(self):
         skill_root = Path(__file__).resolve().parents[1] / "skill"

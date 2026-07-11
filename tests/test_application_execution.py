@@ -4,8 +4,22 @@ import json
 from dataclasses import FrozenInstanceError
 from datetime import datetime, timedelta, timezone
 import unittest
+from unittest.mock import Mock
 
-from application.schemas import ExecutionMetadata
+from application.schemas import (
+    ApplicationResponse,
+    CareerAnalysisRequest,
+    ExecutionMetadata,
+)
+from application.schemas.career import CareerAnalysisReport
+from application.services import CareerAnalysisService
+from skill.schemas import (
+    CareerAdviceResult,
+    JobMatchResult,
+    ResumeAnalysisResult,
+    ResumeImprovementResult,
+    SkillError,
+)
 
 
 UTC = timezone.utc
@@ -191,6 +205,68 @@ class ExecutionMetadataTests(unittest.TestCase):
                 STARTED_AT,
                 completed_at=datetime(2026, 7, 11, 9, 59, tzinfo=UTC),
             )
+
+
+class CareerAnalysisServiceExecutionMetadataTests(unittest.TestCase):
+    def test_successful_execution_returns_completed_utc_metadata(self):
+        workflow = Mock()
+        expected_result = CareerAnalysisReport(
+            resume_analysis=ResumeAnalysisResult(),
+            improvement=ResumeImprovementResult(),
+            job_match=JobMatchResult(),
+            career_advice=CareerAdviceResult(),
+        )
+        workflow.run.return_value = ApplicationResponse(
+            success=True,
+            result=expected_result,
+        )
+
+        response = CareerAnalysisService(workflow=workflow).analyze(
+            CareerAnalysisRequest(resume="resume", job_description="job")
+        )
+
+        workflow.run.assert_called_once_with("resume", "job")
+        self.assertTrue(response.success)
+        self.assertIs(response.result, expected_result)
+        self.assertIsNotNone(response.metadata)
+        self.assertTrue(response.metadata.execution_id)
+        self.assertEqual(response.metadata.workflow_name, "career_analysis")
+        self.assertEqual(response.metadata.status, "completed")
+        self.assertIs(response.metadata.started_at.tzinfo, timezone.utc)
+        self.assertIs(response.metadata.completed_at.tzinfo, timezone.utc)
+        self.assertGreaterEqual(response.metadata.completed_at, response.metadata.started_at)
+        self.assertIsNone(response.metadata.failed_step)
+        self.assertEqual(json.loads(json.dumps(response.to_dict())), response.to_dict())
+
+    def test_failed_execution_preserves_workflow_failed_step_in_metadata(self):
+        workflow = Mock()
+        workflow.run.return_value = ApplicationResponse(
+            success=False,
+            error_code="WORKFLOW_STEP_FAILED",
+            failed_step="match_job",
+            message="career analysis workflow failed",
+            error=SkillError(code="INVALID_INPUT", message="bad job"),
+        )
+
+        response = CareerAnalysisService(workflow=workflow).analyze(
+            CareerAnalysisRequest(resume="resume", job_description="job")
+        )
+
+        self.assertFalse(response.success)
+        self.assertEqual(response.failed_step, "match_job")
+        self.assertEqual(response.metadata.status, "failed")
+        self.assertEqual(response.metadata.failed_step, "match_job")
+
+    def test_validation_failure_returns_no_metadata_and_does_not_run_workflow(self):
+        workflow = Mock()
+
+        response = CareerAnalysisService(workflow=workflow).analyze(
+            CareerAnalysisRequest(resume=" \t")
+        )
+
+        workflow.run.assert_not_called()
+        self.assertFalse(response.success)
+        self.assertIsNone(response.metadata)
 
 
 if __name__ == "__main__":
