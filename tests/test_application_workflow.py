@@ -1,8 +1,10 @@
 import json
 import unittest
+from pathlib import Path
 from unittest.mock import Mock
 
 from application.schemas.career import ApplicationResponse, CareerAnalysisReport
+from application.services.career_analysis import CareerAnalysisService
 from application.workflows.career_analysis import CareerAnalysisWorkflow
 from skill.schemas import (
     CareerAdviceResult,
@@ -15,6 +17,32 @@ from skill.schemas import (
 
 
 class ApplicationWorkflowTests(unittest.TestCase):
+    def test_service_delegates_to_workflow(self):
+        expected_response = Mock(spec=ApplicationResponse)
+        workflow = Mock()
+        workflow.run.return_value = expected_response
+
+        response = CareerAnalysisService(workflow=workflow).analyze("resume", "job")
+
+        workflow.run.assert_called_once_with("resume", "job")
+        self.assertIs(response, expected_response)
+
+    def test_skill_does_not_import_application_layer(self):
+        skill_root = Path(__file__).resolve().parents[1] / "skill"
+        forbidden_imports = []
+
+        for source_file in skill_root.rglob("*.py"):
+            for line_number, line in enumerate(
+                source_file.read_text(encoding="utf-8").splitlines(), start=1
+            ):
+                stripped = line.strip()
+                if stripped.startswith("from application") or stripped.startswith(
+                    "import application"
+                ):
+                    forbidden_imports.append(f"{source_file}:{line_number}: {stripped}")
+
+        self.assertEqual(forbidden_imports, [])
+
     def test_application_response_serializes_success_report(self):
         response = ApplicationResponse(
             success=True,
