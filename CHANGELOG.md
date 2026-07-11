@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## Epic-020.2 - Application Request Boundary Validation
+
+- Status: Completed
+- Added `CareerAnalysisRequest` validation for string and `ResumeProfile` inputs,
+  optional job-description normalization, and fail-fast application validation.
+- Stabilized success and failure JSON response contracts and strengthened both
+  directions of the Application/Skill dependency boundary tests.
+
 ## Epic-020.1 - Product Application Layer Boundary
 
 - Status: Completed
