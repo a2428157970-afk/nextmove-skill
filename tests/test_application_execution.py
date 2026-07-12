@@ -5,6 +5,7 @@ from dataclasses import FrozenInstanceError
 from datetime import datetime, timedelta, timezone
 import unittest
 from unittest.mock import Mock
+from uuid import UUID
 
 from application.schemas import (
     ApplicationResponse,
@@ -248,6 +249,7 @@ class CareerAnalysisServiceExecutionMetadataTests(unittest.TestCase):
         self.assertIs(response.result, expected_result)
         self.assertIsNotNone(response.metadata)
         self.assertTrue(response.metadata.execution_id)
+        self.assertEqual(UUID(response.metadata.execution_id).version, 4)
         self.assertEqual(response.metadata.workflow_name, "career_analysis")
         self.assertEqual(response.metadata.status, "completed")
         self.assertIs(response.metadata.started_at.tzinfo, timezone.utc)
@@ -255,6 +257,22 @@ class CareerAnalysisServiceExecutionMetadataTests(unittest.TestCase):
         self.assertGreaterEqual(response.metadata.completed_at, response.metadata.started_at)
         self.assertIsNone(response.metadata.failed_step)
         self.assertEqual(json.loads(json.dumps(response.to_dict())), response.to_dict())
+
+    def test_separate_successful_executions_use_distinct_uuid4_ids(self):
+        workflow = Mock()
+        workflow.run.return_value = ApplicationResponse(success=True)
+        service = CareerAnalysisService(workflow=workflow)
+        request = CareerAnalysisRequest(resume="resume", job_description="job")
+
+        first_response = service.analyze(request)
+        second_response = service.analyze(request)
+
+        self.assertEqual(UUID(first_response.metadata.execution_id).version, 4)
+        self.assertEqual(UUID(second_response.metadata.execution_id).version, 4)
+        self.assertNotEqual(
+            first_response.metadata.execution_id,
+            second_response.metadata.execution_id,
+        )
 
     def test_failed_execution_preserves_workflow_failed_step_in_metadata(self):
         workflow = Mock()
