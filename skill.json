@@ -1,6 +1,7 @@
 {
   "name": "NextMove",
   "version": "0.8.0",
+  "entrypoint": "skill.__main__:main",
   "description": "Installable Career Intelligence Skill for structured resume analysis, improvement, job matching, career advice, and complete career analysis.",
   "capabilities": [
     "analyze_resume",
@@ -9,6 +10,13 @@
     "career_advice",
     "career_analysis"
   ],
+  "capability_descriptions": {
+    "analyze_resume": "Analyze resume strengths, weaknesses, skills, and career level.",
+    "improve_resume": "Generate resume issues, suggestions, and section improvements.",
+    "match_job": "Compare a resume with a job description and identify fit and gaps.",
+    "career_advice": "Generate career paths, skill gaps, and recommended next actions.",
+    "career_analysis": "Run all four capabilities in fixed order and return one structured report."
+  },
   "input_schema": {
     "type": "object",
     "required": ["resume", "job_description"],

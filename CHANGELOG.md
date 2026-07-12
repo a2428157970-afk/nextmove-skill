@@ -4,6 +4,18 @@
 
 ## 0.8.0 - Skill Developer Preview
 
+## Epic-022 - Skill Operational Readiness
+
+- Status: Completed
+- Added the offline `python -m skill` and installed `nextmove analyze` CLI
+  entrypoints for `career_analysis`.
+- Added Agent discovery-to-invocation acceptance coverage for manifest fields,
+  CLI normalization, JSON success and failure responses, and serialization.
+- Unified capability descriptions across runtime metadata and `skill.json`,
+  expanded Agent instructions, and added the v0.8.0 release note.
+- Preserved the required Python/Agent `job_description` contract and all
+  Skill-to-Application dependency boundaries.
+
 ## Epic-021 - Skill Productization
 
 - Status: Completed

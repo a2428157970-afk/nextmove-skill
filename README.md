@@ -47,6 +47,21 @@ and Agent usage instructions are defined in [SKILL.md](SKILL.md).
 
 ## 4. Quick Start
 
+Run the installed offline CLI:
+
+```bash
+nextmove analyze --resume resume.txt --job-description "Backend role requiring Python and SQL."
+```
+
+The equivalent module entrypoint is:
+
+```bash
+python -m skill analyze --resume resume.txt
+```
+
+The CLI requires a UTF-8 text resume. Its job description is optional and is
+normalized to an empty string before calling the unchanged public Skill API.
+
 Run the offline Skill product demo:
 
 ```bash
@@ -197,3 +212,6 @@ workflow and architecture constraints.
 NextMove Skill v0.8.0 is the current Skill Developer Preview. Follow the
 [release checklist](docs/release.md) to validate an install, import, demo, and
 test run from a fresh clone.
+
+See the [v0.8.0 release note](docs/release/v0.8.0.md) for operational usage,
+validation, and known limitations.

@@ -2,16 +2,15 @@
 
 ## Status
 
-Epic-021 is complete on top of the preserved v0.7.0 release history. NextMove
-v0.8.0 is now an installable Skill Developer Preview with a public
-`career_analysis` capability, `CareerAnalysisReport`, `skill.json`, Agent-facing
-`SKILL.md`, and an offline JSON demo.
+Epic-022 is complete on top of the preserved v0.7.0 release history. NextMove
+v0.8.0 now supports Agent discovery, editable installation, Python and Agent
+invocation, and the offline `nextmove analyze` / `python -m skill` CLI.
 
 ## Recommended Next Step
 
-Run bounded interoperability pilots with ChatGPT Agent, Claude Agent, Cursor,
-and Codex. Validate installation, capability discovery, input construction,
-and JSON report consumption before expanding product scope.
+Run final external interoperability checks with ChatGPT Agent, Claude Agent,
+Cursor, and Codex, then create the v0.8.0 release tag after confirming the
+documented acceptance commands in a clean environment.
 
 ## Notes
 
