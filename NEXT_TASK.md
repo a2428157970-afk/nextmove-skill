@@ -2,21 +2,24 @@
 
 ## Status
 
-Epic-023 is complete. NextMove v0.8.0 is Developer Preview Ready with aligned
-release documentation, explicit Skill and CLI entrypoints, preserved legacy
-manifest compatibility, and an evidence-based Agent compatibility record.
+Epic-024.2 is complete. The Agent-first Pilot Kit now provides a five-minute
+Quick Start, fictional inputs, copyable prompts, a report-reading guide, and
+dual privacy-safe feedback channels without changing Skill or CLI behavior.
 
 ## Recommended Next Step
 
-Review the final validation evidence and commit, confirm it has been pushed to
-the intended release repository, and create the v0.8.0 tag only after explicit
-human approval. Do not block the Developer Preview on unperformed ChatGPT
-Agent, Claude, or Cursor invocation; keep those entries pending and validate
-them from real post-release use.
+Invite 5-10 non-technical job seekers to use NextMove through an Agent. Collect
+only the anonymous fields allowed by `docs/pilot-guidelines.md`, then review the
+first-use completion, report understanding, recommendation actionability,
+severe factual-error, and feedback-completion signals.
 
 ## Notes
 
 - Do not continue expanding the Application Layer until instructed.
+- Keep the v0.8.0 tag, push, and GitHub Release flow paused until explicitly
+  resumed.
+- Do not add telemetry or retain resume, job-description, identity, contact,
+  employer, credential, or raw Agent-conversation content during the Pilot.
 - Do not implement `--job-description-file` before post-release feedback and a
   separate CLI input/error contract design.
 - Keep `entrypoint` and `cli_entrypoint` mapped to `skill.__main__:main`; keep

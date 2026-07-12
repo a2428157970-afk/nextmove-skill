@@ -9,16 +9,16 @@ NextMove is an AI Career Intelligence Platform and AI Career Intelligence Skill 
 Slogan: Know Your Value. Find Your Next Career Move.
 
 ## Current Stage
-Epic-023 v0.8.0 Release Finalization completed. The v0.8.0 codebase is
-Developer Preview Ready; tag creation and public release remain explicit human
-approval gates.
+Epic-024.2 Agent-first Pilot Kit implemented. NextMove now has a five-minute
+adoption path, fictional public samples, copyable Agent Prompts, an output
+guide, and privacy-safe feedback channels. Git release work remains paused.
 
 ## Current Sprint
-Epic-023 v0.8.0 Release Finalization completed.
+Epic-024 Skill Adoption Pilot.
 
 ## Current Goal
-Run the final release check, approve the v0.8.0 tag target, and publish the
-Developer Preview without expanding product scope.
+Invite a small group of non-technical job seekers to complete Agent-based career
+analysis and determine whether the results are understandable and actionable.
 
 ## Tech Stack
 - Frontend: Next.js
@@ -35,6 +35,6 @@ Developer Preview without expanding product scope.
 - No resume submission automation
 
 ## Next Task
-Review the Epic-023 release evidence, confirm the release commit is available
-remotely, then create the v0.8.0 tag after explicit approval. External Agent
-interoperability remains a truthful post-release feedback activity.
+Run Epic-024.3 Pilot execution with 5-10 privacy-safe feedback records. Review
+completion, understanding, actionability, and factual-error signals before
+changing CLI behavior or resuming the v0.8.0 Git release flow.

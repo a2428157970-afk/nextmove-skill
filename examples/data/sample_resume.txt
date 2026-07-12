@@ -1,0 +1,26 @@
+NEXTMOVE PUBLIC PILOT SAMPLE - ENTIRELY FICTIONAL
+
+Professional Summary
+Early-career software and data professional who builds small Python tools and
+uses SQL and Excel to improve reporting workflows.
+
+Experience
+Junior Operations Analyst, Northstar Learning Lab (fictional)
+2024 - Present
+- Built a fictional Python and SQL reporting workflow that reduced weekly
+  preparation time by 30% in this public sample scenario.
+- Cleaned and reviewed operational data in Excel for a fictional learning team.
+- Documented recurring data-quality checks for teammates.
+
+Skills
+Python, SQL, Excel, Git
+
+Projects
+Community Course Trends Dashboard (fictional)
+- Created a small Python data-cleaning script and SQL summary tables.
+- Presented enrollment trends through a simple dashboard prototype.
+
+Education
+Certificate in Applied Data Foundations, Example Learning Institute (fictional)
+
+This sample contains no real person, employer, contact detail, or credential.

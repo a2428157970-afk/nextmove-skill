@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## Epic-024.2 - Agent-first Pilot Kit Implementation
+
+- Status: Completed
+- Added a five-minute Agent-first Quick Start for non-technical job seekers.
+- Added public-safe fictional resume and job-description samples that execute
+  the complete offline `career_analysis` workflow.
+- Added four copyable Agent Prompt templates and a user-language output guide
+  without changing the Skill or CLI contract.
+- Added a platform-neutral anonymous feedback template, Pilot guidelines, and
+  a secondary GitHub Issue channel with explicit privacy boundaries.
+- Added focused Pilot Kit acceptance coverage while keeping CLI UX changes,
+  telemetry, Web, backend, database, and new providers out of scope.
+
 ## 0.8.0 - Skill Developer Preview
 
 ## Epic-023 - v0.8.0 Release Finalization

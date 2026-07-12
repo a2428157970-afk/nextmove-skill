@@ -11,6 +11,23 @@ or transport protocol.
 
 > Know Your Value. Find Your Next Career Move.
 
+## Try NextMove in 5 minutes
+
+The Agent-first Pilot path is designed for non-technical job seekers:
+
+1. Copy an [Agent Prompt](docs/agent-prompt-template.md).
+2. Provide a privacy-reviewed resume and target role, or use the
+   [fictional resume](examples/data/sample_resume.txt) and
+   [fictional job description](examples/data/sample_job_description.txt).
+3. Ask the Agent to invoke NextMove and receive a four-part career analysis.
+4. Read the [Output Guide](docs/output-guide.md) and share
+   [anonymous feedback](docs/pilot-feedback-template.md).
+
+Follow the complete [five-minute Quick Start](docs/quick-start.md) and review
+the [Pilot Guidelines](docs/pilot-guidelines.md). Do not include a full resume,
+job description, identity, contact details, company-confidential information,
+or credentials in Pilot feedback.
+
 ## 1. What NextMove does
 
 NextMove accepts raw resume text or a structured `ResumeProfile`, applies

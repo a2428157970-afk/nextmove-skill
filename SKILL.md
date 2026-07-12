@@ -133,3 +133,11 @@ python -m skill analyze --resume resume.txt
 ```
 
 Both commands print a JSON `SkillResponse` whose `result` is a `CareerAnalysisReport`.
+
+## Pilot templates
+
+Non-technical users can start with the copyable
+[Agent Prompt Templates](docs/agent-prompt-template.md) and the
+[Output Guide](docs/output-guide.md). These documents are user-facing wrappers
+around the unchanged Skill contract; they do not authorize an Agent to invent
+facts or simulate a response when NextMove is unavailable.

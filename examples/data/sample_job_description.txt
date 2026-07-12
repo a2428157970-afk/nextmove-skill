@@ -1,0 +1,16 @@
+NEXTMOVE PUBLIC PILOT SAMPLE - ENTIRELY FICTIONAL
+
+Junior Data and Backend Associate
+Aurora Pathways Studio (fictional)
+
+We are looking for an early-career candidate who can:
+
+- write maintainable Python scripts;
+- query and validate data with SQL;
+- communicate findings clearly;
+- use Git in a collaborative workflow;
+- package local services with Docker;
+- support basic cloud deployment and monitoring.
+
+Helpful experience includes dashboard projects, data-quality checks, and clear
+technical documentation. This is a fictional role and not a real job posting.
