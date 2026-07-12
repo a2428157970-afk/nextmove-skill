@@ -1,6 +1,8 @@
 import json
 import unittest
+from dataclasses import fields
 
+from skill.matching.schemas import JobMatchResult
 from skill.metadata import SKILL_METADATA
 from skill.schemas.analysis import ResumeAnalysisResult, SkillAssessment
 from skill.schemas.api import SkillError, SkillResponse
@@ -8,6 +10,30 @@ from skill.utils import to_dict
 
 
 class SkillSerializationTests(unittest.TestCase):
+    def test_job_match_result_contract_remains_exactly_six_fields(self):
+        self.assertEqual(
+            [item.name for item in fields(JobMatchResult)],
+            [
+                "match_score",
+                "matched_skills",
+                "missing_skills",
+                "strengths",
+                "gaps",
+                "recommendations",
+            ],
+        )
+        self.assertEqual(
+            set(to_dict(JobMatchResult())),
+            {
+                "match_score",
+                "matched_skills",
+                "missing_skills",
+                "strengths",
+                "gaps",
+                "recommendations",
+            },
+        )
+
     def test_result_to_dict_converts_nested_dataclasses(self):
         result = ResumeAnalysisResult(
             strengths=["Clear summary"],
