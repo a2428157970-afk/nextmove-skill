@@ -31,6 +31,8 @@ class MatchAssessment:
     qualification_score: int | None
     strengths: tuple[str, ...] = ()
     gaps: tuple[str, ...] = ()
+    matched_skills: tuple[str, ...] = ()
+    missing_skills: tuple[str, ...] = ()
 
 
 @dataclass(slots=True)
