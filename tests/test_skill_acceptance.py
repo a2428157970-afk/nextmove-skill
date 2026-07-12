@@ -23,6 +23,8 @@ class SkillOperationalAcceptanceTests(unittest.TestCase):
         self.assertEqual(manifest["name"], "NextMove")
         self.assertEqual(manifest["version"], __version__)
         self.assertEqual(manifest["entrypoint"], "skill.__main__:main")
+        self.assertEqual(manifest["skill_entrypoint"], "NextMoveSkill.run")
+        self.assertEqual(manifest["cli_entrypoint"], "skill.__main__:main")
         self.assertIn("career_analysis", manifest["capabilities"])
         self.assertIn("input_schema", manifest)
         self.assertIn("output_schema", manifest)

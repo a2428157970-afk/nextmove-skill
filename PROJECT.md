@@ -9,16 +9,16 @@ NextMove is an AI Career Intelligence Platform and AI Career Intelligence Skill 
 Slogan: Know Your Value. Find Your Next Career Move.
 
 ## Current Stage
-Epic-022 Skill Operational Readiness completed for NextMove Skill Developer
-Preview v0.8.0. The Skill is discoverable, installable, and callable through
-Python, Agent Runtime, and an offline CLI.
+Epic-023 v0.8.0 Release Finalization completed. The v0.8.0 codebase is
+Developer Preview Ready; tag creation and public release remain explicit human
+approval gates.
 
 ## Current Sprint
-Epic-022 Skill Operational Readiness completed.
+Epic-023 v0.8.0 Release Finalization completed.
 
 ## Current Goal
-Publish and validate the v0.8.0 Skill Developer Preview without expanding the
-Application Layer or introducing hosted infrastructure.
+Run the final release check, approve the v0.8.0 tag target, and publish the
+Developer Preview without expanding product scope.
 
 ## Tech Stack
 - Frontend: Next.js
@@ -35,4 +35,6 @@ Application Layer or introducing hosted infrastructure.
 - No resume submission automation
 
 ## Next Task
-Run external Agent interoperability checks and prepare the v0.8.0 release tag.
+Review the Epic-023 release evidence, confirm the release commit is available
+remotely, then create the v0.8.0 tag after explicit approval. External Agent
+interoperability remains a truthful post-release feedback activity.

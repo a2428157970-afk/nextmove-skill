@@ -1,6 +1,6 @@
 ---
 name: nextmove-career-intelligence
-description: Analyze and improve resumes, match candidates to job descriptions, provide career advice, or run a complete structured career analysis. Use when an agent needs offline, provider-neutral career intelligence from resume text and an optional job description.
+description: Analyze and improve resumes, match candidates to job descriptions, provide career advice, or run a complete structured career analysis. Use when an agent needs offline, provider-neutral career intelligence from resume text, with a job description required for matching and complete analysis.
 ---
 
 # NextMove Career Intelligence
@@ -13,7 +13,7 @@ Use `NextMoveSkill` to turn resume and job-description inputs into deterministic
 
 - Discover the product as `NextMove`; use the lowercase frontmatter name only as the Agent Skill identifier.
 - Read version `0.8.0` from `skill.__version__.__version__` as the authoritative source.
-- Invoke entrypoint `skill.__main__:main` through `python -m skill` or the installed `nextmove` command.
+- Invoke the Skill entrypoint as `NextMoveSkill.run`. Invoke the separate CLI entrypoint `skill.__main__:main` through `python -m skill` or the installed `nextmove` command. The legacy manifest `entrypoint` remains the CLI entrypoint for compatibility.
 - Discover the machine-readable capability list, input schema, and output schema in `skill.json` or `skill.metadata.SKILL_METADATA`; both expose the same contract.
 - Require `resume` and `job_description` in the `career_analysis` Agent/Python input schema. Expect a JSON `SkillResponse` containing `success`, `capability`, `result`, and `error`; `result` contains the `CareerAnalysisReport`.
 
@@ -44,16 +44,78 @@ response = NextMoveSkill().run(
 )
 ```
 
+A Python caller may provide a structured profile directly:
+
+```python
+from skill import NextMoveSkill
+from skill.schemas import ResumeProfile
+
+profile = ResumeProfile(
+    summary="Backend engineer focused on Python services.",
+    skills=["Python", "SQL"],
+    raw_text="Backend engineer focused on Python services. Skills: Python, SQL.",
+)
+response = NextMoveSkill().run(
+    "career_analysis",
+    {
+        "resume": profile,
+        "job_description": "Backend role requiring Python, SQL, and Docker.",
+    },
+)
+```
+
+Agent payloads should use raw resume text because Python dataclass instances are not portable JSON values.
+
 ## Output format
 
 Use `skill.utils.to_dict()` before JSON serialization. `run()` returns a `SkillResponse`. A successful `career_analysis` call contains a `CareerAnalysisReport` with `analysis`, `improvement`, `job_match`, and `career_advice`. On a workflow failure, inspect `failed_capability` and `error`; later results remain `null`.
+
+The report sections mean:
+
+- `analysis`: resume strengths, weaknesses, skill assessment, and career level.
+- `improvement`: observed issues, truthful suggestions, and section guidance.
+- `job_match`: match score, supported skill matches, gaps, and recommendations.
+- `career_advice`: possible paths, skill gaps, and recommended next actions.
+
+Minimal successful envelope:
+
+```json
+{
+  "success": true,
+  "capability": "career_analysis",
+  "result": {
+    "success": true,
+    "analysis": {},
+    "improvement": {},
+    "job_match": {},
+    "career_advice": {},
+    "failed_capability": null,
+    "error": null
+  },
+  "error": null
+}
+```
+
+Minimal failed envelope:
+
+```json
+{
+  "success": false,
+  "capability": "career_analysis",
+  "result": null,
+  "error": {
+    "code": "INVALID_INPUT",
+    "message": "\"payload requires 'job_description'\""
+  }
+}
+```
 
 ## Limitations
 
 - Treat results as career decision support, not guaranteed hiring outcomes or professional legal advice.
 - Expect deterministic rule-based analysis; nuanced context may require human review.
 - Provide plain resume text for offline Agent use; Python-only `ResumeProfile` objects are not portable JSON inputs.
-- Do not infer facts, credentials, employment history, or metrics absent from the input.
+- Do not infer or invent facts, credentials, employment history, projects, skills, achievements, or metrics absent from the input.
 - Accept only plain UTF-8 resume text through the CLI; PDF and Word extraction are outside this Skill entrypoint.
 
 ## Examples

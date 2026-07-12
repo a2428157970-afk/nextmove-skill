@@ -2,6 +2,8 @@
   "name": "NextMove",
   "version": "0.8.0",
   "entrypoint": "skill.__main__:main",
+  "skill_entrypoint": "NextMoveSkill.run",
+  "cli_entrypoint": "skill.__main__:main",
   "description": "Installable Career Intelligence Skill for structured resume analysis, improvement, job matching, career advice, and complete career analysis.",
   "capabilities": [
     "analyze_resume",

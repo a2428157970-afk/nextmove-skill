@@ -2,19 +2,25 @@
 
 ## Status
 
-Epic-022 is complete on top of the preserved v0.7.0 release history. NextMove
-v0.8.0 now supports Agent discovery, editable installation, Python and Agent
-invocation, and the offline `nextmove analyze` / `python -m skill` CLI.
+Epic-023 is complete. NextMove v0.8.0 is Developer Preview Ready with aligned
+release documentation, explicit Skill and CLI entrypoints, preserved legacy
+manifest compatibility, and an evidence-based Agent compatibility record.
 
 ## Recommended Next Step
 
-Run final external interoperability checks with ChatGPT Agent, Claude Agent,
-Cursor, and Codex, then create the v0.8.0 release tag after confirming the
-documented acceptance commands in a clean environment.
+Review the final validation evidence and commit, confirm it has been pushed to
+the intended release repository, and create the v0.8.0 tag only after explicit
+human approval. Do not block the Developer Preview on unperformed ChatGPT
+Agent, Claude, or Cursor invocation; keep those entries pending and validate
+them from real post-release use.
 
 ## Notes
 
 - Do not continue expanding the Application Layer until instructed.
+- Do not implement `--job-description-file` before post-release feedback and a
+  separate CLI input/error contract design.
+- Keep `entrypoint` and `cli_entrypoint` mapped to `skill.__main__:main`; keep
+  `skill_entrypoint` mapped to `NextMoveSkill.run`.
 - Keep `career_analysis` ordered and fail-fast through the existing public
   `NextMoveSkill.run()` API.
 - Keep `skill/__version__.py` as the only package version source.

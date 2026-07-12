@@ -4,6 +4,22 @@
 
 ## 0.8.0 - Skill Developer Preview
 
+## Epic-023 - v0.8.0 Release Finalization
+
+- Status: Completed
+- Marked the v0.8.0 codebase Developer Preview Ready while keeping tag creation
+  and publication as separate human-approved actions.
+- Clarified the compatible legacy, Skill, and CLI entrypoints in `skill.json`
+  and release-facing documentation without changing runtime behavior.
+- Made README the primary user entry point, removed duplicated and corrupted
+  text, and documented Python 3.11+, offline build prerequisites, and input
+  contract differences.
+- Added a truthful Agent compatibility matrix and deferred
+  `--job-description-file` until post-release feedback justifies the added CLI
+  behavior and regression surface.
+- Added the missing Epic-020 plan records and the Epic-023 design and execution
+  records to preserve development history.
+
 ## Epic-022 - Skill Operational Readiness
 
 - Status: Completed

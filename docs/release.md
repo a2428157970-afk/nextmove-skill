@@ -5,11 +5,15 @@ Use this checklist before creating a NextMove Skill release.
 ## 1. Install
 
 Install the package from the repository root in a clean Python 3.11 or later
-environment:
+environment with pip and setuptools 61 or later:
 
 ```bash
 python -m pip install -e .
 ```
+
+For offline installation, ensure the build backend is already installed. Build
+isolation may otherwise try to resolve setuptools from a package index even
+though NextMove has no runtime package dependencies.
 
 ## 2. Import Check
 
@@ -71,3 +75,16 @@ Live tests remain opt-in and skip safely unless explicitly enabled:
 ```bash
 python -m unittest discover -s tests/live -v
 ```
+
+## 7. Agent Compatibility
+
+Review [agent-compatibility.md](agent-compatibility.md). Repository contract
+validation and external product invocation must be reported separately. Do not
+mark a pending Agent available without a recorded external invocation.
+
+## 8. Final Git Check
+
+Before creating the tag, confirm the release commit is present remotely, the
+worktree is clean, all intended plan documents are tracked, and the tag target
+is the approved v0.8.0 release commit. Tagging, pushing, and creating a GitHub
+Release are manual approval gates.
