@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+## 0.8.0 - Skill Developer Preview
+
+## Epic-021 - Skill Productization
+
+- Status: Completed
+- Added the public `career_analysis` capability and structured,
+  JSON-serializable `CareerAnalysisReport` with fixed-order fail-fast behavior.
+- Added `skill.json` product metadata and Agent-facing `SKILL.md` for ChatGPT
+  Agent, Claude Agent, Cursor, and Codex consumers.
+- Added a fully offline Skill demo that invokes `career_analysis` and prints a
+  JSON report.
+- Preserved compatibility for the four existing public capabilities and kept
+  the Skill independent from Web, FastAPI, databases, authentication, frontend,
+  network, and Application Layer imports.
+
 ## Epic-020.3 - Application Execution Metadata Contract
 
 - Status: Completed

@@ -35,6 +35,7 @@ class SkillToolRegistryTests(unittest.TestCase):
                 "improve_resume",
                 "match_job",
                 "career_advice",
+                "career_analysis",
             ],
         )
         self.assertEqual(
@@ -44,6 +45,7 @@ class SkillToolRegistryTests(unittest.TestCase):
                 "improve_resume",
                 "match_job",
                 "career_advice",
+                "career_analysis",
             ],
         )
 

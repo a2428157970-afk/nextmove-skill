@@ -7,7 +7,7 @@ class AgentToolSchemaTests(unittest.TestCase):
     def test_tools_can_be_loaded(self):
         tools = get_agent_tools()
 
-        self.assertEqual(len(tools), 4)
+        self.assertEqual(len(tools), 5)
         self.assertTrue(all(isinstance(tool, AgentTool) for tool in tools))
         self.assertIsNot(tools, AGENT_TOOLS)
 
@@ -21,6 +21,7 @@ class AgentToolSchemaTests(unittest.TestCase):
                 "improve_resume",
                 "match_job",
                 "career_advice",
+                "career_analysis",
             ],
         )
 
@@ -46,6 +47,10 @@ class AgentToolSchemaTests(unittest.TestCase):
         )
         self.assertEqual(tools["career_advice"].input_schema["required"], ["resume"])
         self.assertIn("analysis", tools["career_advice"].input_schema["properties"])
+        self.assertEqual(
+            tools["career_analysis"].input_schema["required"],
+            ["resume", "job_description"],
+        )
 
 
 if __name__ == "__main__":

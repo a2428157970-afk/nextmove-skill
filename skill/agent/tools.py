@@ -91,6 +91,23 @@ CAREER_ADVICE_OUTPUT_SCHEMA: JsonSchema = {
     },
 }
 
+CAREER_ANALYSIS_OUTPUT_SCHEMA: JsonSchema = {
+    "type": "object",
+    "properties": {
+        "success": {"type": "boolean"},
+        "analysis": {"oneOf": [RESUME_ANALYSIS_OUTPUT_SCHEMA, {"type": "null"}]},
+        "improvement": {
+            "oneOf": [RESUME_IMPROVEMENT_OUTPUT_SCHEMA, {"type": "null"}]
+        },
+        "job_match": {"oneOf": [JOB_MATCH_OUTPUT_SCHEMA, {"type": "null"}]},
+        "career_advice": {
+            "oneOf": [CAREER_ADVICE_OUTPUT_SCHEMA, {"type": "null"}]
+        },
+        "failed_capability": {"type": ["string", "null"]},
+        "error": {"type": ["object", "null"]},
+    },
+}
+
 
 def _object_schema(
     properties: dict[str, JsonSchema],
@@ -149,6 +166,21 @@ AGENT_TOOLS: tuple[AgentTool, ...] = (
             required=["resume"],
         ),
         output_schema=CAREER_ADVICE_OUTPUT_SCHEMA,
+    ),
+    AgentTool(
+        name="career_analysis",
+        description="Run resume analysis, improvement, job matching, and career advice as one fixed-order report.",
+        input_schema=_object_schema(
+            properties={
+                "resume": RESUME_INPUT_SCHEMA,
+                "job_description": {
+                    "type": "string",
+                    "description": "Target job description text.",
+                },
+            },
+            required=["resume", "job_description"],
+        ),
+        output_schema=CAREER_ANALYSIS_OUTPUT_SCHEMA,
     ),
 )
 

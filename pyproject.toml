@@ -19,3 +19,7 @@ include = ["skill*"]
 
 [tool.setuptools.dynamic]
 version = { attr = "skill.__version__.__version__" }
+
+[tool.setuptools.data-files]
+"share/nextmove-skill" = ["SKILL.md", "skill.json"]
+"share/nextmove-skill/examples" = ["examples/skill_demo.py"]

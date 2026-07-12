@@ -24,10 +24,10 @@ The printed version must match `skill/__version__.py` and
 
 ## 3. Demo Check
 
-Run the full Career Intelligence workflow:
+Run the installable Skill product workflow:
 
 ```bash
-python examples/full_career_analysis.py
+python examples/skill_demo.py
 ```
 
 Confirm that the JSON report includes successful results for `analysis`,
@@ -48,8 +48,10 @@ Confirm that there is one version source:
 - `skill/__version__.py` contains the release version.
 - `skill/metadata.py` imports that version rather than duplicating it.
 - `pyproject.toml` reads the version dynamically from `skill.__version__`.
+- `skill.json` mirrors the release version and is validated against the Python
+  source of truth by the test suite.
 
-For v0.6.0, the expected public version is `0.6.0`.
+For the Skill Developer Preview, the expected public version is `0.8.0`.
 
 ## 6. Optional AI Validation
 

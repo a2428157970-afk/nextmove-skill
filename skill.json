@@ -1,0 +1,66 @@
+{
+  "name": "NextMove",
+  "version": "0.8.0",
+  "description": "Installable Career Intelligence Skill for structured resume analysis, improvement, job matching, career advice, and complete career analysis.",
+  "capabilities": [
+    "analyze_resume",
+    "improve_resume",
+    "match_job",
+    "career_advice",
+    "career_analysis"
+  ],
+  "input_schema": {
+    "type": "object",
+    "required": ["resume", "job_description"],
+    "properties": {
+      "resume": {
+        "description": "Raw resume text or a structured ResumeProfile when called from Python.",
+        "oneOf": [
+          {"type": "string"},
+          {"type": "object"}
+        ]
+      },
+      "job_description": {
+        "type": "string"
+      }
+    },
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "required": ["success", "capability", "result", "error"],
+    "properties": {
+      "success": {"type": "boolean"},
+      "capability": {"const": "career_analysis"},
+      "result": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "success",
+              "analysis",
+              "improvement",
+              "job_match",
+              "career_advice",
+              "failed_capability",
+              "error"
+            ],
+            "properties": {
+              "success": {"type": "boolean"},
+              "analysis": {"type": ["object", "null"]},
+              "improvement": {"type": ["object", "null"]},
+              "job_match": {"type": ["object", "null"]},
+              "career_advice": {"type": ["object", "null"]},
+              "failed_capability": {"type": ["string", "null"]},
+              "error": {"type": ["object", "null"]}
+            },
+            "additionalProperties": false
+          },
+          {"type": "null"}
+        ]
+      },
+      "error": {"type": ["object", "null"]}
+    },
+    "additionalProperties": false
+  }
+}

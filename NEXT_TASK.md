@@ -2,22 +2,23 @@
 
 ## Status
 
-The released v0.7.0 baseline now includes completed Epic-020.1, Epic-020.2,
-and Epic-020.3. The Application Layer validates `CareerAnalysisRequest` before
-delegation, normalizes an omitted job description to an empty string, preserves
-the fixed four-step Skill workflow and one-way dependency boundary, and owns
-immutable UTC ISO-8601 metadata for valid workflow success and failure results.
+Epic-021 is complete on top of the preserved v0.7.0 release history. NextMove
+v0.8.0 is now an installable Skill Developer Preview with a public
+`career_analysis` capability, `CareerAnalysisReport`, `skill.json`, Agent-facing
+`SKILL.md`, and an offline JSON demo.
 
 ## Recommended Next Step
 
-Define only the next scoped Application Layer contract concern after scope
-approval. Keep it transport-neutral; do not add an HTTP endpoint, frontend
-integration, authentication, persistence, provider behavior, or new
-dependencies. Do not start implementation until instructed.
+Run bounded interoperability pilots with ChatGPT Agent, Claude Agent, Cursor,
+and Codex. Validate installation, capability discovery, input construction,
+and JSON report consumption before expanding product scope.
 
 ## Notes
 
-- Do not execute the next Epic until instructed.
+- Do not continue expanding the Application Layer until instructed.
+- Keep `career_analysis` ordered and fail-fast through the existing public
+  `NextMoveSkill.run()` API.
+- Keep `skill/__version__.py` as the only package version source.
 - Keep the Product Application Layer transport-neutral and dependent only on
   public Skill contracts. It must call capabilities through
   `NextMoveSkill.run()` and never be imported by `skill/`.

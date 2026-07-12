@@ -1,10 +1,11 @@
 # NextMove AI Career Intelligence Skill
 
-[![Release](https://img.shields.io/badge/release-v0.6.0-blue)](docs/release.md)
+[![Release](https://img.shields.io/badge/release-v0.8.0-blue)](docs/release.md)
 [![Skill tests](https://img.shields.io/badge/skill%20tests-passing-brightgreen)](.github/workflows/test.yml)
 
-NextMove is a provider-neutral Python Skill framework for turning resume and
-job-description inputs into structured career intelligence. It is designed to
+NextMove v0.8.0 is a Skill Developer Preview: an installable, provider-neutral
+Python Skill for turning resume and job-description inputs into structured
+career intelligence. It is designed to
 be called directly by Python applications today and connected to AI Agents
 through a thin Agent layer without coupling the Skill Core to a model provider,
 web framework, or transport protocol.
@@ -41,12 +42,15 @@ mode:
 pip install -e .
 ```
 
+Machine-readable product metadata is available in [skill.json](skill.json),
+and Agent usage instructions are defined in [SKILL.md](SKILL.md).
+
 ## 4. Quick Start
 
-Run the end-to-end career analysis demo:
+Run the offline Skill product demo:
 
 ```bash
-python examples/full_career_analysis.py
+python examples/skill_demo.py
 ```
 
 The demo runs Resume Analysis, Resume Improvement, Job Matching, and Career
@@ -82,8 +86,9 @@ print(to_dict(response))
 ```
 
 Supported capabilities are `analyze_resume`, `improve_resume`, `match_job`,
-and `career_advice`. See [examples/full_career_analysis.py](examples/full_career_analysis.py)
-for a complete four-capability report.
+`career_advice`, and `career_analysis`. The combined capability accepts
+`resume` and `job_description`, runs the four existing capabilities in fixed
+order, and returns a fail-fast `CareerAnalysisReport`.
 
 ## 6. Agent Runtime
 
@@ -169,6 +174,8 @@ limitations.
 
 ## 9. Examples
 
+- [Skill product demo](examples/skill_demo.py): invoke `career_analysis` through
+  the public Skill API and print its JSON report offline.
 - [Full career analysis](examples/full_career_analysis.py): analyze, improve,
   match, and advise in one JSON report.
 - [Resume analysis](examples/analyze_resume.py): a focused analysis call.
@@ -187,6 +194,6 @@ workflow and architecture constraints.
 
 ## 11. Release
 
-NextMove Skill v0.6.0 is the current release. Follow the
+NextMove Skill v0.8.0 is the current Skill Developer Preview. Follow the
 [release checklist](docs/release.md) to validate an install, import, demo, and
 test run from a fresh clone.

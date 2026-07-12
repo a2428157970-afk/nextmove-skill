@@ -1,6 +1,6 @@
 import unittest
 
-from skill import SkillResponse
+from skill import CareerAnalysisReport, SkillResponse
 from skill.agent import AgentRuntime
 from skill.schemas.matching import JobMatchResult
 from skill.schemas.resume import ExperienceEntry, ResumeProfile
@@ -45,6 +45,20 @@ class AgentRuntimeTests(unittest.TestCase):
         self.assertIsInstance(response.result, JobMatchResult)
         self.assertIn("Python", response.result.matched_skills)
         self.assertIn("Docker", response.result.missing_skills)
+
+    def test_invoke_career_analysis_returns_complete_report(self):
+        response = self.runtime.invoke(
+            "career_analysis",
+            {
+                "resume": self.profile,
+                "job_description": "Backend role requiring Python and SQL.",
+            },
+        )
+
+        self.assertTrue(response.success)
+        self.assertEqual(response.capability, "career_analysis")
+        self.assertIsInstance(response.result, CareerAnalysisReport)
+        self.assertTrue(response.result.success)
 
     def test_invoke_unknown_tool_returns_structured_failure(self):
         response = self.runtime.invoke("unknown_tool", {})

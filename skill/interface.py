@@ -8,7 +8,7 @@ from skill.improvement import ResumeImprover
 from skill.matching import JobMatcher
 from skill.resume import RuleBasedResumeParser
 from skill.schemas.analysis import ResumeAnalysisResult
-from skill.schemas.api import SkillError, SkillResponse
+from skill.schemas.api import CareerAnalysisReport, SkillError, SkillResponse
 from skill.schemas.career import CareerAdviceResult
 from skill.schemas.improvement import ResumeImprovementResult
 from skill.schemas.matching import JobMatchResult
@@ -78,6 +78,51 @@ class NextMoveSkill:
 
         return self.advisor.advise(profile, analysis)
 
+    def career_analysis(
+        self,
+        resume: ResumeProfile | str,
+        job_description: str,
+    ) -> CareerAnalysisReport:
+        results: dict[str, Any] = {}
+        steps = (
+            ("analyze_resume", {"resume": resume}, "analysis"),
+            ("improve_resume", {"resume": resume}, "improvement"),
+            (
+                "match_job",
+                {"resume": resume, "job_description": job_description},
+                "job_match",
+            ),
+        )
+
+        for capability, payload, report_field in steps:
+            response = self.run(capability, payload)
+            if not response.success:
+                return CareerAnalysisReport(
+                    success=False,
+                    failed_capability=capability,
+                    error=response.error,
+                    **results,
+                )
+            results[report_field] = response.result
+
+        advice_response = self.run(
+            "career_advice",
+            {"resume": resume, "analysis": results["analysis"]},
+        )
+        if not advice_response.success:
+            return CareerAnalysisReport(
+                success=False,
+                failed_capability="career_advice",
+                error=advice_response.error,
+                **results,
+            )
+
+        return CareerAnalysisReport(
+            success=True,
+            career_advice=advice_response.result,
+            **results,
+        )
+
     def run(self, capability: str, payload: dict[str, Any]) -> SkillResponse:
         try:
             if not isinstance(payload, dict):
@@ -122,6 +167,12 @@ class NextMoveSkill:
             resume = self._required(payload, "resume")
             analysis = payload.get("analysis")
             return self.career_advice(resume, analysis)
+
+        if capability == "career_analysis":
+            return self.career_analysis(
+                self._required(payload, "resume"),
+                self._required(payload, "job_description"),
+            )
 
         raise ValueError(f"unsupported capability: {capability}")
 

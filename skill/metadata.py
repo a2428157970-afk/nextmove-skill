@@ -10,6 +10,7 @@ SKILL_METADATA = {
         "improve_resume",
         "match_job",
         "career_advice",
+        "career_analysis",
     ],
     "description": (
         "AI Career Intelligence Skill for resume analysis, resume improvement, "

@@ -9,17 +9,17 @@ NextMove is an AI Career Intelligence Platform and AI Career Intelligence Skill 
 Slogan: Know Your Value. Find Your Next Career Move.
 
 ## Current Stage
-Epic-020.3 Application Execution Metadata Contract completed on the released
-v0.7.0 baseline. The deterministic Skill Core, optional AI boundary, and a
-transport-neutral application workflow remain independently owned.
+Epic-021 Skill Productization completed as NextMove Skill Developer Preview
+v0.8.0. The installable Skill exposes `career_analysis`, machine-readable
+metadata, Agent instructions, and an offline product demo.
 
 ## Current Sprint
-Application Execution Metadata Contract completed.
+Epic-021 Skill Productization completed.
 
 ## Current Goal
-Await scope approval for the next bounded, transport-neutral Application Layer
-contract concern without changing the Skill Core or adding a transport,
-frontend, provider, persistence, or dependency.
+Validate the Skill Developer Preview with Agent consumers while keeping the
+public capabilities stable and independent from Web and Application Layer
+delivery concerns.
 
 ## Tech Stack
 - Frontend: Next.js
@@ -36,4 +36,4 @@ frontend, provider, persistence, or dependency.
 - No resume submission automation
 
 ## Next Task
-Next scoped Application Layer contract concern (scope approval required).
+Agent installation and interoperability validation for v0.8.0.

@@ -42,7 +42,7 @@ class AgentAdapterTests(unittest.TestCase):
     def test_exported_structure_is_stable_for_all_agent_tools(self):
         exported = GenericAgentAdapter().export_tools(get_agent_tools())
 
-        self.assertEqual(len(exported), 4)
+        self.assertEqual(len(exported), 5)
         for item in exported:
             with self.subTest(tool=item["name"]):
                 self.assertEqual(
