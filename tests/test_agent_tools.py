@@ -52,6 +52,26 @@ class AgentToolSchemaTests(unittest.TestCase):
             ["resume", "job_description"],
         )
 
+    def test_job_match_agent_contract_remains_exactly_unchanged(self):
+        tool = {tool.name: tool for tool in get_agent_tools()}["match_job"]
+
+        self.assertEqual(
+            set(tool.output_schema["properties"]),
+            {
+                "match_score",
+                "matched_skills",
+                "missing_skills",
+                "strengths",
+                "gaps",
+                "recommendations",
+            },
+        )
+        self.assertEqual(
+            tool.input_schema["required"],
+            ["resume", "job_description"],
+        )
+        self.assertFalse(tool.input_schema["additionalProperties"])
+
 
 if __name__ == "__main__":
     unittest.main()
