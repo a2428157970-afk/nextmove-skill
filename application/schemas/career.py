@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 
+from application.schemas.execution import ExecutionMetadata
 from skill.schemas import (
     CareerAdviceResult,
     JobMatchResult,
@@ -36,19 +37,25 @@ class ApplicationResponse:
     failed_step: str | None = None
     message: str | None = None
     error: SkillError | None = None
+    metadata: ExecutionMetadata | None = None
 
     def to_dict(self) -> dict[str, object]:
         """Return a JSON-serializable representation of this response."""
         if self.success:
-            return {"success": True, "result": to_dict(self.result)}
+            response = {"success": True, "result": to_dict(self.result)}
+        else:
+            response = {
+                "success": False,
+                "error_code": self.error_code,
+                "failed_step": self.failed_step,
+                "message": self.message,
+                "error": to_dict(self.error),
+            }
 
-        return {
-            "success": False,
-            "error_code": self.error_code,
-            "failed_step": self.failed_step,
-            "message": self.message,
-            "error": to_dict(self.error),
-        }
+        if self.metadata is not None:
+            response["metadata"] = self.metadata.to_dict()
+
+        return response
 
 
 __all__ = ["ApplicationResponse", "CareerAnalysisReport"]

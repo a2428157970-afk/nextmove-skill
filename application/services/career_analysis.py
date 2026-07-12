@@ -1,6 +1,14 @@
 """Thin service entry point for end-to-end career analysis."""
 
-from application.schemas import ApplicationResponse, CareerAnalysisRequest
+from dataclasses import replace
+from datetime import datetime, timezone
+from uuid import uuid4
+
+from application.schemas import (
+    ApplicationResponse,
+    CareerAnalysisRequest,
+    ExecutionMetadata,
+)
 from application.workflows import CareerAnalysisWorkflow
 from skill import NextMoveSkill
 from skill.schemas import SkillError
@@ -33,4 +41,19 @@ class CareerAnalysisService:
                 ),
             )
 
-        return self.workflow.run(request.resume, request.normalized_job_description())
+        started_metadata = ExecutionMetadata(
+            execution_id=uuid4().hex,
+            workflow_name="career_analysis",
+            status="started",
+            started_at=datetime.now(timezone.utc),
+        )
+        response = self.workflow.run(
+            request.resume, request.normalized_job_description()
+        )
+        metadata = replace(
+            started_metadata,
+            status="completed" if response.success else "failed",
+            completed_at=datetime.now(timezone.utc),
+            failed_step=None if response.success else response.failed_step,
+        )
+        return replace(response, metadata=metadata)
