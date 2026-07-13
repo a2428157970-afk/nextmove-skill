@@ -7,7 +7,7 @@ open until a human performs them against the actual published release assets.
 
 - [x] Version is `0.8.0` in `skill/__version__.py`, `skill.json`, dynamic
   package metadata, manifests, README, and release notes.
-- [x] Full suite passes: 330 tests passed and 3 opt-in live tests skipped.
+- [x] Full suite passes: 333 tests passed and 3 opt-in live tests skipped.
 - [x] Runtime clean-room preflight returns `NEXTMOVE_READY` with zero network
   calls.
 - [x] Codex external Runtime verification succeeds from the generated ZIP.

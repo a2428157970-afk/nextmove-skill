@@ -22,7 +22,7 @@ finding `SKILL.md`, reading `skill.json`, uploading files, or following prompts
 does not prove execution.
 
 Codex external verification used Python 3.13.14 and Runtime ZIP SHA-256
-`2109917ef3591a054a239c68095c0e052c17ddc14b87a64aa2f1fe4e3cfbafb7`.
+`811beec81a966f1e8e2c77af69da161aa28d9ccfca457855afdfdd394aa1db38`.
 Codex extracted the ZIP to a new temporary directory, ran the package preflight
 before import, received `NEXTMOVE_READY` with zero network calls, confirmed the
 imported `skill` path was inside the extraction directory rather than the source
