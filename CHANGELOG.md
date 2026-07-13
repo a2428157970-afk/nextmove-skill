@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+## Epic-025.3 - Evidence-based Match Explanation
+
+- Status: Completed
+- Added internal requirement-evidence and match-explanation contracts with
+  deterministic strengths, gaps, and risks derived from professional evidence.
+- Integrated explanation building into `JobMatcher` without changing the
+  six-field `JobMatchResult`, Skill API, Agent contract, Application Layer, or
+  CLI behavior.
+- Kept `unknown` distinct from `missing`, so absent resume evidence is reported
+  conservatively and cannot pollute `missing_skills`.
+- Added HR, cross-domain career-transition, insufficient-information, empty
+  evidence, and evidence-privacy regression coverage without retaining raw
+  resumes or job descriptions or introducing provider or network dependencies.
+
 ## Epic-025.1 - Domain-aware Job Matching
 
 - Status: Completed

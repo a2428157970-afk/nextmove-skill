@@ -2,17 +2,19 @@
 
 ## Status
 
-Epic-025.1 and Epic-025.2 are complete and merged. Job matching now uses
-deterministic domain, job-family, skill, and qualification evidence, while
-resume analysis and career advice share an internal evidence-based stage model.
-The public six-field `JobMatchResult`, legacy career-level values, Skill API,
-Agent contract, Application Layer, and CLI remain unchanged.
+Epic-025.1, Epic-025.2, and Epic-025.3 are complete. Job matching now uses
+deterministic domain, job-family, skill, and qualification evidence and builds
+an internal evidence-based explanation, while resume analysis and career advice
+share an internal evidence-based stage model. The public six-field
+`JobMatchResult`, legacy career-level values, Skill API, Agent contract,
+Application Layer, and CLI remain unchanged.
 
 ## Recommended Next Step
 
-Resume Epic-025.3 Evidence-based Match Explanation from an updated isolated
-worktree. Build on the merged `DomainClassifier` and `MatchScorer`; keep the
-new requirement-evidence result internal and preserve the public contract.
+Design Epic-025.4 Career Intelligence Scenario Validation. Use synthetic HR,
+technical, cross-domain career-transition, and insufficient-information
+fixtures to evaluate the combined domain, stage, evidence, and explanation
+behavior while preserving deterministic privacy and all public contracts.
 
 ## Notes
 
@@ -22,6 +24,8 @@ new requirement-evidence result internal and preserve the public contract.
   Agent Contract versioning Epic is approved.
 - Keep domain classification, job family, confidence, and component scores
   internal to `skill/matching/` during the Pilot.
+- Keep `RequirementAssessment` and `MatchExplanationResult` internal. Never
+  retain raw resume or job-description text in explanation results.
 - Keep `CareerStageAssessment` internal. Do not expose its stage, signals, or
   confidence through the Agent schema or existing public result dataclasses.
 - Preserve legacy mapping: `entry -> junior`, `developing -> mid`,
