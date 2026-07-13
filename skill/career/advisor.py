@@ -2,6 +2,8 @@
 
 import re
 
+from skill.career.stage_assessor import CareerStageAssessor
+from skill.career.stages import CareerStage, CareerStageAssessment, legacy_career_level
 from skill.schemas.analysis import ResumeAnalysisResult
 from skill.schemas.resume import ResumeProfile
 from skill.career.schemas import CareerAdviceResult
@@ -20,10 +22,16 @@ class CareerAdvisor:
         profile: ResumeProfile,
         analysis: ResumeAnalysisResult | None = None,
     ) -> CareerAdviceResult:
-        current_level = self._current_level(profile, analysis)
+        assessment = CareerStageAssessor().assess(profile)
+        current_level = self._current_level(profile, analysis, assessment)
         possible_paths = self._possible_paths(profile)
         skill_gaps = self._skill_gaps(analysis)
-        recommended_actions = self._recommended_actions(profile, analysis, possible_paths)
+        recommended_actions = self._recommended_actions(
+            profile,
+            analysis,
+            possible_paths,
+            assessment,
+        )
 
         return CareerAdviceResult(
             current_level=current_level,
@@ -36,18 +44,11 @@ class CareerAdvisor:
     def _current_level(
         profile: ResumeProfile,
         analysis: ResumeAnalysisResult | None,
+        assessment: CareerStageAssessment,
     ) -> str:
         if analysis is not None and analysis.career_level != "unknown":
             return analysis.career_level
-
-        experience_count = len(profile.experience)
-        if experience_count == 0:
-            return "unknown"
-        if experience_count == 1:
-            return "junior"
-        if experience_count == 2:
-            return "mid"
-        return "senior"
+        return legacy_career_level(assessment.stage)
 
     def _possible_paths(self, profile: ResumeProfile) -> list[str]:
         words = self._profile_words(profile)
@@ -93,6 +94,7 @@ class CareerAdvisor:
         profile: ResumeProfile,
         analysis: ResumeAnalysisResult | None,
         possible_paths: list[str],
+        assessment: CareerStageAssessment,
     ) -> list[str]:
         actions: list[str] = []
         weaknesses = analysis.weaknesses if analysis is not None else []
@@ -115,10 +117,37 @@ class CareerAdvisor:
                 "Strengthen leadership examples with team, scope, and business impact."
             )
 
+        actions.extend(CareerAdvisor._stage_actions(assessment.stage))
+
+        profile_text = " ".join((profile.summary or "", profile.raw_text)).lower()
+        if "transition" in profile_text or "career change" in profile_text or "转型" in profile_text:
+            actions.append(
+                "Create a bridge example that connects transferable experience to the target domain."
+            )
+
         if not actions:
             actions.append("Keep tailoring the resume to the most relevant target roles.")
 
         return CareerAdvisor._dedupe(actions)
+
+    @staticmethod
+    def _stage_actions(stage: CareerStage) -> list[str]:
+        actions = {
+            CareerStage.ENTRY: [
+                "Build a focused portfolio project and seek supervised practical experience."
+            ],
+            CareerStage.DEVELOPING: [
+                "Document end-to-end ownership and expand responsibility for an adjacent scope."
+            ],
+            CareerStage.EXPERIENCED: [
+                "Frame complex cross-functional outcomes and mentorship evidence for senior opportunities."
+            ],
+            CareerStage.ADVANCED: [
+                "Clarify strategic scope, people leadership, and organisation-level impact."
+            ],
+            CareerStage.UNKNOWN: [],
+        }
+        return actions[stage]
 
     @staticmethod
     def _profile_words(profile: ResumeProfile) -> set[str]:

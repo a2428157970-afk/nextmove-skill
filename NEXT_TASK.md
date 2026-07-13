@@ -2,17 +2,17 @@
 
 ## Status
 
-Epic-025.1 is complete. Job matching now uses deterministic career-domain,
-job-family, skill, and qualification evidence for HR, technology, finance,
-operations, and the remaining focused v1 taxonomy. The public six-field
-`JobMatchResult` and Agent contract remain unchanged.
+Epic-025.1 and Epic-025.2 are complete and merged. Job matching now uses
+deterministic domain, job-family, skill, and qualification evidence, while
+resume analysis and career advice share an internal evidence-based stage model.
+The public six-field `JobMatchResult`, legacy career-level values, Skill API,
+Agent contract, Application Layer, and CLI remain unchanged.
 
 ## Recommended Next Step
 
-Run a privacy-safe matching Pilot with HR, technology, finance, and operations
-examples. Review domain classification, score explanation, false-positive
-requirements, and low-information behavior before expanding aliases or
-proposing a versioned Agent Contract for confidence and component scores.
+Resume Epic-025.3 Evidence-based Match Explanation from an updated isolated
+worktree. Build on the merged `DomainClassifier` and `MatchScorer`; keep the
+new requirement-evidence result internal and preserve the public contract.
 
 ## Notes
 
@@ -22,6 +22,15 @@ proposing a versioned Agent Contract for confidence and component scores.
   Agent Contract versioning Epic is approved.
 - Keep domain classification, job family, confidence, and component scores
   internal to `skill/matching/` during the Pilot.
+- Keep `CareerStageAssessment` internal. Do not expose its stage, signals, or
+  confidence through the Agent schema or existing public result dataclasses.
+- Preserve legacy mapping: `entry -> junior`, `developing -> mid`,
+  `experienced -> senior`, `advanced -> lead`, and `unknown -> unknown`.
+- Treat years of experience, title text, and tenure as supporting evidence only;
+  do not promote a resume to advanced stage without responsibility and impact
+  evidence.
+- Keep insufficient evidence deterministic: return internal `unknown` with low
+  confidence and avoid fabricated career-stage advice.
 - Keep the v0.8.0 tag, push, and GitHub Release flow paused until explicitly
   resumed.
 - Do not add telemetry or retain resume, job-description, identity, contact,

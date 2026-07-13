@@ -16,6 +16,19 @@
 - Preserved the six-field `JobMatchResult`, `NextMoveSkill.run("match_job", ...)`,
   Agent Tool schemas, CLI behavior, and application-to-Skill dependency direction.
 
+## Epic-025.2 - Career Stage Model
+
+- Status: Completed
+- Added the internal, evidence-based Career Stage model: `entry`,
+  `developing`, `experienced`, `advanced`, and `unknown`.
+- Added deterministic experience, responsibility, and impact signals with
+  conservative low-confidence handling for insufficient resume evidence.
+- Mapped internal stages to the existing legacy `career_level` contract without
+  changing Skill APIs, Agent schemas, `JobMatchResult`, the Application Layer,
+  or CLI behavior.
+- Tailored existing career-advice wording to internal stage evidence while
+  preserving the public `CareerAdviceResult` structure.
+
 ## Epic-024.2 - Agent-first Pilot Kit Implementation
 
 - Status: Completed

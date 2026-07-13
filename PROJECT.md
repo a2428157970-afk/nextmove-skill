@@ -9,16 +9,19 @@ NextMove is an AI Career Intelligence Platform and AI Career Intelligence Skill 
 Slogan: Know Your Value. Find Your Next Career Move.
 
 ## Current Stage
-Epic-025.1 Domain-aware Job Matching implemented. NextMove now classifies a
-focused v1 career taxonomy and scores Domain, Skill, and Qualification evidence
-without changing the public matching or Agent contracts.
+Epic-025.1 Domain-aware Job Matching and Epic-025.2 Career Stage Model are
+merged. NextMove now classifies a focused v1 career taxonomy, scores Domain,
+Skill, and Qualification evidence, and derives an internal evidence-based stage
+assessment for analysis and advice without changing public contracts. Git
+release work remains paused.
 
 ## Current Sprint
 Epic-025 Career Intelligence Quality.
 
 ## Current Goal
-Validate HR, technology, finance, and operations matching with privacy-safe
-Pilot examples before expanding taxonomy or exposing new public result fields.
+Continue Epic-025.3 Evidence-based Match Explanation using the merged
+domain-aware matching baseline, then validate HR, technical, career-transition,
+and insufficient-information fixtures without exposing new public result fields.
 
 ## Tech Stack
 - Frontend: Next.js
@@ -35,6 +38,6 @@ Pilot examples before expanding taxonomy or exposing new public result fields.
 - No resume submission automation
 
 ## Next Task
-Run Epic-024.3 Pilot execution with 5-10 privacy-safe feedback records. Review
-completion, understanding, actionability, and factual-error signals before
-changing CLI behavior or resuming the v0.8.0 Git release flow.
+Execute Epic-025.3 implementation only through its approved TDD plan. Keep
+explanation data internal until a separately approved Agent-contract versioning
+Epic; do not resume release work as part of that step.

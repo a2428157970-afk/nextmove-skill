@@ -72,6 +72,14 @@ class AgentToolSchemaTests(unittest.TestCase):
         )
         self.assertFalse(tool.input_schema["additionalProperties"])
 
+    def test_career_level_agent_enum_remains_legacy_contract(self):
+        tool = {tool.name: tool for tool in get_agent_tools()}["analyze_resume"]
+
+        self.assertEqual(
+            tool.output_schema["properties"]["career_level"]["enum"],
+            ["intern", "junior", "mid", "senior", "lead", "unknown"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
