@@ -28,7 +28,7 @@ class JobMatcherTests(unittest.TestCase):
         self.assertTrue(result.strengths)
         self.assertTrue(result.recommendations)
 
-    def test_skill_gaps_are_reported_from_job_keywords(self):
+    def test_unmentioned_skill_requirements_are_insufficient_evidence(self):
         profile = ResumeProfile(
             skills=["Python", "SQL"],
             experience=[
@@ -44,10 +44,14 @@ class JobMatcherTests(unittest.TestCase):
 
         self.assertLess(result.match_score, 80)
         self.assertIn("Python", result.matched_skills)
-        self.assertIn("Tableau", result.missing_skills)
-        self.assertIn("AWS", result.missing_skills)
-        self.assertIn("Docker", result.missing_skills)
-        self.assertTrue(result.gaps)
+        for requirement in ("Tableau", "AWS", "Docker"):
+            self.assertNotIn(requirement, result.missing_skills)
+            self.assertTrue(
+                any(
+                    requirement in gap and "not evidenced" in gap
+                    for gap in result.gaps
+                )
+            )
 
     def test_empty_resume_returns_zero_score_and_recommendations(self):
         job_description = "Backend Engineer role requiring Python, FastAPI, SQL, and Docker."
@@ -56,7 +60,10 @@ class JobMatcherTests(unittest.TestCase):
 
         self.assertEqual(result.match_score, 0)
         self.assertEqual(result.matched_skills, [])
-        self.assertIn("Python", result.missing_skills)
+        self.assertEqual(result.missing_skills, [])
+        self.assertTrue(
+            any("Python" in gap and "not evidenced" in gap for gap in result.gaps)
+        )
         self.assertTrue(result.gaps)
         self.assertTrue(result.recommendations)
 
@@ -78,9 +85,12 @@ class JobMatcherTests(unittest.TestCase):
         self.assertIn("招聘", result.matched_skills)
         self.assertIn("考勤", result.matched_skills)
         self.assertIn("劳动关系", result.matched_skills)
-        self.assertIn("薪酬", result.missing_skills)
+        self.assertNotIn("薪酬", result.missing_skills)
         self.assertNotIn("Python", result.missing_skills)
-        self.assertTrue(any("human_resources" in item for item in result.strengths))
+        self.assertTrue(any("招聘" in item for item in result.strengths))
+        self.assertTrue(
+            any("薪酬" in item and "not evidenced" in item for item in result.gaps)
+        )
 
     def test_finance_role_does_not_fall_through_to_technology_keywords(self):
         profile = ResumeProfile(
@@ -93,8 +103,11 @@ class JobMatcherTests(unittest.TestCase):
 
         self.assertGreater(result.match_score, 0)
         self.assertIn("财务报表", result.matched_skills)
-        self.assertIn("月度结账", result.missing_skills)
+        self.assertNotIn("月度结账", result.missing_skills)
         self.assertNotIn("Docker", result.missing_skills)
+        self.assertTrue(
+            any("月度结账" in item and "not evidenced" in item for item in result.gaps)
+        )
 
     def test_operations_role_uses_operations_vocabulary(self):
         profile = ResumeProfile(
@@ -108,7 +121,10 @@ class JobMatcherTests(unittest.TestCase):
         self.assertGreater(result.match_score, 0)
         self.assertIn("办公室管理", result.matched_skills)
         self.assertIn("供应商协调", result.matched_skills)
-        self.assertIn("流程优化", result.missing_skills)
+        self.assertNotIn("流程优化", result.missing_skills)
+        self.assertTrue(
+            any("流程优化" in item and "not evidenced" in item for item in result.gaps)
+        )
 
     def test_empty_and_weak_job_descriptions_return_stable_low_information_result(self):
         profile = ResumeProfile(skills=["Excel"], experience=[ExperienceEntry(role="专员")])

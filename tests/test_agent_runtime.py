@@ -44,7 +44,13 @@ class AgentRuntimeTests(unittest.TestCase):
         self.assertEqual(response.capability, "match_job")
         self.assertIsInstance(response.result, JobMatchResult)
         self.assertIn("Python", response.result.matched_skills)
-        self.assertIn("Docker", response.result.missing_skills)
+        self.assertNotIn("Docker", response.result.missing_skills)
+        self.assertTrue(
+            any(
+                "Docker" in gap and "not evidenced" in gap
+                for gap in response.result.gaps
+            )
+        )
 
     def test_invoke_career_analysis_returns_complete_report(self):
         response = self.runtime.invoke(

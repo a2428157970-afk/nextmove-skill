@@ -22,6 +22,7 @@ class Requirement:
     canonical: str
     aliases: tuple[str, ...]
     adjacent_aliases: tuple[str, ...] = ()
+    kind: str = "skill"
 
 
 DOMAIN_REQUIREMENTS: dict[CareerDomain, tuple[Requirement, ...]] = {
@@ -30,6 +31,11 @@ DOMAIN_REQUIREMENTS: dict[CareerDomain, tuple[Requirement, ...]] = {
         Requirement("考勤", ("考勤", "attendance")),
         Requirement("薪酬", ("薪酬", "payroll", "compensation")),
         Requirement("劳动关系", ("劳动关系", "employee relations", "labor relations")),
+        Requirement(
+            "行政事务",
+            ("行政事务", "行政", "administrative affairs", "administration"),
+            kind="responsibility",
+        ),
     ),
     CareerDomain.TECHNOLOGY: (
         Requirement("Python", ("python",)),
@@ -243,7 +249,7 @@ class MatchScorer:
         mapped = [
             self._assess_requirement(
                 requirement.canonical,
-                "skill",
+                requirement.kind,
                 requirement.aliases,
                 requirement.adjacent_aliases,
                 source_items,
