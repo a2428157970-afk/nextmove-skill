@@ -2,6 +2,8 @@
 
 import re
 
+from skill.career.stage_assessor import CareerStageAssessor
+from skill.career.stages import legacy_career_level
 from skill.schemas.analysis import ResumeAnalysisResult, SkillAssessment
 from skill.schemas.resume import ResumeProfile
 
@@ -76,14 +78,8 @@ class ResumeAnalyzer:
 
     @staticmethod
     def _career_level(profile: ResumeProfile) -> str:
-        experience_count = len(profile.experience)
-        if experience_count == 0:
-            return "unknown"
-        if experience_count == 1:
-            return "junior"
-        if experience_count == 2:
-            return "mid"
-        return "senior"
+        assessment = CareerStageAssessor().assess(profile)
+        return legacy_career_level(assessment.stage)
 
     @staticmethod
     def _has_quantified_impact(profile: ResumeProfile) -> bool:
