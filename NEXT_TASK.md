@@ -2,20 +2,26 @@
 
 ## Status
 
-Epic-024.2 is complete. The Agent-first Pilot Kit now provides a five-minute
-Quick Start, fictional inputs, copyable prompts, a report-reading guide, and
-dual privacy-safe feedback channels without changing Skill or CLI behavior.
+Epic-025.1 is complete. Job matching now uses deterministic career-domain,
+job-family, skill, and qualification evidence for HR, technology, finance,
+operations, and the remaining focused v1 taxonomy. The public six-field
+`JobMatchResult` and Agent contract remain unchanged.
 
 ## Recommended Next Step
 
-Invite 5-10 non-technical job seekers to use NextMove through an Agent. Collect
-only the anonymous fields allowed by `docs/pilot-guidelines.md`, then review the
-first-use completion, report understanding, recommendation actionability,
-severe factual-error, and feedback-completion signals.
+Run a privacy-safe matching Pilot with HR, technology, finance, and operations
+examples. Review domain classification, score explanation, false-positive
+requirements, and low-information behavior before expanding aliases or
+proposing a versioned Agent Contract for confidence and component scores.
 
 ## Notes
 
 - Do not continue expanding the Application Layer until instructed.
+- Keep `JobMatchResult` limited to `match_score`, `matched_skills`,
+  `missing_skills`, `strengths`, `gaps`, and `recommendations` until a separate
+  Agent Contract versioning Epic is approved.
+- Keep domain classification, job family, confidence, and component scores
+  internal to `skill/matching/` during the Pilot.
 - Keep the v0.8.0 tag, push, and GitHub Release flow paused until explicitly
   resumed.
 - Do not add telemetry or retain resume, job-description, identity, contact,

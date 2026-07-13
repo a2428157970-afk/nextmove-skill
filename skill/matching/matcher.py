@@ -1,145 +1,60 @@
-"""Rule-based job matching for Skill Core."""
+"""Domain-aware rule-based job matching for Skill Core."""
 
-import re
-
-from skill.matching.schemas import JobMatchResult
+from skill.matching.classifier import DomainClassifier
+from skill.matching.scoring import MatchScorer
+from skill.matching.schemas import JobMatchResult, MatchAssessment, MatchConfidence
 from skill.schemas.resume import ResumeProfile
 
 
-KNOWN_JOB_KEYWORDS = {
-    "api": "API",
-    "apis": "API",
-    "aws": "AWS",
-    "azure": "Azure",
-    "docker": "Docker",
-    "fastapi": "FastAPI",
-    "flask": "Flask",
-    "gcp": "GCP",
-    "java": "Java",
-    "javascript": "JavaScript",
-    "kubernetes": "Kubernetes",
-    "python": "Python",
-    "react": "React",
-    "sql": "SQL",
-    "tableau": "Tableau",
-    "typescript": "TypeScript",
-}
-
-
 class JobMatcher:
-    """Compare a resume profile with a job description using simple rules."""
+    """Compare a resume profile with a job description using domain-aware rules."""
+
+    def __init__(self) -> None:
+        self.classifier = DomainClassifier()
+        self.scorer = MatchScorer()
 
     def match(
         self,
         profile: ResumeProfile,
         job_description: str,
     ) -> JobMatchResult:
-        resume_skills = self._normalize_profile_skills(profile)
-        job_keywords = self._extract_job_keywords(job_description)
-
-        matched_keys = [
-            keyword for keyword in job_keywords if keyword.lower() in resume_skills
-        ]
-        missing_keys = [
-            keyword for keyword in job_keywords if keyword.lower() not in resume_skills
-        ]
-
-        matched_skills = [KNOWN_JOB_KEYWORDS[keyword.lower()] for keyword in matched_keys]
-        missing_skills = [KNOWN_JOB_KEYWORDS[keyword.lower()] for keyword in missing_keys]
-
-        match_score = self._score(profile, job_keywords, matched_keys)
-        strengths = self._strengths(matched_skills, profile)
-        gaps = self._gaps(missing_skills, profile)
-        recommendations = self._recommendations(missing_skills, match_score)
+        resume_classification = self.classifier.classify_profile(profile)
+        job_classification = self.classifier.classify_text(job_description)
+        assessment = self.scorer.assess(
+            profile,
+            job_description,
+            resume_classification,
+            job_classification,
+        )
 
         return JobMatchResult(
-            match_score=match_score,
-            matched_skills=matched_skills,
-            missing_skills=missing_skills,
-            strengths=strengths,
-            gaps=gaps,
-            recommendations=recommendations,
+            match_score=assessment.score,
+            matched_skills=list(assessment.matched_skills),
+            missing_skills=list(assessment.missing_skills),
+            strengths=list(assessment.strengths),
+            gaps=list(assessment.gaps),
+            recommendations=self._recommendations(assessment),
         )
 
     @staticmethod
-    def _normalize_profile_skills(profile: ResumeProfile) -> set[str]:
-        return {skill.strip().lower() for skill in profile.skills if skill.strip()}
-
-    @staticmethod
-    def _extract_job_keywords(job_description: str) -> list[str]:
-        words = {
-            word.lower()
-            for word in re.findall(r"[A-Za-z][A-Za-z0-9+#-]*", job_description)
-        }
-        return [
-            keyword
-            for keyword in KNOWN_JOB_KEYWORDS
-            if keyword in words and keyword != "apis"
-        ]
-
-    @staticmethod
-    def _score(
-        profile: ResumeProfile,
-        job_keywords: list[str],
-        matched_keywords: list[str],
-    ) -> int:
-        if not profile.skills and not profile.experience:
-            return 0
-        if not job_keywords:
-            return 0
-
-        skill_score = len(matched_keywords) / len(job_keywords) * 80
-        experience_score = 20 if profile.experience else 0
-        return min(100, round(skill_score + experience_score))
-
-    @staticmethod
-    def _strengths(
-        matched_skills: list[str],
-        profile: ResumeProfile,
-    ) -> list[str]:
-        strengths: list[str] = []
-        if matched_skills:
-            strengths.append(
-                "Resume covers key job skills: " + ", ".join(matched_skills) + "."
-            )
-        if profile.experience:
-            strengths.append("Resume includes work experience relevant to the match.")
-        return strengths
-
-    @staticmethod
-    def _gaps(
-        missing_skills: list[str],
-        profile: ResumeProfile,
-    ) -> list[str]:
-        gaps: list[str] = []
-        if missing_skills:
-            gaps.append(
-                "Job description mentions skills not visible in the resume: "
-                + ", ".join(missing_skills)
-                + "."
-            )
-        if not profile.experience:
-            gaps.append("Resume does not include work experience for relevance scoring.")
-        return gaps
-
-    @staticmethod
-    def _recommendations(
-        missing_skills: list[str],
-        match_score: int,
-    ) -> list[str]:
+    def _recommendations(assessment: MatchAssessment) -> list[str]:
         recommendations: list[str] = []
-        if missing_skills:
+        if assessment.missing_skills:
             recommendations.append(
-                "Add evidence for missing job keywords where truthful: "
-                + ", ".join(missing_skills)
+                "Add truthful evidence for job requirements not visible in the resume: "
+                + ", ".join(assessment.missing_skills)
                 + "."
             )
-        if match_score < 70:
+        if assessment.confidence == MatchConfidence.LOW:
             recommendations.append(
-                "Tailor the resume summary and experience bullets to the target job description."
+                "Provide more specific job responsibilities and qualifications for a more reliable match."
+            )
+        elif assessment.score < 70:
+            recommendations.append(
+                "Tailor the resume summary and experience bullets to the target role using truthful evidence."
             )
         else:
             recommendations.append(
-                "Keep the resume focused on the matched skills and add quantified impact."
+                "Keep the resume focused on the matched requirements and add quantified impact where truthful."
             )
         return recommendations

@@ -1,6 +1,38 @@
 """Provider-neutral job matching schema."""
 
+from __future__ import annotations
+
 from dataclasses import dataclass, field
+from enum import Enum
+
+from skill.matching.taxonomy import CareerDomain, JobFamily
+
+
+class MatchConfidence(str, Enum):
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+
+
+@dataclass(frozen=True, slots=True)
+class DomainClassification:
+    domain: CareerDomain
+    job_family: JobFamily | None
+    confidence: MatchConfidence
+    evidence: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
+class MatchAssessment:
+    score: int
+    confidence: MatchConfidence
+    domain_score: int | None
+    skill_score: int | None
+    qualification_score: int | None
+    strengths: tuple[str, ...] = ()
+    gaps: tuple[str, ...] = ()
+    matched_skills: tuple[str, ...] = ()
+    missing_skills: tuple[str, ...] = ()
 
 
 @dataclass(slots=True)
