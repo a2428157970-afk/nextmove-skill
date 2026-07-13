@@ -2,19 +2,18 @@
 
 ## Status
 
-Epic-025.1 through Epic-025.5A are complete. The offline Career Intelligence
-benchmark covers five fictional scenarios and measures Domain, Career Stage,
-Evidence, Explanation, and Safety quality. Product roles, Sales-to-Product
-transfer evidence, and Administration-to-HR support mappings are now covered.
-All five scenarios meet their semantic expectations and all aggregate metrics
-are 100. Public contracts and runtime boundaries remain unchanged.
+Epic-025.1 through Epic-025.5B are complete. The offline Career Intelligence
+benchmark covers six fictional scenarios and now measures transition type, gap
+grounding, risk calibration, action grounding, and transition safety alongside
+existing quality dimensions. All scenarios and aggregate metrics are 100.
+Public contracts and runtime boundaries remain unchanged.
 
 ## Recommended Next Step
 
-Review benchmark evidence and choose one narrowly scoped next taxonomy or
-quality-hardening Epic. Preserve the distinction between direct and
-transferable evidence, keep directional mappings capability-level, and do not
-weaken benchmark expectations to make future reports green.
+Review transition benchmark blind spots and choose one narrowly scoped quality
+hardening Epic, such as broader same-domain leadership evidence or additional
+adjacent-role calibration. Keep mappings directional and do not expose the
+internal transition contract without explicit public API versioning.
 
 ## Notes
 
@@ -28,6 +27,9 @@ weaken benchmark expectations to make future reports green.
   retain raw resume or job-description text in explanation results.
 - Keep `CareerStageAssessment` internal. Do not expose its stage, signals, or
   confidence through the Agent schema or existing public result dataclasses.
+- Keep `CareerTransitionAssessment` internal. Preserve unknown gaps, bounded
+  evidence-risk language, and the requirement that every action references a
+  structured gap and expected direct evidence.
 - Preserve legacy mapping: `entry -> junior`, `developing -> mid`,
   `experienced -> senior`, `advanced -> lead`, and `unknown -> unknown`.
 - Treat years of experience, title text, and tenure as supporting evidence only;

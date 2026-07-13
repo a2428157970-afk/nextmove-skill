@@ -21,6 +21,11 @@ AGGREGATE_METRICS = (
     "evidence_coverage",
     "explanation_completeness",
     "safety_pass_rate",
+    "transition_type_accuracy",
+    "transition_gap_grounding",
+    "transition_risk_calibration",
+    "transition_action_grounding",
+    "transition_safety_pass_rate",
 )
 
 

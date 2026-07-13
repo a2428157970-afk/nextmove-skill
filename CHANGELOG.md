@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+## Epic-025.5B - Career Transition Intelligence
+
+- Status: Completed
+- Added immutable internal transition contracts, directional transition-type
+  classification, structured capability gaps, calibrated evidence risk, and
+  gap-linked action recommendations.
+- Preserved unknown evidence as unknown and kept all risk language descriptive
+  rather than making negative suitability judgments.
+- Expanded the offline benchmark to six fictional scenarios covering
+  Sales-to-Product, Administration-to-HR, and HR Specialist-to-HR Manager;
+  all matching and transition quality metrics pass at 100.
+- Preserved `NextMoveSkill.run()`, the six-field `JobMatchResult`, Agent
+  contracts, Application Layer, CLI, providers, dependencies, and tag state.
+
 ## Epic-025.5A - Career Taxonomy Expansion
 
 - Status: Completed

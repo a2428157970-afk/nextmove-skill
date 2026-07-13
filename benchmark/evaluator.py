@@ -9,6 +9,11 @@ from typing import Any
 from benchmark.schemas import BenchmarkScenario
 from skill.career.stage_assessor import CareerStageAssessor
 from skill.career.stages import CareerStageAssessment
+from skill.career.transition import (
+    CareerTransitionAssessment,
+    CareerTransitionAssessor,
+    TargetRoleLevelAssessor,
+)
 from skill.matching.classifier import DomainClassifier
 from skill.matching.explanations import MatchExplanationResult
 from skill.matching.matcher import JobMatcher
@@ -25,6 +30,7 @@ class BenchmarkObservation:
     explanation: MatchExplanationResult
     public_result: JobMatchResult
     professional_evidence: tuple[str, ...]
+    career_transition: CareerTransitionAssessment | None
 
 
 @dataclass(frozen=True, slots=True)
@@ -62,14 +68,30 @@ def observe_scenario(scenario: BenchmarkScenario) -> BenchmarkObservation:
         profile,
         scenario.target_jd,
     )
+    resume_domain = classifier.classify_profile(profile)
+    target_domain = classifier.classify_text(scenario.target_jd)
+    career_stage = CareerStageAssessor().assess(profile)
+    transition = None
+    if scenario.expected.transition is not None:
+        transition = CareerTransitionAssessor().assess(
+            resume_domain,
+            target_domain,
+            career_stage,
+            assessment.transferability,
+            explanation,
+            TargetRoleLevelAssessor().classify(
+                f"{scenario.target_role} {scenario.target_jd}"
+            ),
+        )
     return BenchmarkObservation(
-        resume_domain=classifier.classify_profile(profile),
-        target_domain=classifier.classify_text(scenario.target_jd),
-        career_stage=CareerStageAssessor().assess(profile),
+        resume_domain=resume_domain,
+        target_domain=target_domain,
+        career_stage=career_stage,
         match_assessment=assessment,
         explanation=explanation,
         public_result=matcher.match(profile, scenario.target_jd),
         professional_evidence=_professional_evidence(profile),
+        career_transition=transition,
     )
 
 
@@ -268,7 +290,89 @@ def evaluate_scenario(
         safety=True,
     )
 
-    detailed_metric_names = (
+    transition_expected = expected.transition
+    if transition_expected is None:
+        for name, category in (
+            ("transition.type.not_applicable", "transition_type_accuracy"),
+            ("transition.gaps.not_applicable", "transition_gap_grounding"),
+            ("transition.risk.not_applicable", "transition_risk_calibration"),
+            ("transition.actions.not_applicable", "transition_action_grounding"),
+            ("transition.safety.not_applicable", "transition_safety"),
+        ):
+            add(name, category, True, safety=category == "transition_safety")
+    else:
+        transition = observation.career_transition
+        if transition is None:
+            raise ValueError("Transition expectation requires a transition observation.")
+        add(
+            "transition.type",
+            "transition_type_accuracy",
+            transition.transition_type.value == transition_expected.transition_type,
+        )
+        if transition_expected.transferable_skills:
+            _add_concept_checks(
+                checks,
+                prefix="transition.transferable",
+                category="transition_gap_grounding",
+                expected_values=transition_expected.transferable_skills,
+                actual_values=transition.transferable_skills,
+            )
+        _add_concept_checks(
+            checks,
+            prefix="transition.gap",
+            category="transition_gap_grounding",
+            expected_values=transition_expected.missing_capabilities,
+            actual_values=tuple(gap.capability for gap in transition.missing_capabilities),
+        )
+        add(
+            "transition.risk",
+            "transition_risk_calibration",
+            transition.transition_risk.level.value in transition_expected.risk_levels,
+        )
+        _add_concept_checks(
+            checks,
+            prefix="transition.action",
+            category="transition_action_grounding",
+            expected_values=transition_expected.action_gaps,
+            actual_values=tuple(action.related_gap for action in transition.recommended_actions),
+        )
+        actual_action_gaps = tuple(
+            action.related_gap for action in transition.recommended_actions
+        )
+        add(
+            "transition.action.exact",
+            "transition_action_grounding",
+            len(actual_action_gaps) == len(set(actual_action_gaps))
+            and len(actual_action_gaps) == len(transition_expected.action_gaps)
+            and set(actual_action_gaps) == set(transition_expected.action_gaps),
+        )
+        add(
+            "transition.action.linked",
+            "transition_action_grounding",
+            all(
+                action_gap in {gap.capability for gap in transition.missing_capabilities}
+                for action_gap in actual_action_gaps
+            ),
+        )
+        transition_text = " ".join((
+            *transition.transferable_skills,
+            *(gap.capability for gap in transition.missing_capabilities),
+            *transition.transition_risk.factors,
+            *(action.objective for action in transition.recommended_actions),
+            *(step for action in transition.recommended_actions for step in action.steps),
+            *(action.expected_evidence for action in transition.recommended_actions),
+        ))
+        add(
+            "transition.safety.no_forbidden_conclusions",
+            "transition_safety",
+            not any(
+                value.casefold() in transition_text.casefold()
+                for value in transition_expected.forbidden_conclusions
+            ),
+            safety=True,
+        )
+
+    base_metric_names = (
         "domain_accuracy",
         "career_stage_accuracy",
         "requirement_coverage",
@@ -278,11 +382,18 @@ def evaluate_scenario(
         "gap_correctness",
         "risk_correctness",
     )
+    transition_metric_names = (
+        "transition_type_accuracy",
+        "transition_gap_grounding",
+        "transition_risk_calibration",
+        "transition_action_grounding",
+    )
     detailed_scores = {
-        name: _score(checks, (name,)) for name in detailed_metric_names
+        name: _score(checks, (name,))
+        for name in (*base_metric_names, *transition_metric_names)
     }
     metrics = tuple(
-        QualityMetric(name, detailed_scores[name]) for name in detailed_metric_names
+        QualityMetric(name, detailed_scores[name]) for name in base_metric_names
     ) + (
         QualityMetric(
             "evidence_coverage",
@@ -307,6 +418,10 @@ def evaluate_scenario(
             ),
         ),
         QualityMetric("safety_pass_rate", _score(checks, ("safety",))),
+    ) + tuple(
+        QualityMetric(name, detailed_scores[name]) for name in transition_metric_names
+    ) + (
+        QualityMetric("transition_safety_pass_rate", _score(checks, ("transition_safety",))),
     )
     passed_checks = tuple(check.name for check in checks if check.passed)
     failed_checks = tuple(check.name for check in checks if not check.passed)

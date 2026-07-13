@@ -15,8 +15,8 @@ class CareerIntelligenceBenchmarkRunnerTests(unittest.TestCase):
         report = run_benchmark(SCENARIOS)
         payload = report.to_dict()
 
-        self.assertEqual(payload["summary"]["scenario_count"], 5)
-        self.assertEqual(len(payload["scenario_results"]), 5)
+        self.assertEqual(payload["summary"]["scenario_count"], 6)
+        self.assertEqual(len(payload["scenario_results"]), 6)
         for result in payload["scenario_results"]:
             self.assertIn("passed_checks", result)
             self.assertIn("failed_checks", result)
@@ -29,6 +29,11 @@ class CareerIntelligenceBenchmarkRunnerTests(unittest.TestCase):
                 "evidence_coverage",
                 "explanation_completeness",
                 "safety_pass_rate",
+                "transition_type_accuracy",
+                "transition_gap_grounding",
+                "transition_risk_calibration",
+                "transition_action_grounding",
+                "transition_safety_pass_rate",
             ],
         )
 
@@ -43,7 +48,7 @@ class CareerIntelligenceBenchmarkRunnerTests(unittest.TestCase):
 
         report = json.loads(completed.stdout)
         serialized = completed.stdout.casefold()
-        self.assertEqual(report["summary"]["scenario_count"], 5)
+        self.assertEqual(report["summary"]["scenario_count"], 6)
         self.assertEqual(
             completed.returncode,
             int(report["summary"]["failed_scenarios"] > 0),

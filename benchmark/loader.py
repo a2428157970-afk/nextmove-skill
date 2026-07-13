@@ -8,6 +8,7 @@ from pathlib import Path
 from benchmark.schemas import (
     BenchmarkScenario,
     ExpectedRequirement,
+    ExpectedTransition,
     ScenarioExpectation,
 )
 
@@ -19,6 +20,7 @@ def load_scenarios(directory: Path) -> list[BenchmarkScenario]:
         if payload.get("fictional") is not True:
             raise ValueError(f"Benchmark scenario must be fictional: {path.name}")
         expected = payload["expected"]
+        transition = expected.get("transition")
         scenarios.append(
             BenchmarkScenario(
                 scenario_id=payload["scenario_id"],
@@ -48,6 +50,20 @@ def load_scenarios(directory: Path) -> list[BenchmarkScenario]:
                     risks=tuple(expected["risks"]),
                     forbidden_conclusions=tuple(
                         expected["forbidden_conclusions"]
+                    ),
+                    transition=(
+                        ExpectedTransition(
+                            transition_type=transition["transition_type"],
+                            transferable_skills=tuple(transition.get("transferable_skills", [])),
+                            missing_capabilities=tuple(transition.get("missing_capabilities", [])),
+                            risk_levels=tuple(transition["risk_levels"]),
+                            action_gaps=tuple(transition.get("action_gaps", [])),
+                            forbidden_conclusions=tuple(
+                                transition["forbidden_conclusions"]
+                            ),
+                        )
+                        if transition is not None
+                        else None
                     ),
                 ),
             )

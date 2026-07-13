@@ -10,9 +10,7 @@
         "role": "Office Administrator",
         "start_date": "2022-01",
         "end_date": "2025-01",
-        "highlights": [
-          "Owned onboarding document coordination and attendance record support."
-        ]
+        "highlights": ["Owned onboarding document coordination and attendance record support."]
       }
     ],
     "education": [],
@@ -22,7 +20,7 @@
   },
   "target": {
     "role": "HR Assistant",
-    "job_description": "HR generalist assistant requiring attendance, onboarding administration, recruitment coordination, employee file support, payroll, and labor relations."
+    "job_description": "HR generalist assistant requiring attendance, onboarding administration, recruitment coordination, employee file support, and labor relations."
   },
   "expected": {
     "resume_domain": "operations",
@@ -35,12 +33,19 @@
       {"requirement": "入职行政", "status": "partial", "evidence_concepts": ["onboarding document coordination"]},
       {"requirement": "招聘协调", "status": "unknown", "evidence_concepts": []},
       {"requirement": "员工档案", "status": "partial", "evidence_concepts": ["onboarding document coordination"]},
-      {"requirement": "薪酬", "status": "unknown", "evidence_concepts": []},
       {"requirement": "劳动关系", "status": "unknown", "evidence_concepts": []}
     ],
     "strengths": ["考勤", "入职行政", "员工档案"],
-    "gaps": ["招聘协调", "薪酬", "劳动关系"],
+    "gaps": ["招聘协调", "劳动关系"],
     "risks": ["partial_coverage", "domain_transition", "career_transition"],
+    "transition": {
+      "transition_type": "adjacent_role",
+      "transferable_skills": ["Coordination", "Documentation"],
+      "missing_capabilities": ["Recruitment", "Labor Relations"],
+      "risk_levels": ["medium", "high"],
+      "action_gaps": ["Recruitment", "Labor Relations"],
+      "forbidden_conclusions": ["direct recruitment experience", "employee relations expert"]
+    },
     "forbidden_conclusions": [
       "direct recruitment experience",
       "full HR generalist coverage",

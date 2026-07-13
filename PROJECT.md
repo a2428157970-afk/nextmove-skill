@@ -11,19 +11,20 @@ Slogan: Know Your Value. Find Your Next Career Move.
 ## Current Stage
 Epic-025.1 Domain-aware Job Matching, Epic-025.2 Career Stage Model,
 Epic-025.3 Evidence-based Match Explanation, and Epic-025.4 Career Intelligence
-Quality Benchmark are complete. Epic-025.5A Career Taxonomy Expansion adds
-Product job families and bounded Sales-to-Product and Administration-to-HR
-transfer evidence. Five fictional offline scenarios now pass Domain, Career
-Stage, Evidence, Explanation, and Safety checks without changing public
-contracts. Git release work remains paused.
+Quality Benchmark, Epic-025.5A Career Taxonomy Expansion, and Epic-025.5B
+Career Transition Intelligence are complete. Internal transition assessments
+now classify career moves, preserve evidence-grounded gaps, calibrate risk, and
+produce gap-linked actions. Six fictional offline scenarios pass matching and
+transition quality checks without changing public contracts. Git release work
+remains paused.
 
 ## Current Sprint
 Epic-025 Career Intelligence Quality.
 
 ## Current Goal
-Keep the expanded taxonomy stable and use the benchmark to select any next
-domain or capability expansion. Continue to preserve direct-versus-transferable
-evidence semantics and public contracts.
+Keep transition intelligence internal and use the six-scenario benchmark to
+select the next quality-hardening increment. Continue to preserve unknown,
+direct-versus-transferable evidence semantics, and public contracts.
 
 ## Tech Stack
 - Frontend: Next.js
@@ -40,6 +41,6 @@ evidence semantics and public contracts.
 - No resume submission automation
 
 ## Next Task
-Design the next benchmark-guided taxonomy increment only after reviewing real
-quality gaps. Do not weaken benchmark expectations, resume release work, or
-expose internal explanation/transfer data without a separate contract Epic.
+Review benchmark blind spots before expanding transition rules or exposing any
+internal assessment. Do not weaken benchmark expectations, resume release
+work, or change public contracts without a separate versioning Epic.

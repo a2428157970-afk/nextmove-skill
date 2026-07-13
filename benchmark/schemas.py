@@ -14,6 +14,16 @@ class ExpectedRequirement:
 
 
 @dataclass(frozen=True, slots=True)
+class ExpectedTransition:
+    transition_type: str
+    transferable_skills: tuple[str, ...]
+    missing_capabilities: tuple[str, ...]
+    risk_levels: tuple[str, ...]
+    action_gaps: tuple[str, ...]
+    forbidden_conclusions: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
 class ScenarioExpectation:
     resume_domain: str
     domain: str
@@ -25,6 +35,7 @@ class ScenarioExpectation:
     gaps: tuple[str, ...]
     risks: tuple[str, ...]
     forbidden_conclusions: tuple[str, ...]
+    transition: ExpectedTransition | None = None
 
 
 @dataclass(frozen=True, slots=True)

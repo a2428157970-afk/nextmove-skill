@@ -1,0 +1,55 @@
+{
+  "scenario_id": "hr-specialist-to-hr-manager",
+  "title": "HR Specialist to HR Manager progression",
+  "fictional": true,
+  "resume_fixture": {
+    "summary": "HR generalist with seven years of fictional recruitment and people operations experience.",
+    "skills": ["Recruitment", "Attendance", "HR process management"],
+    "experience": [
+      {
+        "role": "HR Generalist",
+        "start_date": "2018-01",
+        "end_date": "2025-01",
+        "highlights": [
+          "Led cross-functional HR process improvement and reduced fictional onboarding time by 20%.",
+          "Owned recruitment delivery and attendance operations."
+        ]
+      }
+    ],
+    "education": [],
+    "projects": [],
+    "certifications": [],
+    "languages": []
+  },
+  "target": {
+    "role": "HR Manager",
+    "job_description": "HR generalist manager responsible for recruitment, attendance, HR process management, and people leadership."
+  },
+  "expected": {
+    "resume_domain": "human_resources",
+    "domain": "human_resources",
+    "resume_family": "hr_generalist",
+    "target_family": "hr_generalist",
+    "career_stage": "experienced",
+    "requirements": [
+      {"requirement": "招聘", "status": "matched", "evidence_concepts": ["recruitment"]},
+      {"requirement": "考勤", "status": "matched", "evidence_concepts": ["attendance"]}
+    ],
+    "strengths": ["招聘", "考勤"],
+    "gaps": [],
+    "risks": [],
+    "transition": {
+      "transition_type": "same_domain",
+      "transferable_skills": [],
+      "missing_capabilities": ["People Leadership"],
+      "risk_levels": ["medium"],
+      "action_gaps": ["People Leadership"],
+      "forbidden_conclusions": ["unsuitable", "cannot transition", "proven people manager"]
+    },
+    "forbidden_conclusions": [
+      "unsuitable",
+      "cannot transition",
+      "proven people manager"
+    ]
+  }
+}

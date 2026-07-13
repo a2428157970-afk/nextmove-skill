@@ -12,7 +12,7 @@ SCENARIOS = Path(__file__).parent / "benchmark" / "scenarios"
 
 
 class CareerIntelligenceBenchmarkDatasetTests(unittest.TestCase):
-    def test_loads_five_scenarios_in_stable_order(self):
+    def test_loads_six_scenarios_in_stable_order(self):
         scenarios = load_scenarios(SCENARIOS)
 
         self.assertEqual(
@@ -23,6 +23,7 @@ class CareerIntelligenceBenchmarkDatasetTests(unittest.TestCase):
                 "sales-to-product-manager",
                 "administrative-assistant-to-hr-assistant",
                 "information-insufficient-resume",
+                "hr-specialist-to-hr-manager",
             ],
         )
 
@@ -37,6 +38,8 @@ class CareerIntelligenceBenchmarkDatasetTests(unittest.TestCase):
             self.assertIsInstance(scenario.expected.gaps, tuple)
             self.assertIsInstance(scenario.expected.risks, tuple)
             self.assertTrue(scenario.expected.forbidden_conclusions)
+            if scenario.expected.transition is not None:
+                self.assertTrue(scenario.expected.transition.forbidden_conclusions)
 
     def test_scenarios_are_fictional_and_exclude_personal_information(self):
         forbidden_keys = {
@@ -73,6 +76,12 @@ class CareerIntelligenceObservationTests(unittest.TestCase):
             observation.match_assessment.requirements,
         )
         self.assertIsInstance(observation.public_result, JobMatchResult)
+        self.assertIsNone(observation.career_transition)
+
+    def test_transition_observation_is_only_composed_for_transition_scenarios(self):
+        scenarios = load_scenarios(SCENARIOS)
+        transition = next(item for item in scenarios if item.expected.transition is not None)
+        self.assertIsNotNone(observe_scenario(transition).career_transition)
 
     def test_public_result_contract_remains_exactly_six_fields(self):
         self.assertEqual(
@@ -108,6 +117,11 @@ class CareerIntelligenceQualityEvaluationTests(unittest.TestCase):
                 "evidence_coverage",
                 "explanation_completeness",
                 "safety_pass_rate",
+                "transition_type_accuracy",
+                "transition_gap_grounding",
+                "transition_risk_calibration",
+                "transition_action_grounding",
+                "transition_safety_pass_rate",
             ],
         )
         self.assertTrue(result.passed_checks)

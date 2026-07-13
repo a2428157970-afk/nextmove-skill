@@ -41,6 +41,14 @@
     "strengths": ["用户理解", "需求管理", "产品数据分析", "交付协作"],
     "gaps": ["产品规划", "PRD"],
     "risks": ["partial_coverage", "domain_transition", "career_transition"],
+    "transition": {
+      "transition_type": "cross_domain",
+      "transferable_skills": [],
+      "missing_capabilities": ["Product Planning", "PRD", "Product Delivery Ownership"],
+      "risk_levels": ["high"],
+      "action_gaps": ["Product Planning", "PRD", "Product Delivery Ownership"],
+      "forbidden_conclusions": ["unsuitable", "cannot transition", "direct product experience"]
+    },
     "forbidden_conclusions": [
       "unsuitable",
       "cannot perform",
