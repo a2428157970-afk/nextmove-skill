@@ -9,20 +9,19 @@ NextMove is an AI Career Intelligence Platform and AI Career Intelligence Skill 
 Slogan: Know Your Value. Find Your Next Career Move.
 
 ## Current Stage
-Epic-025.1 Domain-aware Job Matching, Epic-025.2 Career Stage Model, and
-Epic-025.3 Evidence-based Match Explanation are complete. NextMove now
-classifies a focused v1 career taxonomy, scores Domain, Skill, and
-Qualification evidence, derives an internal evidence-based career stage, and
-builds internal strengths, gaps, and risks without changing public contracts.
-Git release work remains paused.
+Epic-025.1 Domain-aware Job Matching, Epic-025.2 Career Stage Model,
+Epic-025.3 Evidence-based Match Explanation, and Epic-025.4 Career Intelligence
+Quality Benchmark are complete. Five fictional offline scenarios now measure
+Domain, Career Stage, Evidence, Explanation, and Safety quality without changing
+public contracts. Git release work remains paused.
 
 ## Current Sprint
 Epic-025 Career Intelligence Quality.
 
 ## Current Goal
-Prepare Epic-025.4 Career Intelligence Scenario Validation to evaluate the
-combined matching and career-stage behavior across representative, synthetic
-career scenarios without exposing new public result fields.
+Review the two measured semantic gaps: Sales to Product Manager requirement
+coverage and Administrative Assistant to HR Assistant adjacent-role evidence.
+Any remediation requires a separately approved business-logic Epic.
 
 ## Tech Stack
 - Frontend: Next.js
@@ -39,7 +38,6 @@ career scenarios without exposing new public result fields.
 - No resume submission automation
 
 ## Next Task
-Design Epic-025.4 around HR, technical, cross-domain career-transition, and
-insufficient-information acceptance fixtures. Keep explanation data internal
-until a separately approved Agent-contract versioning Epic; do not resume
-release work as part of that step.
+Choose whether to prioritize Product Manager taxonomy/requirement support or
+Administration-to-HR adjacency. Keep benchmark expectations stable and do not
+resume release work or expose explanation data as part of remediation.

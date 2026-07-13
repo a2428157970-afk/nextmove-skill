@@ -2,19 +2,19 @@
 
 ## Status
 
-Epic-025.1, Epic-025.2, and Epic-025.3 are complete. Job matching now uses
-deterministic domain, job-family, skill, and qualification evidence and builds
-an internal evidence-based explanation, while resume analysis and career advice
-share an internal evidence-based stage model. The public six-field
-`JobMatchResult`, legacy career-level values, Skill API, Agent contract,
-Application Layer, and CLI remain unchanged.
+Epic-025.1 through Epic-025.4 are complete. The offline Career Intelligence
+benchmark covers five fictional scenarios and measures Domain, Career Stage,
+Evidence, Explanation, and Safety quality. Three scenarios meet all semantic
+expectations; Sales to Product Manager and Administrative Assistant to HR
+Assistant expose bounded capability gaps. Safety Pass Rate is 100%. Public
+contracts and runtime boundaries remain unchanged.
 
 ## Recommended Next Step
 
-Design Epic-025.4 Career Intelligence Scenario Validation. Use synthetic HR,
-technical, cross-domain career-transition, and insufficient-information
-fixtures to evaluate the combined domain, stage, evidence, and explanation
-behavior while preserving deterministic privacy and all public contracts.
+Review benchmark evidence and approve one narrowly scoped remediation Epic:
+either Product Manager taxonomy/requirement coverage or Administration-to-HR
+adjacent-role evidence. Do not combine both changes without a new design and do
+not weaken benchmark expectations to make the report green.
 
 ## Notes
 

@@ -1,0 +1,48 @@
+{
+  "scenario_id": "hr-specialist",
+  "title": "HR Specialist same-domain strong match",
+  "fictional": true,
+  "resume_fixture": {
+    "summary": "Recruitment specialist with four years of fictional HR operations experience.",
+    "skills": ["Recruitment", "Attendance"],
+    "experience": [
+      {
+        "role": "Recruitment Specialist",
+        "start_date": "2021-01",
+        "end_date": "2025-01",
+        "highlights": [
+          "Owned campus recruitment and coordinated attendance records.",
+          "Delivered 1450 fictional candidate signings across seasonal campaigns."
+        ]
+      }
+    ],
+    "education": [],
+    "projects": [],
+    "certifications": [],
+    "languages": []
+  },
+  "target": {
+    "role": "HR Specialist",
+    "job_description": "HR generalist role requiring recruitment, attendance, and administrative affairs."
+  },
+  "expected": {
+    "resume_domain": "human_resources",
+    "domain": "human_resources",
+    "resume_family": "recruitment",
+    "target_family": "hr_generalist",
+    "career_stage": "developing",
+    "requirements": [
+      {"requirement": "招聘", "status": "matched", "evidence_concepts": ["campus recruitment"]},
+      {"requirement": "考勤", "status": "matched", "evidence_concepts": ["attendance"]},
+      {"requirement": "行政事务", "status": "unknown", "evidence_concepts": []}
+    ],
+    "strengths": ["招聘", "考勤"],
+    "gaps": ["行政事务"],
+    "risks": [],
+    "forbidden_conclusions": [
+      "lacks administrative ability",
+      "advanced HR leader",
+      "employee relations expert"
+    ]
+  }
+}

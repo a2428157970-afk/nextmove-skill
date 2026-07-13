@@ -1,0 +1,51 @@
+{
+  "scenario_id": "sales-to-product-manager",
+  "title": "Sales to Product Manager transition",
+  "fictional": true,
+  "resume_fixture": {
+    "summary": "Account manager transitioning from sales to product work in a fictional scenario.",
+    "skills": ["Customer discovery", "Commercial analysis", "Stakeholder coordination"],
+    "experience": [
+      {
+        "role": "Account Manager",
+        "start_date": "2018-01",
+        "end_date": "2025-01",
+        "highlights": [
+          "Led cross-functional customer discovery for fictional regional accounts.",
+          "Increased fictional account retention by 20% through commercial analysis."
+        ]
+      }
+    ],
+    "education": [],
+    "projects": [],
+    "certifications": [],
+    "languages": []
+  },
+  "target": {
+    "role": "Product Manager",
+    "job_description": "Product manager responsible for customer insight, commercial understanding, product planning, and product delivery."
+  },
+  "expected": {
+    "resume_domain": "sales",
+    "domain": "other",
+    "resume_family": "account_management",
+    "target_family": null,
+    "career_stage": "experienced",
+    "requirements": [
+      {"requirement": "客户洞察", "status": "matched", "evidence_concepts": ["customer discovery"]},
+      {"requirement": "商业理解", "status": "matched", "evidence_concepts": ["commercial analysis"]},
+      {"requirement": "产品规划", "status": "unknown", "evidence_concepts": []},
+      {"requirement": "产品交付", "status": "unknown", "evidence_concepts": []}
+    ],
+    "strengths": ["客户洞察", "商业理解"],
+    "gaps": ["产品规划", "产品交付"],
+    "risks": ["domain_transition", "career_transition"],
+    "forbidden_conclusions": [
+      "unsuitable",
+      "cannot perform",
+      "lacks product delivery experience",
+      "owned a product roadmap",
+      "launched a product"
+    ]
+  }
+}

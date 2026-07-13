@@ -1,0 +1,55 @@
+{
+  "scenario_id": "backend-engineer",
+  "title": "Backend Engineer technical match",
+  "fictional": true,
+  "resume_fixture": {
+    "summary": "Backend engineer with six years of fictional service development experience.",
+    "skills": ["Python", "FastAPI", "API", "SQL", "Docker"],
+    "experience": [
+      {
+        "role": "Backend Engineer",
+        "start_date": "2019-01",
+        "end_date": "2025-01",
+        "highlights": [
+          "Led a complex service migration across product and operations teams.",
+          "Improved fictional service reliability by 35%."
+        ]
+      }
+    ],
+    "education": [
+      {"degree": "Bachelor's degree", "field": "Computer Science"}
+    ],
+    "projects": [],
+    "certifications": [],
+    "languages": []
+  },
+  "target": {
+    "role": "Backend Engineer",
+    "job_description": "Backend engineer requiring Python, FastAPI, API, SQL, Docker, a Bachelor's degree, and AWS."
+  },
+  "expected": {
+    "resume_domain": "technology",
+    "domain": "technology",
+    "resume_family": "backend",
+    "target_family": "backend",
+    "career_stage": "experienced",
+    "requirements": [
+      {"requirement": "Python", "status": "matched", "evidence_concepts": ["Python"]},
+      {"requirement": "FastAPI", "status": "matched", "evidence_concepts": ["FastAPI"]},
+      {"requirement": "API", "status": "matched", "evidence_concepts": ["API"]},
+      {"requirement": "SQL", "status": "matched", "evidence_concepts": ["SQL"]},
+      {"requirement": "Docker", "status": "matched", "evidence_concepts": ["Docker"]},
+      {"requirement": "Bachelor's degree", "status": "matched", "evidence_concepts": ["Bachelor's degree"]},
+      {"requirement": "AWS", "status": "unknown", "evidence_concepts": []}
+    ],
+    "strengths": ["Python", "FastAPI", "API", "SQL", "Docker", "Bachelor's degree"],
+    "gaps": ["AWS"],
+    "risks": [],
+    "forbidden_conclusions": [
+      "Kubernetes experience",
+      "team leadership",
+      "architecture ownership",
+      "cloud delivery experience"
+    ]
+  }
+}

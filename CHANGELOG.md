@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## Epic-025.4 - Career Intelligence Quality Benchmark
+
+- Status: Completed
+- Added five fictional, offline benchmark scenarios spanning HR, backend
+  engineering, cross-career transition, adjacent-role migration, and
+  insufficient information.
+- Added structured Domain, Career Stage, Evidence, Explanation, and Safety
+  assertions with detailed metrics and a content-safe benchmark runner.
+- Measured three fully passing semantic scenarios, two explicit capability-gap
+  scenarios, and a 100% safety pass rate without modifying business rules.
+- Preserved `NextMoveSkill.run()`, the six-field `JobMatchResult`, Agent
+  contracts, Application Layer, CLI, providers, dependencies, and tag state.
+
 ## Epic-025.3 - Evidence-based Match Explanation
 
 - Status: Completed

@@ -1,0 +1,38 @@
+{
+  "scenario_id": "information-insufficient-resume",
+  "title": "Information insufficient resume",
+  "fictional": true,
+  "resume_fixture": {
+    "summary": null,
+    "skills": [],
+    "experience": [],
+    "education": [],
+    "projects": [],
+    "certifications": [],
+    "languages": []
+  },
+  "target": {
+    "role": "Unspecified role",
+    "job_description": "Looking for a motivated professional."
+  },
+  "expected": {
+    "resume_domain": "unknown",
+    "domain": "unknown",
+    "resume_family": null,
+    "target_family": null,
+    "career_stage": "unknown",
+    "requirements": [],
+    "strengths": [],
+    "gaps": ["insufficient job information"],
+    "risks": [],
+    "forbidden_conclusions": [
+      "senior",
+      "junior",
+      "experienced",
+      "qualified",
+      "unqualified",
+      "missing skill",
+      "cannot perform"
+    ]
+  }
+}
