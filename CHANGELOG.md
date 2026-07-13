@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+## Epic-025.5A - Career Taxonomy Expansion
+
+- Status: Completed
+- Added an internal Product domain with Product Manager, Product Analyst,
+  Product Operations, and Product Assistant job families plus five Product
+  capability categories.
+- Added direct-versus-transferable evidence handling and a content-safe,
+  directional `TransferableSkillAssessment` for Sales-to-Product and
+  Administration-to-HR transitions.
+- Kept transferable evidence partial and limitation-bound; it never becomes
+  direct Product experience or infers recruitment, payroll, or labor-relations
+  expertise from administration work.
+- Expanded the Career Intelligence Benchmark to 5/5 passing synthetic
+  scenarios with 100 for Domain Accuracy, Career Stage Accuracy, Evidence
+  Coverage, Explanation Completeness, and Safety Pass Rate.
+- Preserved `NextMoveSkill.run()`, the six-field `JobMatchResult`, Agent
+  contracts, Application Layer, CLI, providers, dependencies, and tag state.
+
 ## Epic-025.4 - Career Intelligence Quality Benchmark
 
 - Status: Completed

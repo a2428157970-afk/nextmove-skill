@@ -40,7 +40,7 @@ class CareerIntelligenceScenarioTests(unittest.TestCase):
             )
             self.assertEqual(safety.score, 100, result.scenario_id)
 
-    def test_benchmark_exposes_semantic_gaps_without_changing_expectations(self):
+    def test_expanded_taxonomy_scenarios_meet_semantic_expectations(self):
         results = {
             scenario.scenario_id: evaluate_scenario(
                 scenario,
@@ -52,10 +52,8 @@ class CareerIntelligenceScenarioTests(unittest.TestCase):
         self.assertTrue(results["hr-specialist"].passed)
         self.assertTrue(results["backend-engineer"].passed)
         self.assertTrue(results["information-insufficient-resume"].passed)
-        self.assertTrue(results["sales-to-product-manager"].failed_checks)
-        self.assertTrue(
-            results["administrative-assistant-to-hr-assistant"].failed_checks
-        )
+        self.assertTrue(results["sales-to-product-manager"].passed)
+        self.assertTrue(results["administrative-assistant-to-hr-assistant"].passed)
 
 
 if __name__ == "__main__":

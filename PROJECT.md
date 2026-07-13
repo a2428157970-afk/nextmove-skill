@@ -11,17 +11,19 @@ Slogan: Know Your Value. Find Your Next Career Move.
 ## Current Stage
 Epic-025.1 Domain-aware Job Matching, Epic-025.2 Career Stage Model,
 Epic-025.3 Evidence-based Match Explanation, and Epic-025.4 Career Intelligence
-Quality Benchmark are complete. Five fictional offline scenarios now measure
-Domain, Career Stage, Evidence, Explanation, and Safety quality without changing
-public contracts. Git release work remains paused.
+Quality Benchmark are complete. Epic-025.5A Career Taxonomy Expansion adds
+Product job families and bounded Sales-to-Product and Administration-to-HR
+transfer evidence. Five fictional offline scenarios now pass Domain, Career
+Stage, Evidence, Explanation, and Safety checks without changing public
+contracts. Git release work remains paused.
 
 ## Current Sprint
 Epic-025 Career Intelligence Quality.
 
 ## Current Goal
-Review the two measured semantic gaps: Sales to Product Manager requirement
-coverage and Administrative Assistant to HR Assistant adjacent-role evidence.
-Any remediation requires a separately approved business-logic Epic.
+Keep the expanded taxonomy stable and use the benchmark to select any next
+domain or capability expansion. Continue to preserve direct-versus-transferable
+evidence semantics and public contracts.
 
 ## Tech Stack
 - Frontend: Next.js
@@ -38,6 +40,6 @@ Any remediation requires a separately approved business-logic Epic.
 - No resume submission automation
 
 ## Next Task
-Choose whether to prioritize Product Manager taxonomy/requirement support or
-Administration-to-HR adjacency. Keep benchmark expectations stable and do not
-resume release work or expose explanation data as part of remediation.
+Design the next benchmark-guided taxonomy increment only after reviewing real
+quality gaps. Do not weaken benchmark expectations, resume release work, or
+expose internal explanation/transfer data without a separate contract Epic.

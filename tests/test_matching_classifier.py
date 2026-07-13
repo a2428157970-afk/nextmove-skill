@@ -6,8 +6,10 @@ from skill.schemas.resume import ExperienceEntry, ResumeProfile
 from skill.matching.taxonomy import (
     ADJACENT_DOMAINS,
     DOMAIN_FAMILIES,
+    PRODUCT_CAPABILITIES,
     CareerDomain,
     JobFamily,
+    ProductCapabilityCategory,
 )
 
 
@@ -25,6 +27,7 @@ class CareerTaxonomyTests(unittest.TestCase):
                 "supply_chain",
                 "manufacturing",
                 "customer_service",
+                "product",
                 "other",
                 "unknown",
             },
@@ -51,6 +54,49 @@ class CareerTaxonomyTests(unittest.TestCase):
         )
         self.assertEqual(DOMAIN_FAMILIES[CareerDomain.OTHER], ())
         self.assertEqual(DOMAIN_FAMILIES[CareerDomain.UNKNOWN], ())
+
+    def test_product_job_families_and_capabilities_are_domain_scoped(self):
+        self.assertEqual(
+            DOMAIN_FAMILIES[CareerDomain.PRODUCT],
+            (
+                JobFamily.PRODUCT_MANAGER,
+                JobFamily.PRODUCT_ANALYST,
+                JobFamily.PRODUCT_OPERATIONS,
+                JobFamily.PRODUCT_ASSISTANT,
+            ),
+        )
+        self.assertEqual(
+            {capability.category for capability in PRODUCT_CAPABILITIES},
+            set(ProductCapabilityCategory),
+        )
+        self.assertEqual(
+            {category.value for category in ProductCapabilityCategory},
+            {
+                "user_understanding",
+                "requirement_management",
+                "product_planning",
+                "data_analysis",
+                "delivery_collaboration",
+            },
+        )
+        user_understanding = next(
+            capability
+            for capability in PRODUCT_CAPABILITIES
+            if capability.category == ProductCapabilityCategory.USER_UNDERSTANDING
+        )
+        self.assertIn("user interview", user_understanding.direct_aliases)
+        self.assertIn("customer research", user_understanding.transferable_aliases)
+        self.assertNotIn("customer research", user_understanding.direct_aliases)
+        requirement_management = next(
+            capability
+            for capability in PRODUCT_CAPABILITIES
+            if capability.category == ProductCapabilityCategory.REQUIREMENT_MANAGEMENT
+        )
+        self.assertIn("PRD", requirement_management.direct_aliases)
+        self.assertIn(
+            "requirement collection",
+            requirement_management.transferable_aliases,
+        )
 
     def test_adjacent_domains_are_symmetric(self):
         self.assertIn(
@@ -144,6 +190,46 @@ class DomainClassifierTests(unittest.TestCase):
             result.job_family is None
             or result.job_family in DOMAIN_FAMILIES[result.domain]
         )
+
+    def test_classifies_product_job_families(self):
+        cases = (
+            (
+                "Product Manager responsible for roadmap, PRD, and feature prioritization.",
+                JobFamily.PRODUCT_MANAGER,
+            ),
+            (
+                "Product Analyst responsible for product metrics and A/B test analysis.",
+                JobFamily.PRODUCT_ANALYST,
+            ),
+            (
+                "Product Operations specialist responsible for user feedback and launch follow-up.",
+                JobFamily.PRODUCT_OPERATIONS,
+            ),
+            (
+                "Product Assistant supporting requirement documents and delivery collaboration.",
+                JobFamily.PRODUCT_ASSISTANT,
+            ),
+        )
+
+        for text, family in cases:
+            with self.subTest(family=family):
+                result = self.classifier.classify_text(text)
+                self.assertEqual(result.domain, CareerDomain.PRODUCT)
+                self.assertEqual(result.job_family, family)
+
+    def test_generic_sales_and_inventory_product_text_are_not_product_roles(self):
+        cases = (
+            "Sales Manager responsible for customer management and revenue targets.",
+            "Warehouse specialist responsible for product inventory movements.",
+            "Product sales representative responsible for account management.",
+        )
+
+        for text in cases:
+            with self.subTest(text=text):
+                self.assertNotEqual(
+                    self.classifier.classify_text(text).domain,
+                    CareerDomain.PRODUCT,
+                )
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 """Deterministic career-domain taxonomy for job matching."""
 
+from dataclasses import dataclass
 from enum import Enum
 from typing import NamedTuple
 
@@ -14,6 +15,7 @@ class CareerDomain(str, Enum):
     SUPPLY_CHAIN = "supply_chain"
     MANUFACTURING = "manufacturing"
     CUSTOMER_SERVICE = "customer_service"
+    PRODUCT = "product"
     OTHER = "other"
     UNKNOWN = "unknown"
 
@@ -48,6 +50,89 @@ class JobFamily(str, Enum):
     CUSTOMER_SUPPORT = "customer_support"
     CUSTOMER_SUCCESS = "customer_success"
     SERVICE_OPERATIONS = "service_operations"
+    PRODUCT_MANAGER = "product_manager"
+    PRODUCT_ANALYST = "product_analyst"
+    PRODUCT_OPERATIONS = "product_operations"
+    PRODUCT_ASSISTANT = "product_assistant"
+
+
+class ProductCapabilityCategory(str, Enum):
+    USER_UNDERSTANDING = "user_understanding"
+    REQUIREMENT_MANAGEMENT = "requirement_management"
+    PRODUCT_PLANNING = "product_planning"
+    DATA_ANALYSIS = "data_analysis"
+    DELIVERY_COLLABORATION = "delivery_collaboration"
+
+
+@dataclass(frozen=True, slots=True)
+class ProductCapabilityDefinition:
+    canonical: str
+    category: ProductCapabilityCategory
+    direct_aliases: tuple[str, ...]
+    transferable_aliases: tuple[str, ...]
+    families: tuple[JobFamily, ...]
+
+
+PRODUCT_JOB_FAMILIES = (
+    JobFamily.PRODUCT_MANAGER,
+    JobFamily.PRODUCT_ANALYST,
+    JobFamily.PRODUCT_OPERATIONS,
+    JobFamily.PRODUCT_ASSISTANT,
+)
+
+
+PRODUCT_CAPABILITIES = (
+    ProductCapabilityDefinition(
+        "用户理解",
+        ProductCapabilityCategory.USER_UNDERSTANDING,
+        (
+            "用户访谈",
+            "用户反馈整理",
+            "user interview",
+            "user feedback analysis",
+        ),
+        ("customer research", "customer discovery", "customer feedback"),
+        PRODUCT_JOB_FAMILIES,
+    ),
+    ProductCapabilityDefinition(
+        "需求管理",
+        ProductCapabilityCategory.REQUIREMENT_MANAGEMENT,
+        ("PRD", "user story", "requirement document", "feature design"),
+        ("requirement collection", "requirements gathering"),
+        PRODUCT_JOB_FAMILIES,
+    ),
+    ProductCapabilityDefinition(
+        "产品规划",
+        ProductCapabilityCategory.PRODUCT_PLANNING,
+        ("产品规划", "roadmap", "product roadmap", "feature prioritization"),
+        (),
+        PRODUCT_JOB_FAMILIES,
+    ),
+    ProductCapabilityDefinition(
+        "产品数据分析",
+        ProductCapabilityCategory.DATA_ANALYSIS,
+        ("指标分析", "product metrics", "A/B test", "ab test"),
+        ("commercial analysis", "customer data analysis"),
+        PRODUCT_JOB_FAMILIES,
+    ),
+    ProductCapabilityDefinition(
+        "交付协作",
+        ProductCapabilityCategory.DELIVERY_COLLABORATION,
+        (
+            "研发协作",
+            "上线跟进",
+            "product delivery",
+            "delivery collaboration",
+            "launch follow-up",
+        ),
+        (
+            "stakeholder coordination",
+            "cross-functional coordination",
+            "cross-team coordination",
+        ),
+        PRODUCT_JOB_FAMILIES,
+    ),
+)
 
 
 DOMAIN_FAMILIES: dict[CareerDomain, tuple[JobFamily, ...]] = {
@@ -98,6 +183,7 @@ DOMAIN_FAMILIES: dict[CareerDomain, tuple[JobFamily, ...]] = {
         JobFamily.CUSTOMER_SUCCESS,
         JobFamily.SERVICE_OPERATIONS,
     ),
+    CareerDomain.PRODUCT: PRODUCT_JOB_FAMILIES,
     CareerDomain.OTHER: (),
     CareerDomain.UNKNOWN: (),
 }
@@ -175,6 +261,20 @@ DOMAIN_SIGNALS: tuple[DomainSignal, ...] = (
     DomainSignal("content marketing", "content marketing", CareerDomain.MARKETING, 4, JobFamily.CONTENT_BRAND),
     DomainSignal("digital marketing", "digital marketing", CareerDomain.MARKETING, 4, JobFamily.DIGITAL_MARKETING),
     DomainSignal("market research", "market research", CareerDomain.MARKETING, 4, JobFamily.MARKET_RESEARCH),
+    DomainSignal("产品经理", "产品经理", CareerDomain.PRODUCT, 4, JobFamily.PRODUCT_MANAGER),
+    DomainSignal("product manager", "product manager", CareerDomain.PRODUCT, 4, JobFamily.PRODUCT_MANAGER),
+    DomainSignal("产品分析师", "产品分析师", CareerDomain.PRODUCT, 4, JobFamily.PRODUCT_ANALYST),
+    DomainSignal("product analyst", "product analyst", CareerDomain.PRODUCT, 4, JobFamily.PRODUCT_ANALYST),
+    DomainSignal("产品运营", "产品运营", CareerDomain.PRODUCT, 4, JobFamily.PRODUCT_OPERATIONS),
+    DomainSignal("product operations", "product operations", CareerDomain.PRODUCT, 4, JobFamily.PRODUCT_OPERATIONS),
+    DomainSignal("产品助理", "产品助理", CareerDomain.PRODUCT, 4, JobFamily.PRODUCT_ASSISTANT),
+    DomainSignal("product assistant", "product assistant", CareerDomain.PRODUCT, 4, JobFamily.PRODUCT_ASSISTANT),
+    DomainSignal("product roadmap", "product roadmap", CareerDomain.PRODUCT, 2, JobFamily.PRODUCT_MANAGER),
+    DomainSignal("feature prioritization", "feature prioritization", CareerDomain.PRODUCT, 2, JobFamily.PRODUCT_MANAGER),
+    DomainSignal("prd", "prd", CareerDomain.PRODUCT, 2),
+    DomainSignal("user story", "user story", CareerDomain.PRODUCT, 2),
+    DomainSignal("a/b test", "a/b test", CareerDomain.PRODUCT, 2, JobFamily.PRODUCT_ANALYST),
+    DomainSignal("product metrics", "product metrics", CareerDomain.PRODUCT, 2, JobFamily.PRODUCT_ANALYST),
 )
 
 

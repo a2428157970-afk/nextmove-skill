@@ -42,7 +42,7 @@ class MatchExplanationBuilder:
         assessment: MatchAssessment,
     ) -> MatchExplanationResult:
         ordered_requirements = tuple(requirements)
-        strengths = self._strengths(ordered_requirements)
+        strengths = self._strengths(ordered_requirements, assessment)
         gaps = self._gaps(ordered_requirements)
         risks = self._risks(ordered_requirements, assessment)
         return MatchExplanationResult(
@@ -55,6 +55,7 @@ class MatchExplanationBuilder:
     @staticmethod
     def _strengths(
         requirements: tuple[RequirementEvidence, ...],
+        assessment: MatchAssessment,
     ) -> list[ExplanationItem]:
         strengths: list[ExplanationItem] = []
         accepted_confidence = {
@@ -91,6 +92,34 @@ class MatchExplanationBuilder:
                     related_requirements=(requirement.requirement,),
                     evidence=requirement.evidence,
                     confidence=requirement.confidence,
+                )
+            )
+
+        transferability = assessment.transferability
+        if transferability is None:
+            return strengths
+        partial_requirements = {
+            requirement.requirement
+            for requirement in requirements
+            if requirement.status == RequirementStatus.PARTIAL
+        }
+        for capability in transferability.capabilities:
+            if (
+                capability.target_capability not in partial_requirements
+                or capability.confidence not in accepted_confidence
+            ):
+                continue
+            strengths.append(
+                ExplanationItem(
+                    category="transferable_capability",
+                    summary=(
+                        "Transferable evidence supports "
+                        f"{capability.target_capability}; limitation: "
+                        f"{capability.limitation}"
+                    ),
+                    related_requirements=(capability.target_capability,),
+                    evidence=capability.evidence,
+                    confidence=capability.confidence,
                 )
             )
         return strengths
@@ -132,20 +161,37 @@ class MatchExplanationBuilder:
         requirements: tuple[RequirementEvidence, ...],
         assessment: MatchAssessment,
     ) -> list[ExplanationItem]:
-        risks = [
-            ExplanationItem(
-                category="partial_coverage",
-                summary=(
-                    f"Evidence for {requirement.requirement} is incomplete and needs "
-                    "further verification."
-                ),
-                related_requirements=(requirement.requirement,),
-                evidence=requirement.evidence,
-                confidence=requirement.confidence,
+        transfer_capabilities = {
+            capability.target_capability: capability
+            for capability in (
+                assessment.transferability.capabilities
+                if assessment.transferability is not None
+                else ()
             )
-            for requirement in requirements
-            if requirement.status == RequirementStatus.PARTIAL
-        ]
+        }
+        risks: list[ExplanationItem] = []
+        for requirement in requirements:
+            if requirement.status != RequirementStatus.PARTIAL:
+                continue
+            capability = transfer_capabilities.get(requirement.requirement)
+            summary = (
+                f"Evidence for {requirement.requirement} is incomplete and needs "
+                "further verification."
+            )
+            if capability is not None:
+                summary = (
+                    f"Transferable evidence for {requirement.requirement} is partial: "
+                    f"{capability.limitation} Further verification is needed."
+                )
+            risks.append(
+                ExplanationItem(
+                    category="partial_coverage",
+                    summary=summary,
+                    related_requirements=(requirement.requirement,),
+                    evidence=requirement.evidence,
+                    confidence=requirement.confidence,
+                )
+            )
 
         transition_requirements = tuple(
             requirement.requirement

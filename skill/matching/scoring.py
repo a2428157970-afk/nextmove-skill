@@ -1,7 +1,7 @@
 """Explainable domain-aware scoring for job matching."""
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from skill.matching.classifier import DomainClassifier
 from skill.matching.schemas import (
@@ -13,7 +13,16 @@ from skill.matching.schemas import (
     RequirementEvidence,
     RequirementStatus,
 )
-from skill.matching.taxonomy import ADJACENT_DOMAINS, CareerDomain
+from skill.matching.taxonomy import (
+    ADJACENT_DOMAINS,
+    PRODUCT_CAPABILITIES,
+    CareerDomain,
+    ProductCapabilityCategory,
+)
+from skill.matching.transfer import (
+    TransferableSkillAssessment,
+    TransferableSkillAssessor,
+)
 from skill.schemas.resume import ResumeProfile
 
 
@@ -23,14 +32,82 @@ class Requirement:
     aliases: tuple[str, ...]
     adjacent_aliases: tuple[str, ...] = ()
     kind: str = "skill"
+    target_aliases: tuple[str, ...] = ()
+
+
+def _product_requirements() -> tuple[Requirement, ...]:
+    category_aliases = {
+        ProductCapabilityCategory.USER_UNDERSTANDING: (
+            "user understanding",
+            "customer insight",
+            "user insight",
+        ),
+        ProductCapabilityCategory.REQUIREMENT_MANAGEMENT: (
+            "requirement management",
+        ),
+        ProductCapabilityCategory.PRODUCT_PLANNING: ("product planning",),
+        ProductCapabilityCategory.DATA_ANALYSIS: (
+            "data analysis",
+            "product data analysis",
+        ),
+        ProductCapabilityCategory.DELIVERY_COLLABORATION: (
+            "delivery collaboration",
+        ),
+    }
+    return tuple(
+        Requirement(
+            canonical=capability.canonical,
+            aliases=capability.direct_aliases,
+            kind="skill",
+            target_aliases=(
+                *capability.direct_aliases,
+                *capability.transferable_aliases,
+                capability.category.value.replace("_", " "),
+                *category_aliases[capability.category],
+            ),
+        )
+        for capability in PRODUCT_CAPABILITIES
+    )
 
 
 DOMAIN_REQUIREMENTS: dict[CareerDomain, tuple[Requirement, ...]] = {
     CareerDomain.HUMAN_RESOURCES: (
         Requirement("招聘", ("招聘", "recruitment", "recruiting")),
+        Requirement(
+            "招聘协调",
+            ("招聘协调", "recruitment coordination", "interview coordination"),
+        ),
         Requirement("考勤", ("考勤", "attendance")),
         Requirement("薪酬", ("薪酬", "payroll", "compensation")),
         Requirement("劳动关系", ("劳动关系", "employee relations", "labor relations")),
+        Requirement(
+            "入职行政",
+            ("入职行政", "onboarding administration", "onboarding process ownership"),
+            target_aliases=(
+                "入职行政",
+                "onboarding administration",
+                "onboarding support",
+                "onboarding document coordination",
+            ),
+        ),
+        Requirement(
+            "员工档案",
+            ("员工档案管理", "employee file management", "employee records management"),
+            target_aliases=(
+                "员工档案",
+                "employee file support",
+                "employee records support",
+            ),
+        ),
+        Requirement(
+            "HR流程支持",
+            ("HR流程管理", "HR process management", "HR process ownership"),
+            target_aliases=(
+                "HR流程支持",
+                "HR process support",
+                "HR process coordination",
+            ),
+        ),
         Requirement(
             "行政事务",
             ("行政事务", "行政", "administrative affairs", "administration"),
@@ -90,6 +167,7 @@ DOMAIN_REQUIREMENTS: dict[CareerDomain, tuple[Requirement, ...]] = {
         Requirement("数字营销", ("数字营销", "digital marketing")),
         Requirement("市场研究", ("市场研究", "market research")),
     ),
+    CareerDomain.PRODUCT: _product_requirements(),
 }
 
 NEUTRAL_REQUIREMENTS = (
@@ -162,13 +240,17 @@ class MatchScorer:
         qualification_score, qualification_gaps = self._score_qualifications(
             profile, qualifications
         )
-        requirement_evidence = self._map_requirement_evidence(
+        requirement_evidence, transferability = self._map_requirement_evidence(
             profile,
             skill_requirements,
             qualifications,
+            resume_classification,
+            job_classification,
         )
         has_resume_evidence = bool(profile_text.strip())
-        transferable = bool(matched)
+        transferable = bool(matched) or bool(
+            transferability.transferable_evidence
+        )
         domain_score = self.domain_score(
             resume_classification,
             job_classification,
@@ -237,6 +319,7 @@ class MatchScorer:
             matched_skills=tuple(matched),
             missing_skills=tuple(missing),
             requirements=tuple(requirement_evidence),
+            transferability=transferability,
         )
 
     def _map_requirement_evidence(
@@ -244,7 +327,9 @@ class MatchScorer:
         profile: ResumeProfile,
         skill_requirements: list[Requirement],
         qualifications: list[tuple[str, object]],
-    ) -> list[RequirementEvidence]:
+        resume_classification: DomainClassification,
+        job_classification: DomainClassification,
+    ) -> tuple[list[RequirementEvidence], TransferableSkillAssessment]:
         source_items = self._professional_evidence(profile)
         mapped = [
             self._assess_requirement(
@@ -260,7 +345,61 @@ class MatchScorer:
             self._assess_qualification(name, value, profile, source_items)
             for name, value in qualifications
         )
-        return mapped
+        transferability = TransferableSkillAssessor().assess(
+            resume_classification,
+            job_classification,
+            tuple(source_items),
+        )
+        direct_evidence = tuple(
+            dict.fromkeys(
+                (
+                    *transferability.direct_evidence,
+                    *(
+                        item
+                        for requirement in mapped
+                        if requirement.status == RequirementStatus.MATCHED
+                        for item in requirement.evidence
+                    ),
+                )
+            )
+        )
+        combined_evidence = tuple(
+            dict.fromkeys(
+                (*direct_evidence, *transferability.transferable_evidence)
+            )
+        )
+        transferability = replace(
+            transferability,
+            direct_evidence=direct_evidence,
+            confidence=(
+                EvidenceConfidence.HIGH
+                if len(combined_evidence) >= 2
+                else EvidenceConfidence.MEDIUM
+                if combined_evidence
+                else EvidenceConfidence.LOW
+            ),
+        )
+        transferable_by_requirement = {
+            capability.target_capability: capability
+            for capability in transferability.capabilities
+        }
+        mapped = [
+            replace(
+                requirement,
+                status=RequirementStatus.PARTIAL,
+                evidence=transferable_by_requirement[
+                    requirement.requirement
+                ].evidence,
+                confidence=transferable_by_requirement[
+                    requirement.requirement
+                ].confidence,
+            )
+            if requirement.status == RequirementStatus.UNKNOWN
+            and requirement.requirement in transferable_by_requirement
+            else requirement
+            for requirement in mapped
+        ]
+        return mapped, transferability
 
     def _assess_qualification(
         self,
@@ -463,7 +602,7 @@ class MatchScorer:
             if any(
                 DomainClassifier._contains(normalized, alias)
                 and not MatchScorer._is_negated(normalized, alias)
-                for alias in requirement.aliases
+                for alias in (requirement.target_aliases or requirement.aliases)
             )
         ]
 

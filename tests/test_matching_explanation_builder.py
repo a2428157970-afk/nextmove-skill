@@ -14,6 +14,11 @@ from skill.matching.schemas import (
     RequirementEvidence,
     RequirementStatus,
 )
+from skill.matching.taxonomy import CareerDomain
+from skill.matching.transfer import (
+    TransferableCapability,
+    TransferableSkillAssessment,
+)
 from skill.utils import to_dict
 
 
@@ -38,7 +43,7 @@ class MatchExplanationBuilderTests(unittest.TestCase):
         )
 
     @staticmethod
-    def assessment(requirements, domain_score=100):
+    def assessment(requirements, domain_score=100, transferability=None):
         return MatchAssessment(
             score=75,
             confidence=MatchConfidence.MEDIUM,
@@ -46,6 +51,7 @@ class MatchExplanationBuilderTests(unittest.TestCase):
             skill_score=75,
             qualification_score=None,
             requirements=tuple(requirements),
+            transferability=transferability,
         )
 
     def test_result_is_serializable_without_resume_or_job_description_fields(self):
@@ -223,6 +229,78 @@ class MatchExplanationBuilderTests(unittest.TestCase):
         result = MatchExplanationBuilder().build(
             requirements,
             self.assessment(requirements),
+        )
+
+        self.assertEqual(result.strengths, ())
+
+    def test_transferable_strength_is_limited_and_never_claims_direct_experience(self):
+        evidence = (EvidenceItem("Led customer discovery", "experience"),)
+        requirements = (
+            self.requirement(
+                "用户理解",
+                RequirementStatus.PARTIAL,
+                EvidenceConfidence.MEDIUM,
+                (("Led customer discovery", "experience"),),
+                kind="skill",
+            ),
+            self.requirement("产品规划", RequirementStatus.UNKNOWN, kind="skill"),
+        )
+        limitation = "Customer insight does not prove Product discovery ownership."
+        transferability = TransferableSkillAssessment(
+            source_domain=CareerDomain.SALES,
+            target_domain=CareerDomain.PRODUCT,
+            direct_evidence=(),
+            transferable_evidence=evidence,
+            limitations=(limitation,),
+            confidence=EvidenceConfidence.MEDIUM,
+            capabilities=(
+                TransferableCapability(
+                    target_capability="用户理解",
+                    evidence=evidence,
+                    limitation=limitation,
+                    confidence=EvidenceConfidence.MEDIUM,
+                ),
+            ),
+        )
+
+        result = MatchExplanationBuilder().build(
+            requirements,
+            self.assessment(
+                requirements,
+                domain_score=10,
+                transferability=transferability,
+            ),
+        )
+
+        transferable = next(
+            item
+            for item in result.strengths
+            if item.category == "transferable_capability"
+        )
+        self.assertIn("用户理解", transferable.summary)
+        self.assertIn("transferable", transferable.summary.lower())
+        self.assertIn("does not prove", transferable.summary.lower())
+        risk_text = " ".join(item.summary for item in result.risks)
+        self.assertIn("Product discovery ownership", risk_text)
+        self.assertIn("产品规划", " ".join(item.summary for item in result.gaps))
+        self.assertNotIn("direct product experience", transferable.summary.lower())
+
+    def test_empty_transferability_does_not_create_strength(self):
+        requirements = (
+            self.requirement("用户理解", RequirementStatus.UNKNOWN, kind="skill"),
+        )
+        empty = TransferableSkillAssessment(
+            source_domain=CareerDomain.SALES,
+            target_domain=CareerDomain.PRODUCT,
+            direct_evidence=(),
+            transferable_evidence=(),
+            limitations=(),
+            confidence=EvidenceConfidence.LOW,
+        )
+
+        result = MatchExplanationBuilder().build(
+            requirements,
+            self.assessment(requirements, domain_score=10, transferability=empty),
         )
 
         self.assertEqual(result.strengths, ())

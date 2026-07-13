@@ -4,7 +4,7 @@
   "fictional": true,
   "resume_fixture": {
     "summary": "Account manager transitioning from sales to product work in a fictional scenario.",
-    "skills": ["Customer discovery", "Commercial analysis", "Stakeholder coordination"],
+    "skills": ["Customer discovery", "Requirement collection", "Commercial analysis", "Stakeholder coordination"],
     "experience": [
       {
         "role": "Account Manager",
@@ -23,27 +23,29 @@
   },
   "target": {
     "role": "Product Manager",
-    "job_description": "Product manager responsible for customer insight, commercial understanding, product planning, and product delivery."
+    "job_description": "Product manager responsible for customer insight, PRD requirement management, product planning, product metrics, and product delivery."
   },
   "expected": {
     "resume_domain": "sales",
-    "domain": "other",
+    "domain": "product",
     "resume_family": "account_management",
-    "target_family": null,
+    "target_family": "product_manager",
     "career_stage": "experienced",
     "requirements": [
-      {"requirement": "客户洞察", "status": "matched", "evidence_concepts": ["customer discovery"]},
-      {"requirement": "商业理解", "status": "matched", "evidence_concepts": ["commercial analysis"]},
+      {"requirement": "用户理解", "status": "partial", "evidence_concepts": ["customer discovery"]},
+      {"requirement": "需求管理", "status": "partial", "evidence_concepts": ["requirement collection"]},
       {"requirement": "产品规划", "status": "unknown", "evidence_concepts": []},
-      {"requirement": "产品交付", "status": "unknown", "evidence_concepts": []}
+      {"requirement": "产品数据分析", "status": "partial", "evidence_concepts": ["commercial analysis"]},
+      {"requirement": "交付协作", "status": "partial", "evidence_concepts": ["stakeholder coordination"]}
     ],
-    "strengths": ["客户洞察", "商业理解"],
-    "gaps": ["产品规划", "产品交付"],
-    "risks": ["domain_transition", "career_transition"],
+    "strengths": ["用户理解", "需求管理", "产品数据分析", "交付协作"],
+    "gaps": ["产品规划", "PRD"],
+    "risks": ["partial_coverage", "domain_transition", "career_transition"],
     "forbidden_conclusions": [
       "unsuitable",
       "cannot perform",
-      "lacks product delivery experience",
+      "direct product experience",
+      "customer management = product management",
       "owned a product roadmap",
       "launched a product"
     ]

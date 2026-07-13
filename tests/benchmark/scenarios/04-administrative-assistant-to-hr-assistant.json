@@ -22,7 +22,7 @@
   },
   "target": {
     "role": "HR Assistant",
-    "job_description": "HR generalist assistant requiring attendance, onboarding administration, recruitment coordination, and employee file support."
+    "job_description": "HR generalist assistant requiring attendance, onboarding administration, recruitment coordination, employee file support, payroll, and labor relations."
   },
   "expected": {
     "resume_domain": "operations",
@@ -34,11 +34,13 @@
       {"requirement": "考勤", "status": "matched", "evidence_concepts": ["attendance"]},
       {"requirement": "入职行政", "status": "partial", "evidence_concepts": ["onboarding document coordination"]},
       {"requirement": "招聘协调", "status": "unknown", "evidence_concepts": []},
-      {"requirement": "员工档案", "status": "unknown", "evidence_concepts": []}
+      {"requirement": "员工档案", "status": "partial", "evidence_concepts": ["onboarding document coordination"]},
+      {"requirement": "薪酬", "status": "unknown", "evidence_concepts": []},
+      {"requirement": "劳动关系", "status": "unknown", "evidence_concepts": []}
     ],
-    "strengths": ["考勤", "入职行政"],
-    "gaps": ["招聘协调", "员工档案"],
-    "risks": ["partial_coverage", "domain_transition"],
+    "strengths": ["考勤", "入职行政", "员工档案"],
+    "gaps": ["招聘协调", "薪酬", "劳动关系"],
+    "risks": ["partial_coverage", "domain_transition", "career_transition"],
     "forbidden_conclusions": [
       "direct recruitment experience",
       "full HR generalist coverage",

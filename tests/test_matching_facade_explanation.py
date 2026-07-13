@@ -202,6 +202,90 @@ class JobMatcherExplanationFacadeTests(unittest.TestCase):
             & set(to_dict(response.result))
         )
 
+    def test_real_sales_to_product_flow_keeps_transfer_internal(self):
+        profile = ResumeProfile(
+            skills=[
+                "Customer discovery",
+                "Requirement collection",
+                "Commercial analysis",
+                "Stakeholder coordination",
+            ],
+            experience=[ExperienceEntry(role="Account Manager")],
+        )
+        matcher = JobMatcher()
+        job = (
+            "Product Manager requiring customer insight, PRD requirement management, "
+            "product planning, product metrics, and product delivery."
+        )
+
+        assessment, explanation = matcher._assess_and_explain(profile, job)
+        result = matcher.match(profile, job)
+
+        self.assertIsNotNone(assessment.transferability)
+        self.assertTrue(assessment.transferability.transferable_evidence)
+        self.assertTrue(
+            any(
+                item.category == "transferable_capability"
+                for item in explanation.strengths
+            )
+        )
+        self.assertNotIn("用户理解", result.matched_skills)
+        self.assertNotIn("产品规划", result.missing_skills)
+        self.assertEqual(
+            [field.name for field in fields(JobMatchResult)],
+            [
+                "match_score",
+                "matched_skills",
+                "missing_skills",
+                "strengths",
+                "gaps",
+                "recommendations",
+            ],
+        )
+        self.assertFalse(
+            {"transferability", "explanation", "requirements"}
+            & set(to_dict(result))
+        )
+
+    def test_real_admin_to_hr_flow_does_not_infer_professional_hr_skills(self):
+        profile = ResumeProfile(
+            skills=["Attendance support", "Office administration"],
+            experience=[
+                ExperienceEntry(
+                    role="Office Administrator",
+                    highlights=[
+                        "Coordinated onboarding documents and process documentation."
+                    ],
+                )
+            ],
+        )
+        matcher = JobMatcher()
+
+        assessment, explanation = matcher._assess_and_explain(
+            profile,
+            "HR generalist assistant requiring attendance, onboarding administration, "
+            "recruitment coordination, employee file support, payroll, and labor relations.",
+        )
+        result = matcher.match(
+            profile,
+            "HR generalist assistant requiring attendance, onboarding administration, "
+            "recruitment coordination, employee file support, payroll, and labor relations.",
+        )
+
+        statuses = {
+            requirement.requirement: requirement.status
+            for requirement in explanation.requirements
+        }
+        self.assertEqual(statuses["入职行政"], RequirementStatus.PARTIAL)
+        self.assertEqual(statuses["员工档案"], RequirementStatus.PARTIAL)
+        self.assertEqual(statuses["招聘协调"], RequirementStatus.UNKNOWN)
+        self.assertEqual(statuses["薪酬"], RequirementStatus.UNKNOWN)
+        self.assertEqual(statuses["劳动关系"], RequirementStatus.UNKNOWN)
+        self.assertFalse(
+            {"招聘协调", "薪酬", "劳动关系"} & set(result.missing_skills)
+        )
+        self.assertIsNotNone(assessment.transferability)
+
 
 if __name__ == "__main__":
     unittest.main()

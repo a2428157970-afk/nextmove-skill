@@ -2,19 +2,19 @@
 
 ## Status
 
-Epic-025.1 through Epic-025.4 are complete. The offline Career Intelligence
+Epic-025.1 through Epic-025.5A are complete. The offline Career Intelligence
 benchmark covers five fictional scenarios and measures Domain, Career Stage,
-Evidence, Explanation, and Safety quality. Three scenarios meet all semantic
-expectations; Sales to Product Manager and Administrative Assistant to HR
-Assistant expose bounded capability gaps. Safety Pass Rate is 100%. Public
-contracts and runtime boundaries remain unchanged.
+Evidence, Explanation, and Safety quality. Product roles, Sales-to-Product
+transfer evidence, and Administration-to-HR support mappings are now covered.
+All five scenarios meet their semantic expectations and all aggregate metrics
+are 100. Public contracts and runtime boundaries remain unchanged.
 
 ## Recommended Next Step
 
-Review benchmark evidence and approve one narrowly scoped remediation Epic:
-either Product Manager taxonomy/requirement coverage or Administration-to-HR
-adjacent-role evidence. Do not combine both changes without a new design and do
-not weaken benchmark expectations to make the report green.
+Review benchmark evidence and choose one narrowly scoped next taxonomy or
+quality-hardening Epic. Preserve the distinction between direct and
+transferable evidence, keep directional mappings capability-level, and do not
+weaken benchmark expectations to make future reports green.
 
 ## Notes
 
