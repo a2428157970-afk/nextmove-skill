@@ -2,6 +2,103 @@
 
 ## Unreleased
 
+## Epic-026.2 - Skill Distribution Package Implementation
+
+- Status: Completed
+- Added deterministic Runtime Skill Package and Prompt-only Pilot Kit builders
+  with version metadata sourced only from `skill/__version__.py`, fixed file
+  allowlists, SHA-256 inventories, safe paths, and reproducible ZIP output.
+- Added a real offline readiness preflight that imports `NextMoveSkill`, executes
+  `career_analysis`, serializes `SkillResponse`, blocks network access, and only
+  then prints `NEXTMOVE_READY`; Prompt-only validation prints
+  `NEXTMOVE_PROMPT_ONLY` without executing the runtime.
+- Added separate Quick Starts, three safe prompts, fictional HR/technology/
+  career-transition samples, a Human Career Report demonstration, privacy-safe
+  feedback guidance, and evidence-level Agent loading documentation.
+- Added clean-room and package acceptance coverage without changing Skill Core,
+  public Agent/API contracts, Application Layer, CLI behavior, providers,
+  dependencies, backend, frontend, or historical v0.7.0/v0.8.0 records.
+- The full suite passes 330 tests with 3 opt-in live tests skipped; both package
+  preflights and Python compilation pass offline.
+
+## Epic-025.6 - Human Career Report
+
+- Status: Completed
+- Added the internal immutable `HumanCareerReport` model and deterministic
+  aggregation of resume analysis, job matching, career stage, match
+  explanation, and career transition results.
+- Added evidence-linked strengths, status-preserving capability gaps,
+  current-to-target transition paths, priority-ordered actions, risks, and
+  conservative report confidence.
+- Added bounded evidence-based language conversion for guarantee, impossibility,
+  and suitability conclusions plus internal JSON and five-section Markdown
+  formatting.
+- Validated HR Specialist-to-HR Specialist, Sales-to-Product Manager, and
+  insufficient-information reports. The full suite passes 312 tests and the
+  six-scenario Career Intelligence benchmark remains 100 across all metrics.
+- Preserved `JobMatchResult`, both `CareerAnalysisReport` schemas,
+  `NextMoveSkill.run()`, Agent contracts, Application Layer, CLI, providers,
+  dependencies, and default JSON behavior.
+
+## Epic-025.5B - Career Transition Intelligence
+
+- Status: Completed
+- Added immutable internal transition contracts, directional transition-type
+  classification, structured capability gaps, calibrated evidence risk, and
+  gap-linked action recommendations.
+- Preserved unknown evidence as unknown and kept all risk language descriptive
+  rather than making negative suitability judgments.
+- Expanded the offline benchmark to six fictional scenarios covering
+  Sales-to-Product, Administration-to-HR, and HR Specialist-to-HR Manager;
+  all matching and transition quality metrics pass at 100.
+- Preserved `NextMoveSkill.run()`, the six-field `JobMatchResult`, Agent
+  contracts, Application Layer, CLI, providers, dependencies, and tag state.
+
+## Epic-025.5A - Career Taxonomy Expansion
+
+- Status: Completed
+- Added an internal Product domain with Product Manager, Product Analyst,
+  Product Operations, and Product Assistant job families plus five Product
+  capability categories.
+- Added direct-versus-transferable evidence handling and a content-safe,
+  directional `TransferableSkillAssessment` for Sales-to-Product and
+  Administration-to-HR transitions.
+- Kept transferable evidence partial and limitation-bound; it never becomes
+  direct Product experience or infers recruitment, payroll, or labor-relations
+  expertise from administration work.
+- Expanded the Career Intelligence Benchmark to 5/5 passing synthetic
+  scenarios with 100 for Domain Accuracy, Career Stage Accuracy, Evidence
+  Coverage, Explanation Completeness, and Safety Pass Rate.
+- Preserved `NextMoveSkill.run()`, the six-field `JobMatchResult`, Agent
+  contracts, Application Layer, CLI, providers, dependencies, and tag state.
+
+## Epic-025.4 - Career Intelligence Quality Benchmark
+
+- Status: Completed
+- Added five fictional, offline benchmark scenarios spanning HR, backend
+  engineering, cross-career transition, adjacent-role migration, and
+  insufficient information.
+- Added structured Domain, Career Stage, Evidence, Explanation, and Safety
+  assertions with detailed metrics and a content-safe benchmark runner.
+- Measured three fully passing semantic scenarios, two explicit capability-gap
+  scenarios, and a 100% safety pass rate without modifying business rules.
+- Preserved `NextMoveSkill.run()`, the six-field `JobMatchResult`, Agent
+  contracts, Application Layer, CLI, providers, dependencies, and tag state.
+
+## Epic-025.3 - Evidence-based Match Explanation
+
+- Status: Completed
+- Added internal requirement-evidence and match-explanation contracts with
+  deterministic strengths, gaps, and risks derived from professional evidence.
+- Integrated explanation building into `JobMatcher` without changing the
+  six-field `JobMatchResult`, Skill API, Agent contract, Application Layer, or
+  CLI behavior.
+- Kept `unknown` distinct from `missing`, so absent resume evidence is reported
+  conservatively and cannot pollute `missing_skills`.
+- Added HR, cross-domain career-transition, insufficient-information, empty
+  evidence, and evidence-privacy regression coverage without retaining raw
+  resumes or job descriptions or introducing provider or network dependencies.
+
 ## Epic-025.1 - Domain-aware Job Matching
 
 - Status: Completed

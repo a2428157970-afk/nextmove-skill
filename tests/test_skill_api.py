@@ -52,7 +52,13 @@ class SkillApiTests(unittest.TestCase):
         self.assertTrue(response.success)
         self.assertEqual(response.capability, "match_job")
         self.assertIsInstance(response.result, JobMatchResult)
-        self.assertIn("Docker", response.result.missing_skills)
+        self.assertNotIn("Docker", response.result.missing_skills)
+        self.assertTrue(
+            any(
+                "Docker" in gap and "not evidenced" in gap
+                for gap in response.result.gaps
+            )
+        )
         self.assertIsNone(response.error)
 
     def test_run_career_advice_returns_success_response(self):

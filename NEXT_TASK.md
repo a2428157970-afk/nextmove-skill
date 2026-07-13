@@ -2,17 +2,22 @@
 
 ## Status
 
-Epic-025.1 and Epic-025.2 are complete and merged. Job matching now uses
-deterministic domain, job-family, skill, and qualification evidence, while
-resume analysis and career advice share an internal evidence-based stage model.
-The public six-field `JobMatchResult`, legacy career-level values, Skill API,
-Agent contract, Application Layer, and CLI remain unchanged.
+Epic-026.2 implements separate, deterministic Runtime and Prompt-only
+distribution artifacts. Runtime readiness now requires a real offline import,
+`career_analysis` execution, JSON serialization, and zero network calls.
+Prompt-only use is explicitly labelled and cannot claim runtime execution.
+Skill Core, public contracts, Application Layer, CLI behavior, providers, and
+dependencies remain unchanged. The full suite passes 330 tests with 3 opt-in
+live tests skipped.
 
 ## Recommended Next Step
 
-Resume Epic-025.3 Evidence-based Match Explanation from an updated isolated
-worktree. Build on the merged `DomainClassifier` and `MatchScorer`; keep the
-new requirement-evidence result internal and preserve the public contract.
+Run a separately approved external-runtime verification pass for specific
+Claude Code, Cursor, Codex, and any code-enabled ChatGPT integration versions.
+Record the exact archive, product version, loading method, positive preflight,
+negative unavailable path, and sanitized evidence. Keep all external statuses
+Pending until reviewed. Publishing ZIPs, creating a tag, pushing, and creating
+a GitHub Release require explicit human approval.
 
 ## Notes
 
@@ -22,8 +27,17 @@ new requirement-evidence result internal and preserve the public contract.
   Agent Contract versioning Epic is approved.
 - Keep domain classification, job family, confidence, and component scores
   internal to `skill/matching/` during the Pilot.
+- Keep `RequirementAssessment` and `MatchExplanationResult` internal. Never
+  retain raw resume or job-description text in explanation results.
 - Keep `CareerStageAssessment` internal. Do not expose its stage, signals, or
   confidence through the Agent schema or existing public result dataclasses.
+- Keep `CareerTransitionAssessment` internal. Preserve unknown gaps, bounded
+  evidence-risk language, and the requirement that every action references a
+  structured gap and expected direct evidence.
+- Keep `HumanCareerReport`, `HumanCareerReportBuilder`, language safety, and
+  formatters internal to `skill/reporting/`. Do not add them to existing Agent,
+  Application, CLI, or Skill response schemas without a separately approved
+  versioned integration Epic.
 - Preserve legacy mapping: `entry -> junior`, `developing -> mid`,
   `experienced -> senior`, `advanced -> lead`, and `unknown -> unknown`.
 - Treat years of experience, title text, and tenure as supporting evidence only;

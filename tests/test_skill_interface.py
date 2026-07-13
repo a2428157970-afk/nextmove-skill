@@ -98,7 +98,10 @@ Resume analysis demo built with Python.
 
         self.assertIsInstance(result, JobMatchResult)
         self.assertIn("Python", result.matched_skills)
-        self.assertIn("Docker", result.missing_skills)
+        self.assertNotIn("Docker", result.missing_skills)
+        self.assertTrue(
+            any("Docker" in gap and "not evidenced" in gap for gap in result.gaps)
+        )
 
     def test_career_advice_accepts_profile_and_returns_advice_result(self):
         skill = NextMoveSkill()

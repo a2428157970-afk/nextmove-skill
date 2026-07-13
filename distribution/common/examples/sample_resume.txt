@@ -1,0 +1,32 @@
+FICTIONAL SAMPLE — NOT A REAL PERSON OR JOB POSTING
+
+[SCENARIO:hr]
+Candidate A — HR Specialist
+Fictional People Services Company, 2022-2025
+- Coordinated recruitment scheduling and candidate communication.
+- Maintained attendance records and prepared monthly workforce summaries.
+- Documented onboarding steps for new employees.
+Skills: Recruitment Coordination, Attendance, Onboarding, Excel
+[/SCENARIO]
+
+[SCENARIO:technology]
+Candidate B — Junior Backend Engineer
+Fictional Software Studio, 2023-2025
+- Built offline Python data-processing utilities and SQL reports.
+- Added unit tests and used Git for code review.
+- Documented deployment steps; the resume provides no Docker ownership evidence.
+Skills: Python, SQL, Git, Unit Testing
+[/SCENARIO]
+
+[SCENARIO:transition]
+Candidate C — Sales Specialist
+Fictional Commercial Services Company, 2021-2025
+- Interviewed customers to understand workflow problems and summarized needs.
+- Coordinated sales, operations, and support stakeholders for client onboarding.
+- Reviewed pipeline data and presented commercial findings.
+- The resume does not claim product roadmap, PRD, or delivery ownership.
+Skills: Customer Discovery, Stakeholder Coordination, Commercial Analysis
+[/SCENARIO]
+
+All candidates, organizations, dates, responsibilities, and outcomes above are
+invented solely for offline package validation. There are no contact details.

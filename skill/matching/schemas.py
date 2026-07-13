@@ -4,14 +4,46 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import TYPE_CHECKING
 
 from skill.matching.taxonomy import CareerDomain, JobFamily
+
+if TYPE_CHECKING:
+    from skill.matching.transfer import TransferableSkillAssessment
 
 
 class MatchConfidence(str, Enum):
     HIGH = "high"
     MEDIUM = "medium"
     LOW = "low"
+
+
+class RequirementStatus(str, Enum):
+    MATCHED = "matched"
+    PARTIAL = "partial"
+    MISSING = "missing"
+    UNKNOWN = "unknown"
+
+
+class EvidenceConfidence(str, Enum):
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+
+
+@dataclass(frozen=True, slots=True)
+class EvidenceItem:
+    text: str
+    source: str
+
+
+@dataclass(frozen=True, slots=True)
+class RequirementEvidence:
+    requirement: str
+    kind: str
+    status: RequirementStatus
+    evidence: tuple[EvidenceItem, ...]
+    confidence: EvidenceConfidence
 
 
 @dataclass(frozen=True, slots=True)
@@ -33,6 +65,8 @@ class MatchAssessment:
     gaps: tuple[str, ...] = ()
     matched_skills: tuple[str, ...] = ()
     missing_skills: tuple[str, ...] = ()
+    requirements: tuple[RequirementEvidence, ...] = ()
+    transferability: TransferableSkillAssessment | None = None
 
 
 @dataclass(slots=True)

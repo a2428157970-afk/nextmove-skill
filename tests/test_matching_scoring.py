@@ -5,6 +5,7 @@ from skill.matching.schemas import (
     DomainClassification,
     MatchAssessment,
     MatchConfidence,
+    RequirementStatus,
 )
 from skill.matching.taxonomy import CareerDomain, JobFamily
 from skill.schemas.resume import EducationEntry, ExperienceEntry, ResumeProfile
@@ -172,6 +173,174 @@ class MatchScorerTests(unittest.TestCase):
         self.assertEqual(result.qualification_score, 100)
         self.assertFalse(any("years" in gap.lower() for gap in result.gaps))
         self.assertFalse(any("english" in gap.lower() for gap in result.gaps))
+
+    def test_product_capabilities_map_direct_artifact_evidence(self):
+        profile = ResumeProfile(
+            experience=[
+                ExperienceEntry(
+                    role="Product Manager",
+                    highlights=[
+                        "Owned the PRD and feature design for account onboarding.",
+                        "Prioritized the product roadmap using product metrics and A/B test results.",
+                        "Coordinated product delivery and launch follow-up with engineering.",
+                    ],
+                )
+            ]
+        )
+        product = self.classification(
+            CareerDomain.PRODUCT,
+            JobFamily.PRODUCT_MANAGER,
+        )
+
+        result = self.scorer.assess(
+            profile,
+            "Product Manager requiring user understanding, PRD, product roadmap, "
+            "product metrics, and product delivery.",
+            product,
+            product,
+        )
+
+        statuses = {
+            requirement.requirement: requirement.status
+            for requirement in result.requirements
+        }
+        self.assertEqual(statuses["需求管理"], RequirementStatus.MATCHED)
+        self.assertEqual(statuses["产品规划"], RequirementStatus.MATCHED)
+        self.assertEqual(statuses["产品数据分析"], RequirementStatus.MATCHED)
+        self.assertEqual(statuses["交付协作"], RequirementStatus.MATCHED)
+        self.assertIn("需求管理", result.matched_skills)
+
+    def test_sales_customer_evidence_is_not_direct_product_experience(self):
+        profile = ResumeProfile(
+            experience=[
+                ExperienceEntry(
+                    role="Account Manager",
+                    highlights=[
+                        "Conducted customer research, requirement collection, and customer feedback synthesis.",
+                    ],
+                )
+            ]
+        )
+        sales = self.classification(
+            CareerDomain.SALES,
+            JobFamily.ACCOUNT_MANAGEMENT,
+        )
+        product = self.classification(
+            CareerDomain.PRODUCT,
+            JobFamily.PRODUCT_MANAGER,
+        )
+
+        result = self.scorer.assess(
+            profile,
+            "Product Manager requiring customer research, requirement collection, "
+            "customer feedback, PRD, and product roadmap.",
+            sales,
+            product,
+        )
+
+        self.assertFalse(
+            any(
+                requirement.status == RequirementStatus.MATCHED
+                for requirement in result.requirements
+                if requirement.requirement in {"用户理解", "需求管理", "产品规划"}
+            )
+        )
+        self.assertNotIn("用户理解", result.matched_skills)
+        self.assertNotIn("需求管理", result.matched_skills)
+
+    def test_sales_to_product_transfer_is_partial_and_direct_artifacts_stay_unknown(self):
+        profile = ResumeProfile(
+            experience=[
+                ExperienceEntry(
+                    role="Account Manager",
+                    highlights=[
+                        "Led customer discovery and requirement collection.",
+                        "Used commercial analysis and stakeholder coordination for accounts.",
+                    ],
+                )
+            ]
+        )
+        sales = self.classification(
+            CareerDomain.SALES,
+            JobFamily.ACCOUNT_MANAGEMENT,
+        )
+        product = self.classification(
+            CareerDomain.PRODUCT,
+            JobFamily.PRODUCT_MANAGER,
+        )
+
+        result = self.scorer.assess(
+            profile,
+            "Product Manager requiring customer insight, PRD, product roadmap, "
+            "product metrics, and product delivery.",
+            sales,
+            product,
+        )
+
+        statuses = {
+            requirement.requirement: requirement.status
+            for requirement in result.requirements
+        }
+        self.assertEqual(statuses["用户理解"], RequirementStatus.PARTIAL)
+        self.assertEqual(statuses["需求管理"], RequirementStatus.PARTIAL)
+        self.assertEqual(statuses["产品数据分析"], RequirementStatus.PARTIAL)
+        self.assertEqual(statuses["交付协作"], RequirementStatus.PARTIAL)
+        self.assertEqual(statuses["产品规划"], RequirementStatus.UNKNOWN)
+        self.assertFalse(
+            {"用户理解", "需求管理", "产品数据分析", "交付协作"}
+            & set(result.matched_skills)
+        )
+        self.assertIsNotNone(result.transferability)
+        self.assertTrue(result.transferability.limitations)
+
+    def test_administration_to_hr_maps_support_only_and_preserves_unknowns(self):
+        profile = ResumeProfile(
+            skills=["Attendance support"],
+            experience=[
+                ExperienceEntry(
+                    role="Office Administrator",
+                    highlights=[
+                        "Coordinated onboarding documents, maintained process documentation, "
+                        "and managed office process workflows.",
+                    ],
+                )
+            ],
+        )
+        administration = self.classification(
+            CareerDomain.OPERATIONS,
+            JobFamily.ADMINISTRATION,
+        )
+        hr = self.classification(
+            CareerDomain.HUMAN_RESOURCES,
+            JobFamily.HR_GENERALIST,
+        )
+
+        result = self.scorer.assess(
+            profile,
+            "HR generalist assistant requiring attendance, onboarding administration, "
+            "HR process support, recruitment coordination, employee file support, payroll, "
+            "and labor relations.",
+            administration,
+            hr,
+        )
+
+        statuses = {
+            requirement.requirement: requirement.status
+            for requirement in result.requirements
+        }
+        self.assertEqual(statuses["考勤"], RequirementStatus.MATCHED)
+        self.assertEqual(statuses["入职行政"], RequirementStatus.PARTIAL)
+        self.assertEqual(statuses["员工档案"], RequirementStatus.PARTIAL)
+        self.assertEqual(statuses["HR流程支持"], RequirementStatus.PARTIAL)
+        self.assertEqual(statuses["招聘协调"], RequirementStatus.UNKNOWN)
+        self.assertEqual(statuses["薪酬"], RequirementStatus.UNKNOWN)
+        self.assertEqual(statuses["劳动关系"], RequirementStatus.UNKNOWN)
+        self.assertTrue(
+            any(
+                "attendance" in item.text.lower()
+                for item in result.transferability.direct_evidence
+            )
+        )
 
 
 if __name__ == "__main__":

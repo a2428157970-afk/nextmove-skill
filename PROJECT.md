@@ -9,19 +9,24 @@ NextMove is an AI Career Intelligence Platform and AI Career Intelligence Skill 
 Slogan: Know Your Value. Find Your Next Career Move.
 
 ## Current Stage
-Epic-025.1 Domain-aware Job Matching and Epic-025.2 Career Stage Model are
-merged. NextMove now classifies a focused v1 career taxonomy, scores Domain,
-Skill, and Qualification evidence, and derives an internal evidence-based stage
-assessment for analysis and advice without changing public contracts. Git
-release work remains paused.
+Epic-025.1 Domain-aware Job Matching, Epic-025.2 Career Stage Model,
+Epic-025.3 Evidence-based Match Explanation, Epic-025.4 Career Intelligence
+Quality Benchmark, Epic-025.5A Career Taxonomy Expansion, Epic-025.5B Career
+Transition Intelligence, and Epic-025.6 Human Career Report are complete.
+Internal reporting now turns existing career intelligence into evidence-linked
+JSON and a five-section Markdown reading journey with bounded language safety.
+Epic-026.2 also provides reproducible Runtime and Prompt-only distribution
+packages with truthful readiness preflight and clean-room adoption validation.
+Public contracts and default output remain unchanged. Git release work remains
+paused.
 
 ## Current Sprint
-Epic-025 Career Intelligence Quality.
+Epic-026 Skill Distribution Experience.
 
 ## Current Goal
-Continue Epic-025.3 Evidence-based Match Explanation using the merged
-domain-aware matching baseline, then validate HR, technical, career-transition,
-and insufficient-information fixtures without exposing new public result fields.
+Keep Runtime and Prompt-only claims separate, collect external host evidence,
+and prepare a human-approved release candidate without changing the Skill Core,
+public contracts, or internal Human Career Report boundary.
 
 ## Tech Stack
 - Frontend: Next.js
@@ -38,6 +43,6 @@ and insufficient-information fixtures without exposing new public result fields.
 - No resume submission automation
 
 ## Next Task
-Execute Epic-025.3 implementation only through its approved TDD plan. Keep
-explanation data internal until a separately approved Agent-contract versioning
-Epic; do not resume release work as part of that step.
+Review Human Career Report usability and integration boundaries before exposing
+any internal assessment. Do not weaken benchmark expectations, resume release
+work, or change public contracts without a separate versioning Epic.
