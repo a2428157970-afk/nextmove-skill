@@ -59,7 +59,7 @@ class CareerStageAssessor:
         if self._contains_any(
             text,
             ("managed a team", "managed team", "mentored", "direct reports", "带领", "管理团队", "培养"),
-        ):
+        ) or ("led" in text and "team" in text):
             signals.append("people leadership")
         if self._contains_any(
             text,
@@ -116,7 +116,12 @@ class CareerStageAssessor:
         if has_expert_scope and impact:
             return CareerStage.EXPERIENCED
         if "2+ years experience" in experience or bool(
-            {"owned scope", "cross-functional coordination", "process responsibility"}
+            {
+                "owned scope",
+                "cross-functional coordination",
+                "process responsibility",
+                "people leadership",
+            }
             & responsibility
         ):
             return CareerStage.DEVELOPING
