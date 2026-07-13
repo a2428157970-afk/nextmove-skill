@@ -1,8 +1,11 @@
 # Epic-025.3 Baseline Confirmation Report
 
-Date: 2026-07-13  
-Baseline commit: `79fafb940d87754ae086a0bc6a9e748c3e7f62a6` (`79fafb9 merge: integrate Epic-025.2 career stage model`)  
-Branch: `codex/epic-025.3-evidence-based-match-explanation`  
+Date: 2026-07-13
+
+Baseline commit: `79fafb940d87754ae086a0bc6a9e748c3e7f62a6` (`79fafb9 merge: integrate Epic-025.2 career stage model`)
+
+Branch: `codex/epic-025.3-evidence-based-match-explanation`
+
 Worktree: `D:\1.Project\NextMove\.worktrees\codex\epic-025.3-evidence-based-match-explanation-v2`
 
 ## Result
