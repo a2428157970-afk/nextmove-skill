@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+## Epic-025.1 - Domain-aware Job Matching
+
+- Status: Completed
+- Replaced the global technical-keyword scoring path with deterministic career
+  domain and job-family classification inside `skill/matching/`.
+- Added provider-neutral Domain, Skill, and Qualification scoring with
+  explainable strengths and gaps, conservative missing-evidence language, and
+  stable low-information behavior.
+- Added focused English and Chinese coverage for HR, technology, finance,
+  operations, unsupported occupations, ambiguous roles, and weak job
+  descriptions.
+- Preserved the six-field `JobMatchResult`, `NextMoveSkill.run("match_job", ...)`,
+  Agent Tool schemas, CLI behavior, and application-to-Skill dependency direction.
+
 ## Epic-024.2 - Agent-first Pilot Kit Implementation
 
 - Status: Completed
