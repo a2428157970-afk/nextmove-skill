@@ -2,18 +2,20 @@
 
 ## Status
 
-Epic-025.1 through Epic-025.5B are complete. The offline Career Intelligence
-benchmark covers six fictional scenarios and now measures transition type, gap
-grounding, risk calibration, action grounding, and transition safety alongside
-existing quality dimensions. All scenarios and aggregate metrics are 100.
-Public contracts and runtime boundaries remain unchanged.
+Epic-025.1 through Epic-025.6 are complete. The internal Human Career Report
+now aggregates existing resume, match, stage, explanation, and transition
+intelligence into evidence-linked JSON and five-section Markdown. Three user
+report scenarios pass, all 312 tests pass, and the six-scenario Career
+Intelligence benchmark remains 100 across all metrics. Public contracts,
+default JSON output, and runtime boundaries remain unchanged.
 
 ## Recommended Next Step
 
-Review transition benchmark blind spots and choose one narrowly scoped quality
-hardening Epic, such as broader same-domain leadership evidence or additional
-adjacent-role calibration. Keep mappings directional and do not expose the
-internal transition contract without explicit public API versioning.
+Review the Human Career Report with real user-language samples and choose one
+narrowly scoped next Epic: report usability validation, locale strategy, or an
+explicit versioned integration surface. Keep reporting internal until such an
+integration is separately approved; do not attach it to Agent, Application,
+CLI, or Web outputs implicitly.
 
 ## Notes
 
@@ -30,6 +32,10 @@ internal transition contract without explicit public API versioning.
 - Keep `CareerTransitionAssessment` internal. Preserve unknown gaps, bounded
   evidence-risk language, and the requirement that every action references a
   structured gap and expected direct evidence.
+- Keep `HumanCareerReport`, `HumanCareerReportBuilder`, language safety, and
+  formatters internal to `skill/reporting/`. Do not add them to existing Agent,
+  Application, CLI, or Skill response schemas without a separately approved
+  versioned integration Epic.
 - Preserve legacy mapping: `entry -> junior`, `developing -> mid`,
   `experienced -> senior`, `advanced -> lead`, and `unknown -> unknown`.
 - Treat years of experience, title text, and tenure as supporting evidence only;

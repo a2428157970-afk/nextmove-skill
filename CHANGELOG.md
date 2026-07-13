@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+## Epic-025.6 - Human Career Report
+
+- Status: Completed
+- Added the internal immutable `HumanCareerReport` model and deterministic
+  aggregation of resume analysis, job matching, career stage, match
+  explanation, and career transition results.
+- Added evidence-linked strengths, status-preserving capability gaps,
+  current-to-target transition paths, priority-ordered actions, risks, and
+  conservative report confidence.
+- Added bounded evidence-based language conversion for guarantee, impossibility,
+  and suitability conclusions plus internal JSON and five-section Markdown
+  formatting.
+- Validated HR Specialist-to-HR Specialist, Sales-to-Product Manager, and
+  insufficient-information reports. The full suite passes 312 tests and the
+  six-scenario Career Intelligence benchmark remains 100 across all metrics.
+- Preserved `JobMatchResult`, both `CareerAnalysisReport` schemas,
+  `NextMoveSkill.run()`, Agent contracts, Application Layer, CLI, providers,
+  dependencies, and default JSON behavior.
+
 ## Epic-025.5B - Career Transition Intelligence
 
 - Status: Completed
