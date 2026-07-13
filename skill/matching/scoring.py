@@ -6,8 +6,12 @@ from dataclasses import dataclass
 from skill.matching.classifier import DomainClassifier
 from skill.matching.schemas import (
     DomainClassification,
+    EvidenceConfidence,
+    EvidenceItem,
     MatchAssessment,
     MatchConfidence,
+    RequirementEvidence,
+    RequirementStatus,
 )
 from skill.matching.taxonomy import ADJACENT_DOMAINS, CareerDomain
 from skill.schemas.resume import ResumeProfile
@@ -17,6 +21,7 @@ from skill.schemas.resume import ResumeProfile
 class Requirement:
     canonical: str
     aliases: tuple[str, ...]
+    adjacent_aliases: tuple[str, ...] = ()
 
 
 DOMAIN_REQUIREMENTS: dict[CareerDomain, tuple[Requirement, ...]] = {
@@ -28,7 +33,7 @@ DOMAIN_REQUIREMENTS: dict[CareerDomain, tuple[Requirement, ...]] = {
     ),
     CareerDomain.TECHNOLOGY: (
         Requirement("Python", ("python",)),
-        Requirement("FastAPI", ("fastapi",)),
+        Requirement("FastAPI", ("fastapi",), ("flask",)),
         Requirement("API", ("api", "apis")),
         Requirement("SQL", ("sql",)),
         Requirement("Docker", ("docker",)),
@@ -151,6 +156,11 @@ class MatchScorer:
         qualification_score, qualification_gaps = self._score_qualifications(
             profile, qualifications
         )
+        requirement_evidence = self._map_requirement_evidence(
+            profile,
+            skill_requirements,
+            qualifications,
+        )
         has_resume_evidence = bool(profile_text.strip())
         transferable = bool(matched)
         domain_score = self.domain_score(
@@ -220,7 +230,219 @@ class MatchScorer:
             gaps=tuple(gaps),
             matched_skills=tuple(matched),
             missing_skills=tuple(missing),
+            requirements=tuple(requirement_evidence),
         )
+
+    def _map_requirement_evidence(
+        self,
+        profile: ResumeProfile,
+        skill_requirements: list[Requirement],
+        qualifications: list[tuple[str, object]],
+    ) -> list[RequirementEvidence]:
+        source_items = self._professional_evidence(profile)
+        mapped = [
+            self._assess_requirement(
+                requirement.canonical,
+                "skill",
+                requirement.aliases,
+                requirement.adjacent_aliases,
+                source_items,
+            )
+            for requirement in skill_requirements
+        ]
+        mapped.extend(
+            self._assess_qualification(name, value, profile, source_items)
+            for name, value in qualifications
+        )
+        return mapped
+
+    def _assess_qualification(
+        self,
+        name: str,
+        value: object,
+        profile: ResumeProfile,
+        source_items: list[EvidenceItem],
+    ) -> RequirementEvidence:
+        if name == "years":
+            required_years = int(value)
+            canonical = f"{required_years}+ years experience"
+            direct_items = [
+                item
+                for item in source_items
+                if any(
+                    int(years) >= required_years
+                    for years in re.findall(
+                        r"(\d+)\s*(?:\+\s*)?(?:years?|年)",
+                        DomainClassifier._normalize(item.text),
+                    )
+                )
+            ]
+            direct_items.extend(
+                EvidenceItem(
+                    text=f"{entry.start_date} to {entry.end_date}",
+                    source="experience",
+                )
+                for entry in profile.experience
+                if entry.start_date
+                and entry.end_date
+                and (start := self._date_month(entry.start_date)) is not None
+                and (end := self._date_month(entry.end_date)) is not None
+                and end >= start
+                and end - start >= required_years * 12
+            )
+            direct = tuple(dict.fromkeys(direct_items))
+            if direct:
+                return RequirementEvidence(
+                    canonical,
+                    "qualification",
+                    RequirementStatus.MATCHED,
+                    direct,
+                    self._direct_confidence(direct),
+                )
+            return RequirementEvidence(
+                canonical,
+                "qualification",
+                RequirementStatus.UNKNOWN,
+                (),
+                EvidenceConfidence.LOW,
+            )
+
+        aliases = {
+            "bachelor": ("bachelor", "本科"),
+            "cpa": ("cpa",),
+            "english": ("english", "英语"),
+        }[name]
+        canonical = {
+            "bachelor": "Bachelor's degree",
+            "cpa": "CPA",
+            "english": "English",
+        }[name]
+        return self._assess_requirement(
+            canonical,
+            "qualification",
+            aliases,
+            (),
+            source_items,
+        )
+
+    def _assess_requirement(
+        self,
+        canonical: str,
+        kind: str,
+        aliases: tuple[str, ...],
+        adjacent_aliases: tuple[str, ...],
+        source_items: list[EvidenceItem],
+    ) -> RequirementEvidence:
+        negative = tuple(
+            item
+            for item in source_items
+            if any(self._is_explicit_negative(item.text, alias) for alias in aliases)
+        )
+        direct = tuple(
+            item
+            for item in source_items
+            if any(
+                DomainClassifier._contains(
+                    DomainClassifier._normalize(item.text), alias
+                )
+                for alias in aliases
+            )
+            and item not in negative
+        )
+        adjacent = tuple(
+            item
+            for item in source_items
+            if any(
+                DomainClassifier._contains(
+                    DomainClassifier._normalize(item.text), alias
+                )
+                for alias in adjacent_aliases
+            )
+        )
+
+        if direct:
+            status = RequirementStatus.MATCHED
+            evidence = direct
+            confidence = self._direct_confidence(direct)
+        elif negative:
+            status = RequirementStatus.MISSING
+            evidence = negative
+            confidence = EvidenceConfidence.HIGH
+        elif adjacent:
+            status = RequirementStatus.PARTIAL
+            evidence = adjacent
+            confidence = EvidenceConfidence.LOW
+        else:
+            status = RequirementStatus.UNKNOWN
+            evidence = ()
+            confidence = EvidenceConfidence.LOW
+        return RequirementEvidence(canonical, kind, status, evidence, confidence)
+
+    @staticmethod
+    def _direct_confidence(evidence: tuple[EvidenceItem, ...]) -> EvidenceConfidence:
+        if len(evidence) >= 2 or any(
+            re.search(r"\d", item.text) for item in evidence
+        ):
+            return EvidenceConfidence.HIGH
+        return EvidenceConfidence.MEDIUM
+
+    @staticmethod
+    def _professional_evidence(profile: ResumeProfile) -> list[EvidenceItem]:
+        candidates: list[tuple[str, str | None]] = [("summary", profile.summary)]
+        candidates.extend(
+            ("experience", value)
+            for entry in profile.experience
+            for value in (entry.role, *entry.highlights)
+        )
+        candidates.extend(
+            ("project", value)
+            for project in profile.projects
+            for value in (project.name, project.description, *project.technologies)
+        )
+        candidates.extend(("skill", skill) for skill in profile.skills)
+        candidates.extend(
+            ("education", value)
+            for education in profile.education
+            for value in (
+                education.institution,
+                education.degree,
+                education.field,
+                education.description,
+            )
+        )
+        candidates.extend(
+            ("certification", certification)
+            for certification in profile.certifications
+        )
+        candidates.extend(("language", language) for language in profile.languages)
+
+        evidence: list[EvidenceItem] = []
+        seen: set[tuple[str, str]] = set()
+        for source, value in candidates:
+            text = (value or "").strip()
+            if not text:
+                continue
+            key = (source, DomainClassifier._normalize(text))
+            if key in seen:
+                continue
+            seen.add(key)
+            evidence.append(EvidenceItem(text=text, source=source))
+        return evidence
+
+    @staticmethod
+    def _is_explicit_negative(text: str, alias: str) -> bool:
+        normalized = DomainClassifier._normalize(text)
+        target = DomainClassifier._normalize(alias)
+        for match in re.finditer(rf"(?<!\w){re.escape(target)}(?!\w)", normalized):
+            before = normalized[max(0, match.start() - 32) : match.start()]
+            if re.search(
+                r"(?:\bno\b|\bnot\b|\bwithout\b|\bnever\b|\black(?:s|ing)?\b)\s+(?:\w+\s+){0,2}$",
+                before,
+            ):
+                return True
+            if before.rstrip().endswith(("无", "没有", "不具备", "未取得")):
+                return True
+        return False
 
     @staticmethod
     def _extract_skill_requirements(

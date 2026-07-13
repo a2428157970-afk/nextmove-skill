@@ -14,6 +14,34 @@ class MatchConfidence(str, Enum):
     LOW = "low"
 
 
+class RequirementStatus(str, Enum):
+    MATCHED = "matched"
+    PARTIAL = "partial"
+    MISSING = "missing"
+    UNKNOWN = "unknown"
+
+
+class EvidenceConfidence(str, Enum):
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+
+
+@dataclass(frozen=True, slots=True)
+class EvidenceItem:
+    text: str
+    source: str
+
+
+@dataclass(frozen=True, slots=True)
+class RequirementEvidence:
+    requirement: str
+    kind: str
+    status: RequirementStatus
+    evidence: tuple[EvidenceItem, ...]
+    confidence: EvidenceConfidence
+
+
 @dataclass(frozen=True, slots=True)
 class DomainClassification:
     domain: CareerDomain
@@ -33,6 +61,7 @@ class MatchAssessment:
     gaps: tuple[str, ...] = ()
     matched_skills: tuple[str, ...] = ()
     missing_skills: tuple[str, ...] = ()
+    requirements: tuple[RequirementEvidence, ...] = ()
 
 
 @dataclass(slots=True)
