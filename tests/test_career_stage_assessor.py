@@ -206,6 +206,35 @@ class CareerStageAssessorTests(unittest.TestCase):
         self.assertEqual(empty.confidence, StageConfidence.LOW)
         self.assertNotIn("dated experience", invalid_dates.signals.experience)
 
+    def test_single_responsibility_claim_without_experience_stays_unknown(self):
+        result = self.assessor.assess(ResumeProfile(summary="Owned a workflow."))
+
+        self.assertEqual(result.stage, CareerStage.UNKNOWN)
+        self.assertEqual(result.confidence, StageConfidence.LOW)
+
+    def test_cumulative_valid_dates_and_stated_duration_support_developing(self):
+        dated = self.assessor.assess(
+            ResumeProfile(
+                experience=[
+                    ExperienceEntry(role="Analyst", start_date="2021-01", end_date="2022-01"),
+                    ExperienceEntry(role="Analyst", start_date="2022-01", end_date="2023-01"),
+                    ExperienceEntry(role="Analyst", start_date="2023-01", end_date="2024-01"),
+                ]
+            )
+        )
+        stated = self.assessor.assess(ResumeProfile(summary="3 years of experience."))
+
+        self.assertEqual(dated.stage, CareerStage.DEVELOPING)
+        self.assertIn("2+ years experience", dated.signals.experience)
+        self.assertEqual(stated.stage, CareerStage.DEVELOPING)
+        self.assertIn("2+ years experience", stated.signals.experience)
+
+    def test_internal_is_not_internship_evidence(self):
+        result = self.assessor.assess(ResumeProfile(raw_text="Built internal reporting tools."))
+
+        self.assertEqual(result.stage, CareerStage.UNKNOWN)
+        self.assertNotIn("internship evidence", result.signals.experience)
+
     def test_chinese_responsibility_and_impact_signals_are_recognized(self):
         profile = ResumeProfile(
             experience=[

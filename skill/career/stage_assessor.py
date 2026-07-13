@@ -30,19 +30,23 @@ class CareerStageAssessor:
 
     def _experience_signals(self, profile: ResumeProfile) -> list[str]:
         signals: list[str] = []
-        duration = self._max_duration_years(profile)
-        if duration >= 1:
+        dated_duration = self._total_dated_duration_years(profile)
+        stated_duration = self._stated_duration_years(profile)
+        duration = max(dated_duration, stated_duration)
+        if dated_duration >= 1:
             signals.append("dated experience")
         if duration >= 2:
             signals.append("2+ years experience")
         if duration >= 5:
             signals.append("5+ years experience")
         text = self._profile_text(profile)
-        if any("intern" in value for value in (text,)) or "实习" in text:
+        if re.search(r"\b(?:intern|internship)\b", text) or "实习" in text:
             signals.append("internship evidence")
+        if any(entry.highlights for entry in profile.experience):
+            signals.append("documented role evidence")
         if profile.projects:
             signals.append("project evidence")
-        if re.search(r"\b\d+\s*\+?\s*years?\b|\d+\s*年", text):
+        if stated_duration:
             signals.append("stated experience duration")
         return self._dedupe(signals)
 
@@ -115,7 +119,9 @@ class CareerStageAssessor:
         )
         if has_expert_scope and impact:
             return CareerStage.EXPERIENCED
-        if "2+ years experience" in experience or bool(
+        if "2+ years experience" in experience or (
+            bool(experience)
+            and bool(
             {
                 "owned scope",
                 "cross-functional coordination",
@@ -123,6 +129,7 @@ class CareerStageAssessor:
                 "people leadership",
             }
             & responsibility
+            )
         ):
             return CareerStage.DEVELOPING
         if experience:
@@ -157,13 +164,33 @@ class CareerStageAssessor:
         return [highlight for entry in profile.experience for highlight in entry.highlights]
 
     @staticmethod
-    def _max_duration_years(profile: ResumeProfile) -> int:
-        durations: list[int] = []
+    def _total_dated_duration_years(profile: ResumeProfile) -> int:
+        intervals: list[tuple[int, int]] = []
         for experience in profile.experience:
             start = CareerStageAssessor._date_month(experience.start_date)
             end = CareerStageAssessor._date_month(experience.end_date)
             if start is not None and end is not None and end >= start:
-                durations.append((end - start) // 12)
+                intervals.append((start, end))
+        if not intervals:
+            return 0
+        total_months = 0
+        current_start, current_end = sorted(intervals)[0]
+        for start, end in sorted(intervals)[1:]:
+            if start <= current_end:
+                current_end = max(current_end, end)
+                continue
+            total_months += current_end - current_start
+            current_start, current_end = start, end
+        total_months += current_end - current_start
+        return total_months // 12
+
+    @classmethod
+    def _stated_duration_years(cls, profile: ResumeProfile) -> int:
+        text = cls._profile_text(profile)
+        durations = [
+            int(match.group(1) or match.group(2))
+            for match in re.finditer(r"\b(\d+)\s*\+?\s*years?\b|(\d+)\s*年", text)
+        ]
         return max(durations, default=0)
 
     @staticmethod

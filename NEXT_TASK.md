@@ -2,20 +2,30 @@
 
 ## Status
 
-Epic-024.2 is complete. The Agent-first Pilot Kit now provides a five-minute
-Quick Start, fictional inputs, copyable prompts, a report-reading guide, and
-dual privacy-safe feedback channels without changing Skill or CLI behavior.
+Epic-025.2 is complete on `codex/epic-025.2-career-stage-model`. The Skill Core
+now derives an internal career-stage assessment from evidence, maps it to the
+existing legacy `career_level` output, and tailors existing advice without
+changing public Skill, Agent, Application, or CLI contracts.
 
 ## Recommended Next Step
 
-Invite 5-10 non-technical job seekers to use NextMove through an Agent. Collect
-only the anonymous fields allowed by `docs/pilot-guidelines.md`, then review the
-first-use completion, report understanding, recommendation actionability,
-severe factual-error, and feedback-completion signals.
+Perform a human review and normal merge decision for the completed Epic-025.1
+Domain-aware Job Matching branch and this Epic-025.2 Career Stage Model branch.
+Validate their combined behavior against representative non-technical, technical,
+and career-transition resumes before any new quality-model Epic is started.
 
 ## Notes
 
 - Do not continue expanding the Application Layer until instructed.
+- Keep `CareerStageAssessment` internal. Do not expose its stage, signals, or
+  confidence through the Agent schema or existing public result dataclasses.
+- Preserve legacy mapping: `entry -> junior`, `developing -> mid`,
+  `experienced -> senior`, `advanced -> lead`, and `unknown -> unknown`.
+- Treat years of experience, title text, and tenure as supporting evidence only;
+  do not promote a resume to advanced stage without responsibility and impact
+  evidence.
+- Keep insufficient evidence deterministic: return internal `unknown` with low
+  confidence and avoid fabricated career-stage advice.
 - Keep the v0.8.0 tag, push, and GitHub Release flow paused until explicitly
   resumed.
 - Do not add telemetry or retain resume, job-description, identity, contact,
