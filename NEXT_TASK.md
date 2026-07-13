@@ -2,22 +2,22 @@
 
 ## Status
 
-Epic-026.2 implements separate, deterministic Runtime and Prompt-only
-distribution artifacts. Runtime readiness now requires a real offline import,
-`career_analysis` execution, JSON serialization, and zero network calls.
-Prompt-only use is explicitly labelled and cannot claim runtime execution.
-Skill Core, public contracts, Application Layer, CLI behavior, providers, and
-dependencies remain unchanged. The full suite passes 330 tests with 3 opt-in
-live tests skipped.
+Epic-026.3 has produced a v0.8.0 Release Candidate from the complete Epic-025.3
+through Epic-026.2 chain. Separate Runtime and Prompt-only artifacts build
+deterministically, their mode-specific preflights pass, and Codex external
+Runtime verification succeeded from a fresh ZIP extraction outside the source
+repository. Skill Core, public contracts, Application Layer, CLI behavior,
+providers, and dependencies remain unchanged. The full suite passes 330 tests
+with 3 opt-in live tests skipped.
 
 ## Recommended Next Step
 
-Run a separately approved external-runtime verification pass for specific
-Claude Code, Cursor, Codex, and any code-enabled ChatGPT integration versions.
-Record the exact archive, product version, loading method, positive preflight,
-negative unavailable path, and sanitized evidence. Keep all external statuses
-Pending until reviewed. Publishing ZIPs, creating a tag, pushing, and creating
-a GitHub Release require explicit human approval.
+Complete `docs/release-checklist-v0.8.0.md` against the actual uploaded and
+downloaded assets. Recalculate published checksums, review the Codex evidence,
+and confirm ordinary ChatGPT uploads remain Prompt-only. Keep ChatGPT, Claude
+Code, and Cursor Pending until separately executed and reviewed. Publishing
+ZIPs, merging to `main`, creating a tag, pushing, and creating a GitHub Release
+require explicit human approval.
 
 ## Notes
 

@@ -226,4 +226,7 @@ python -m compileall skill tests examples
 The v0.8.0 codebase is Developer Preview Ready. Creating the Git tag and public
 release remains a separate, human-approved action. Review the
 [release checklist](docs/release.md) and
-[v0.8.0 release note](docs/release/v0.8.0.md) before publishing.
+[v0.8.0 release note](docs/release/v0.8.0.md). The current candidate evidence
+and remaining human actions are in the
+[v0.8.0 RC note](docs/releases/v0.8.0-release-candidate.md) and
+[final human checklist](docs/release-checklist-v0.8.0.md).

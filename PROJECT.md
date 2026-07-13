@@ -17,15 +17,17 @@ Internal reporting now turns existing career intelligence into evidence-linked
 JSON and a five-section Markdown reading journey with bounded language safety.
 Epic-026.2 also provides reproducible Runtime and Prompt-only distribution
 packages with truthful readiness preflight and clean-room adoption validation.
-Public contracts and default output remain unchanged. Git release work remains
-paused.
+Epic-026.3 has integrated that complete chain into a v0.8.0 Release Candidate,
+verified deterministic dual-package builds, and completed an external Codex
+Runtime check from the generated ZIP. Public contracts and default output
+remain unchanged. Publication remains paused for human approval.
 
 ## Current Sprint
-Epic-026 Skill Distribution Experience.
+Epic-026.3 Release Candidate Finalization.
 
 ## Current Goal
-Keep Runtime and Prompt-only claims separate, collect external host evidence,
-and prepare a human-approved release candidate without changing the Skill Core,
+Complete the final human release checklist, verify downloaded assets and
+checksums, and approve or reject publication without changing the Skill Core,
 public contracts, or internal Human Career Report boundary.
 
 ## Tech Stack
@@ -43,6 +45,7 @@ public contracts, or internal Human Career Report boundary.
 - No resume submission automation
 
 ## Next Task
-Review Human Career Report usability and integration boundaries before exposing
-any internal assessment. Do not weaken benchmark expectations, resume release
-work, or change public contracts without a separate versioning Epic.
+Perform the human-only publication checks in
+`docs/release-checklist-v0.8.0.md`. Keep ChatGPT, Claude Code, and Cursor Pending
+until real host-specific evidence exists. Do not change public contracts without
+a separate versioning Epic.

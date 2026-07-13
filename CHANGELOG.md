@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+## Epic-026.3 - v0.8.0 Release Candidate Finalization
+
+- Status: Release Candidate ready for human approval
+- Integrated the complete Epic-025.3 through Epic-026.2 history from the latest
+  distribution branch with a single no-fast-forward merge and no repeated
+  ancestor merges.
+- Confirmed all formal version entries remain `0.8.0`, with
+  `skill/__version__.py` as the only code source and no dependency or public
+  contract change.
+- Rebuilt the Runtime and Prompt-only archives twice with identical SHA-256
+  values, passed both mode-specific preflights, and completed Codex external
+  Runtime verification from a fresh extraction outside the repository.
+- Added the release-candidate evidence record and final human publication
+  checklist. Tagging, pushing, merging to `main`, and creating a GitHub Release
+  remain human-approved actions.
+
 ## Epic-026.2 - Skill Distribution Package Implementation
 
 - Status: Completed
