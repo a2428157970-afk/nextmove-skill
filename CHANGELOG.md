@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+## Epic-026.2 - Skill Distribution Package Implementation
+
+- Status: Completed
+- Added deterministic Runtime Skill Package and Prompt-only Pilot Kit builders
+  with version metadata sourced only from `skill/__version__.py`, fixed file
+  allowlists, SHA-256 inventories, safe paths, and reproducible ZIP output.
+- Added a real offline readiness preflight that imports `NextMoveSkill`, executes
+  `career_analysis`, serializes `SkillResponse`, blocks network access, and only
+  then prints `NEXTMOVE_READY`; Prompt-only validation prints
+  `NEXTMOVE_PROMPT_ONLY` without executing the runtime.
+- Added separate Quick Starts, three safe prompts, fictional HR/technology/
+  career-transition samples, a Human Career Report demonstration, privacy-safe
+  feedback guidance, and evidence-level Agent loading documentation.
+- Added clean-room and package acceptance coverage without changing Skill Core,
+  public Agent/API contracts, Application Layer, CLI behavior, providers,
+  dependencies, backend, frontend, or historical v0.7.0/v0.8.0 records.
+- The full suite passes 330 tests with 3 opt-in live tests skipped; both package
+  preflights and Python compilation pass offline.
+
 ## Epic-025.6 - Human Career Report
 
 - Status: Completed

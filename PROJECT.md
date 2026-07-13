@@ -15,17 +15,18 @@ Quality Benchmark, Epic-025.5A Career Taxonomy Expansion, Epic-025.5B Career
 Transition Intelligence, and Epic-025.6 Human Career Report are complete.
 Internal reporting now turns existing career intelligence into evidence-linked
 JSON and a five-section Markdown reading journey with bounded language safety.
-All 312 tests and six fictional benchmark scenarios pass without changing
-public contracts or default output. Git release work remains paused.
+Epic-026.2 also provides reproducible Runtime and Prompt-only distribution
+packages with truthful readiness preflight and clean-room adoption validation.
+Public contracts and default output remain unchanged. Git release work remains
+paused.
 
 ## Current Sprint
-Epic-025 Career Intelligence Quality.
+Epic-026 Skill Distribution Experience.
 
 ## Current Goal
-Keep transition and Human Career Report intelligence internal while selecting
-the next report-usability or versioned-integration increment. Continue to
-preserve unknown, direct-versus-transferable evidence semantics, and public
-contracts.
+Keep Runtime and Prompt-only claims separate, collect external host evidence,
+and prepare a human-approved release candidate without changing the Skill Core,
+public contracts, or internal Human Career Report boundary.
 
 ## Tech Stack
 - Frontend: Next.js

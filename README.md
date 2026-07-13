@@ -13,6 +13,25 @@ or transport protocol.
 
 ## Try NextMove in 5 minutes
 
+NextMove now has two distribution modes:
+
+- **Runtime Skill Package:** includes the actual Python `skill/` implementation
+  and may claim readiness only after its offline import and execution preflight
+  prints `NEXTMOVE_READY`.
+- **Prompt-only Pilot Kit:** provides prompts, fictional samples, and report
+  guidance. It is always labelled `NEXTMOVE_PROMPT_ONLY` and must not claim
+  that `NextMoveSkill.run()` executed.
+
+Build both deterministic archives with:
+
+```bash
+python scripts/build_skill_package.py --mode all
+```
+
+See the [Agent Loading Guide](docs/agent-loading-guide.md) for the truthful
+ChatGPT, Claude Code, Cursor, and Codex boundaries. Generated files under
+`dist/` are local release candidates and are not committed or published.
+
 The Agent-first Pilot path is designed for non-technical job seekers:
 
 1. Copy an [Agent Prompt](docs/agent-prompt-template.md).

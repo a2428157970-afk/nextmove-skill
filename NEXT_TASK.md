@@ -2,20 +2,22 @@
 
 ## Status
 
-Epic-025.1 through Epic-025.6 are complete. The internal Human Career Report
-now aggregates existing resume, match, stage, explanation, and transition
-intelligence into evidence-linked JSON and five-section Markdown. Three user
-report scenarios pass, all 312 tests pass, and the six-scenario Career
-Intelligence benchmark remains 100 across all metrics. Public contracts,
-default JSON output, and runtime boundaries remain unchanged.
+Epic-026.2 implements separate, deterministic Runtime and Prompt-only
+distribution artifacts. Runtime readiness now requires a real offline import,
+`career_analysis` execution, JSON serialization, and zero network calls.
+Prompt-only use is explicitly labelled and cannot claim runtime execution.
+Skill Core, public contracts, Application Layer, CLI behavior, providers, and
+dependencies remain unchanged. The full suite passes 330 tests with 3 opt-in
+live tests skipped.
 
 ## Recommended Next Step
 
-Review the Human Career Report with real user-language samples and choose one
-narrowly scoped next Epic: report usability validation, locale strategy, or an
-explicit versioned integration surface. Keep reporting internal until such an
-integration is separately approved; do not attach it to Agent, Application,
-CLI, or Web outputs implicitly.
+Run a separately approved external-runtime verification pass for specific
+Claude Code, Cursor, Codex, and any code-enabled ChatGPT integration versions.
+Record the exact archive, product version, loading method, positive preflight,
+negative unavailable path, and sanitized evidence. Keep all external statuses
+Pending until reviewed. Publishing ZIPs, creating a tag, pushing, and creating
+a GitHub Release require explicit human approval.
 
 ## Notes
 

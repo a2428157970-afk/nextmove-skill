@@ -1,0 +1,22 @@
+FICTIONAL SAMPLE — NOT A REAL PERSON OR JOB POSTING
+
+[SCENARIO:hr]
+HR Specialist at Fictional Workforce Lab
+- Coordinate recruitment, attendance, onboarding, and HR reporting.
+[/SCENARIO]
+
+[SCENARIO:technology]
+Backend Engineer at Fictional Product Studio
+- Build maintainable Python services and SQL data workflows.
+- Use Git, automated tests, Docker, and basic deployment monitoring.
+[/SCENARIO]
+
+[SCENARIO:transition]
+Product Manager at Fictional Digital Products Company
+- Conduct customer discovery and coordinate stakeholders.
+- Define product plans and write clear product requirement documents (PRDs).
+- Own delivery decisions, validation, and roadmap communication.
+[/SCENARIO]
+
+Every role and requirement above is fictional and is not copied from a real
+vacancy, employer, client, or private source.
