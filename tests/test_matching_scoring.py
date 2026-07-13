@@ -130,6 +130,49 @@ class MatchScorerTests(unittest.TestCase):
         self.assertEqual(result.missing_skills, ())
         self.assertTrue(any("insufficient" in gap.lower() for gap in result.gaps))
 
+    def test_negated_skill_and_qualification_requirements_are_ignored(self):
+        profile = ResumeProfile(experience=[ExperienceEntry(role="Backend Engineer")])
+        technology = self.classification(CareerDomain.TECHNOLOGY, JobFamily.BACKEND)
+
+        result = self.scorer.assess(
+            profile,
+            "Backend Engineer. Docker is not required. No CPA required. "
+            "English not required. 无需 Kubernetes，不要求本科。",
+            technology,
+            technology,
+        )
+
+        self.assertNotIn("Docker", result.missing_skills)
+        self.assertNotIn("Kubernetes", result.missing_skills)
+        self.assertIsNone(result.qualification_score)
+        self.assertFalse(any("cpa" in gap.lower() for gap in result.gaps))
+        self.assertFalse(any("english" in gap.lower() for gap in result.gaps))
+        self.assertFalse(any("bachelor" in gap.lower() for gap in result.gaps))
+
+    def test_structured_languages_and_experience_dates_satisfy_qualifications(self):
+        profile = ResumeProfile(
+            experience=[
+                ExperienceEntry(
+                    role="Accountant",
+                    start_date="2018-01",
+                    end_date="2024-01",
+                )
+            ],
+            languages=["English"],
+        )
+        finance = self.classification(CareerDomain.FINANCE, JobFamily.ACCOUNTING)
+
+        result = self.scorer.assess(
+            profile,
+            "Accountant requiring 3 years experience and English.",
+            finance,
+            finance,
+        )
+
+        self.assertEqual(result.qualification_score, 100)
+        self.assertFalse(any("years" in gap.lower() for gap in result.gaps))
+        self.assertFalse(any("english" in gap.lower() for gap in result.gaps))
+
 
 if __name__ == "__main__":
     unittest.main()

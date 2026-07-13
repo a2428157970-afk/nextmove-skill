@@ -6,6 +6,7 @@ from collections import defaultdict
 
 from skill.matching.schemas import DomainClassification, MatchConfidence
 from skill.matching.taxonomy import (
+    DOMAIN_FAMILIES,
     DOMAIN_SIGNALS,
     OCCUPATIONAL_MARKERS,
     CareerDomain,
@@ -82,7 +83,7 @@ class DomainClassifier:
         candidates = [
             (family, score)
             for family, score in family_scores.items()
-            if family.value and score > 0
+            if family in DOMAIN_FAMILIES[domain] and score > 0
         ]
         if not candidates:
             return None
@@ -97,8 +98,10 @@ class DomainClassifier:
         values: list[str] = [profile.summary or "", profile.raw_text]
         values.extend(profile.skills)
         values.extend(profile.certifications)
+        values.extend(profile.languages)
         for entry in profile.experience:
             values.append(entry.role or "")
+            values.extend((entry.start_date or "", entry.end_date or ""))
             values.extend(entry.highlights)
         for entry in profile.education:
             values.extend(

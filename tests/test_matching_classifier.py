@@ -134,6 +134,17 @@ class DomainClassifierTests(unittest.TestCase):
         self.assertEqual(result.domain, CareerDomain.HUMAN_RESOURCES)
         self.assertEqual(len(result.evidence), len(set(result.evidence)))
 
+    def test_selected_family_always_belongs_to_selected_domain(self):
+        result = self.classifier.classify_text(
+            "人事招聘招聘招聘 specialist accountant accountant"
+        )
+
+        self.assertEqual(result.domain, CareerDomain.HUMAN_RESOURCES)
+        self.assertTrue(
+            result.job_family is None
+            or result.job_family in DOMAIN_FAMILIES[result.domain]
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

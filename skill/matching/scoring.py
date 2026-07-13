@@ -232,7 +232,11 @@ class MatchScorer:
         return [
             requirement
             for requirement in candidates
-            if any(DomainClassifier._contains(normalized, alias) for alias in requirement.aliases)
+            if any(
+                DomainClassifier._contains(normalized, alias)
+                and not MatchScorer._is_negated(normalized, alias)
+                for alias in requirement.aliases
+            )
         ]
 
     @staticmethod
@@ -277,11 +281,17 @@ class MatchScorer:
         years = re.search(r"(\d+)\s*(?:\+\s*)?(?:years?|年)", normalized)
         if years:
             qualifications.append(("years", int(years.group(1))))
-        if any(term in normalized for term in ("bachelor", "本科")):
+        if any(
+            term in normalized and not MatchScorer._is_negated(normalized, term)
+            for term in ("bachelor", "本科")
+        ):
             qualifications.append(("bachelor", True))
-        if DomainClassifier._contains(normalized, "cpa"):
+        if DomainClassifier._contains(normalized, "cpa") and not MatchScorer._is_negated(normalized, "cpa"):
             qualifications.append(("cpa", True))
-        if DomainClassifier._contains(normalized, "english") or "英语" in normalized:
+        if (
+            DomainClassifier._contains(normalized, "english")
+            and not MatchScorer._is_negated(normalized, "english")
+        ) or ("英语" in normalized and not MatchScorer._is_negated(normalized, "英语")):
             qualifications.append(("english", True))
         return qualifications
 
@@ -301,7 +311,9 @@ class MatchScorer:
             present = False
             if name == "years":
                 found = [int(item) for item in re.findall(r"(\d+)\s*(?:\+\s*)?(?:years?|年)", profile_text)]
-                present = bool(found and max(found) >= int(value))
+                stated_years = max(found) if found else 0
+                dated_years = MatchScorer._experience_years(profile)
+                present = max(stated_years, dated_years) >= int(value)
             elif name == "bachelor":
                 present = "bachelor" in profile_text or "本科" in profile_text
             elif name == "cpa":
@@ -313,3 +325,41 @@ class MatchScorer:
             else:
                 gaps.append(f"Qualification not visible in the resume: {name}.")
         return round(satisfied / len(qualifications) * 100), gaps
+
+    @staticmethod
+    def _is_negated(text: str, phrase: str) -> bool:
+        normalized = DomainClassifier._normalize(text)
+        target = DomainClassifier._normalize(phrase)
+        position = normalized.find(target)
+        if position < 0:
+            return False
+        before = normalized[max(0, position - 24) : position]
+        after = normalized[position + len(target) : position + len(target) + 24]
+        before = before.rstrip()
+        after = after.lstrip()
+        return before.endswith(("no", "without", "无需", "不要求", "不需要")) or (
+            re.match(r"^(?:is\s+)?not\s+required\b", after) is not None
+        )
+
+    @staticmethod
+    def _experience_years(profile: ResumeProfile) -> int:
+        durations: list[int] = []
+        for entry in profile.experience:
+            start = MatchScorer._date_month(entry.start_date)
+            end = MatchScorer._date_month(entry.end_date)
+            if start is not None and end is not None and end >= start:
+                durations.append((end - start) // 12)
+        return max(durations, default=0)
+
+    @staticmethod
+    def _date_month(value: str | None) -> int | None:
+        if not value:
+            return None
+        match = re.fullmatch(r"(\d{4})(?:[-/.](\d{1,2}))?", value.strip())
+        if match is None:
+            return None
+        year = int(match.group(1))
+        month = int(match.group(2) or 1)
+        if not 1 <= month <= 12:
+            return None
+        return year * 12 + month - 1
