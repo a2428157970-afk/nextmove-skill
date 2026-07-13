@@ -4,10 +4,29 @@ import unittest
 from skill.metadata import SKILL_METADATA
 from skill.schemas.analysis import ResumeAnalysisResult, SkillAssessment
 from skill.schemas.api import SkillError, SkillResponse
+from skill.schemas.career import CareerAdviceResult
 from skill.utils import to_dict
 
 
 class SkillSerializationTests(unittest.TestCase):
+    def test_career_level_and_advice_contract_keys_remain_exact(self):
+        analysis = ResumeAnalysisResult()
+        advice = CareerAdviceResult()
+
+        self.assertEqual(
+            set(to_dict(analysis)),
+            {"strengths", "weaknesses", "skill_assessment", "career_level"},
+        )
+        self.assertEqual(
+            set(to_dict(advice)),
+            {
+                "current_level",
+                "possible_paths",
+                "skill_gaps",
+                "recommended_actions",
+            },
+        )
+
     def test_result_to_dict_converts_nested_dataclasses(self):
         result = ResumeAnalysisResult(
             strengths=["Clear summary"],
