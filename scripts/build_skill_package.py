@@ -14,6 +14,25 @@ from pathlib import Path, PurePosixPath
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "distribution"
 FIXED_ZIP_TIME = (2026, 1, 1, 0, 0, 0)
+TEXT_FILE_NAMES = frozenset({"LICENSE"})
+TEXT_FILE_SUFFIXES = frozenset(
+    {
+        ".cfg",
+        ".csv",
+        ".html",
+        ".ini",
+        ".json",
+        ".md",
+        ".py",
+        ".rst",
+        ".toml",
+        ".tsv",
+        ".txt",
+        ".xml",
+        ".yaml",
+        ".yml",
+    }
+)
 
 
 def read_version() -> str:
@@ -32,6 +51,22 @@ def _safe_relative(relative: str) -> str:
     if value.is_absolute() or ".." in value.parts or not value.parts:
         raise ValueError("package path must remain relative")
     return value.as_posix()
+
+
+def _is_text_package_file(relative: str) -> bool:
+    path = PurePosixPath(relative)
+    return path.name in TEXT_FILE_NAMES or path.suffix.casefold() in TEXT_FILE_SUFFIXES
+
+
+def _normalized_package_content(relative: str, content: bytes) -> bytes:
+    """Return canonical package bytes while preserving binary payloads exactly."""
+    if not _is_text_package_file(relative):
+        return content
+    try:
+        text = content.decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise ValueError(f"package text source is not valid UTF-8: {relative}") from error
+    return text.replace("\r\n", "\n").replace("\r", "\n").encode("utf-8")
 
 
 def _runtime_files() -> dict[str, Path]:
@@ -138,7 +173,7 @@ def build(mode: str, output: Path) -> tuple[Path, Path]:
         resolved = source.resolve()
         if not resolved.is_relative_to(ROOT.resolve()) or not source.is_file():
             raise ValueError("package source is missing or outside repository")
-        contents[relative] = source.read_bytes()
+        contents[relative] = _normalized_package_content(relative, source.read_bytes())
     contents["PACKAGE_MANIFEST.json"] = _manifest(mode, contents, version)
 
     package_dir = output / package_name

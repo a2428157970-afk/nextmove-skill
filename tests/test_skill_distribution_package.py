@@ -8,6 +8,9 @@ import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+from unittest import mock
+
+from scripts import build_skill_package as package_builder
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -263,11 +266,84 @@ class SkillDistributionPackageTests(unittest.TestCase):
                 second = Path(second_directory) / first.name
                 self.assertEqual(first.read_bytes(), second.read_bytes())
 
+    def test_text_package_content_is_identical_for_lf_and_crlf_checkouts(self):
+        lf = b"first line\nsecond line\n"
+        crlf = b"first line\r\nsecond line\r\n"
+        expected = b"first line\nsecond line\n"
+
+        self.assertEqual(
+            package_builder._normalized_package_content("docs/example.md", lf),
+            expected,
+        )
+        self.assertEqual(
+            package_builder._normalized_package_content("docs/example.md", crlf),
+            expected,
+        )
+
+    def test_prompt_archive_and_manifest_are_identical_across_line_endings(self):
+        relative_files = (
+            "SKILL.md",
+            "LICENSE",
+            "distribution/prompt_only/README.md",
+            "distribution/prompt_only/QUICK_START.md",
+            "distribution/common/PROMPTS.md",
+            "distribution/prompt_only/OUTPUT_GUIDE.md",
+            "distribution/prompt_only/PRIVACY_AND_FEEDBACK.md",
+            "distribution/common/examples/sample_resume.txt",
+            "distribution/common/examples/sample_job_description.txt",
+        )
+
+        def build_fixture(root: Path, newline: bytes) -> tuple[bytes, dict]:
+            for relative in relative_files:
+                path = root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(newline.join((b"first line", b"second line", b"")))
+            (root / "skill").mkdir()
+            (root / "skill" / "__version__.py").write_bytes(
+                newline.join((b'__version__ = "0.8.0"', b""))
+            )
+            (root / "skill.json").write_bytes(
+                newline.join((b'{"version": "0.8.0"}', b""))
+            )
+            with (
+                mock.patch.object(package_builder, "ROOT", root),
+                mock.patch.object(package_builder, "SOURCE", root / "distribution"),
+            ):
+                _, archive_path = package_builder.build("prompt_only", root / "dist")
+            archive_bytes = archive_path.read_bytes()
+            with zipfile.ZipFile(archive_path) as archive:
+                manifest_name = next(
+                    name for name in archive.namelist() if name.endswith("PACKAGE_MANIFEST.json")
+                )
+                manifest = json.loads(archive.read(manifest_name).decode("utf-8"))
+            return archive_bytes, manifest
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            lf_archive, lf_manifest = build_fixture(root / "lf", b"\n")
+            crlf_archive, crlf_manifest = build_fixture(root / "crlf", b"\r\n")
+
+        self.assertEqual(lf_manifest["checksums"], crlf_manifest["checksums"])
+        self.assertEqual(lf_manifest["build_id"], crlf_manifest["build_id"])
+        self.assertEqual(lf_archive, crlf_archive)
+
+    def test_binary_package_content_is_preserved_byte_for_byte(self):
+        binary = b"\x89PNG\r\n\x1a\n\x00payload\r\n\xff"
+
+        self.assertEqual(
+            package_builder._normalized_package_content("assets/example.png", binary),
+            binary,
+        )
+
     def test_public_contract_files_are_unchanged_in_runtime_archive(self):
         with zipfile.ZipFile(self.runtime_zip) as archive:
             root = archive.namelist()[0].split("/", 1)[0]
-            self.assertEqual(archive.read(f"{root}/SKILL.md"), (ROOT / "SKILL.md").read_bytes())
-            self.assertEqual(archive.read(f"{root}/skill.json"), (ROOT / "skill.json").read_bytes())
+            for relative in ("SKILL.md", "skill.json"):
+                expected = package_builder._normalized_package_content(
+                    relative,
+                    (ROOT / relative).read_bytes(),
+                )
+                self.assertEqual(archive.read(f"{root}/{relative}"), expected)
 
 
 if __name__ == "__main__":
